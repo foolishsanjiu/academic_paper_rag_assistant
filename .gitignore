@@ -1,0 +1,40 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Conda / virtual environments
+.venv/
+venv/
+env/
+
+# Environment variables and API keys
+.env
+.env.local
+
+# IDE configuration
+.vscode/
+.idea/
+
+# Local paper files
+data/papers/*
+!data/papers/.gitkeep
+
+# Generated paper index
+data/papers.json
+
+# Vector databases
+chroma_db/
+vector_store/
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+
+# Operating system files
+.DS_Store
+Thumbs.db

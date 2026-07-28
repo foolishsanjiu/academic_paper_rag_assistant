@@ -38,3 +38,10 @@ temp/
 # Operating system files
 .DS_Store
 Thumbs.db
+
+# Local PDF files
+data/papers/*
+!data/papers/.gitkeep
+
+# Generated paper metadata
+data/papers.json

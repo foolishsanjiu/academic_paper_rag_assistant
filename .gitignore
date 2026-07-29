@@ -10,7 +10,8 @@ env/
 
 # Environment variables and API keys
 .env
-.env.local
+.env.*
+!.env.example
 
 # IDE configuration
 .vscode/
@@ -39,9 +40,3 @@ temp/
 .DS_Store
 Thumbs.db
 
-# Local PDF files
-data/papers/*
-!data/papers/.gitkeep
-
-# Generated paper metadata
-data/papers.json

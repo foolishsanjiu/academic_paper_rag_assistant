@@ -44,3 +44,21 @@ academic-paper-rag/
 │   └── papers/
 ├── .gitignore
 └── README.md
+
+## 大模型 API 调用
+
+项目当前通过 OpenAI 兼容客户端调用大模型 API，支持非流式和流式输出。
+
+运行：
+
+```powershell
+python llm_client.py
+
+调用方式：
+    输入 1：等待完整回答后一次性显示。
+    输入 2：逐步显示模型生成内容。
+
+运行日志保存在
+    logs/app.log
+日志不会记录 API Key、完整用户输入或完整模型回答。
+---

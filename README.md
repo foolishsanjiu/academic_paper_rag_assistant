@@ -27,7 +27,9 @@
 - [x] 创建独立项目目录
 - [x] 编写 PDF 目录扫描脚本
 - [x] 将论文文件信息保存为 JSON
-- [ ] 配置大模型 API
+- [x] 配置大模型 API
+- [x] 实现流式与非流式调用
+- [x] 创建 Streamlit 聊天页面
 - [ ] 实现 PDF 文本解析
 - [ ] 实现文本切分
 - [ ] 创建向量数据库
@@ -46,19 +48,12 @@ academic-paper-rag/
 └── README.md
 
 ## 大模型 API 调用
-
 项目当前通过 OpenAI 兼容客户端调用大模型 API，支持非流式和流式输出。
-
 运行：
-
 ```powershell
 python llm_client.py
 
-调用方式：
-    输入 1：等待完整回答后一次性显示。
-    输入 2：逐步显示模型生成内容。
-
-运行日志保存在
-    logs/app.log
-日志不会记录 API Key、完整用户输入或完整模型回答。
----
+## 启动聊天页面
+确保已经在 `.env` 中配置模型 API，然后运行：
+```powershell
+python -m streamlit run app.py

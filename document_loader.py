@@ -1,23 +1,59 @@
-"""PDF document loading utilities."""
+"""PDF document loading and basic quality checking."""
 
 from pathlib import Path
 
 import pymupdf
 
 
+def detect_text_warnings(text: str) -> list[str]:
+    """
+    Perform conservative checks for suspicious extracted text.
+
+    These warnings only indicate that a page should be inspected.
+    They do not prove that the PDF is corrupted.
+    """
+    warnings: list[str] = []
+
+    if not text:
+        warnings.append("empty_text")
+        return warnings
+
+    # Unicode replacement character often indicates decoding problems.
+    replacement_count = text.count("\ufffd")
+
+    if replacement_count > 0:
+        warnings.append(
+            f"replacement_characters:{replacement_count}"
+        )
+
+    # NULL characters are unusual in normal extracted paper text.
+    null_count = text.count("\x00")
+
+    if null_count > 0:
+        warnings.append(
+            f"null_characters:{null_count}"
+        )
+
+    # Private-use Unicode characters may originate from custom PDF fonts.
+    private_use_count = sum(
+        1
+        for character in text
+        if "\ue000" <= character <= "\uf8ff"
+    )
+
+    if private_use_count > 0:
+        warnings.append(
+            f"private_use_characters:{private_use_count}"
+        )
+
+    return warnings
+
+
 def load_pdf_pages(
     pdf_path: Path,
 ) -> list[dict]:
     """
-    Read a PDF page by page.
-
-    Args:
-        pdf_path:
-            Path to the PDF file.
-
-    Returns:
-        A list of dictionaries containing
-        file name, page number and page text.
+    Read one PDF page by page and preserve page metadata.
     """
     if not pdf_path.exists():
         raise FileNotFoundError(
@@ -40,16 +76,39 @@ def load_pdf_pages(
 
         for page_index, page in enumerate(document):
 
-            text = page.get_text("text").strip()
+            raw_text = page.get_text(
+                "text",
+                sort=False,
+            )
+
+            text = raw_text.strip()
+
+            warnings = detect_text_warnings(text)
+
+            # PDF page label may be:
+            # "i", "ii", "1", "2", ...
+            page_label = page.get_label() or None
 
             page_info = {
-                "file_name": pdf_path.name,
-
-                # PyMuPDF 内部从 0 开始，
-                # 这里转换成人类习惯的 1 开始
-                "page_number": page_index + 1,
-
                 "text": text,
+                "metadata": {
+                    "file_name": pdf_path.name,
+
+                    # PyMuPDF / Python 内部索引
+                    "page_index": page_index,
+
+                    # 用户通常理解的第 1、2、3... 个 PDF 页面
+                    "page_number": page_index + 1,
+
+                    # PDF 自身定义的页面标签
+                    "page_label": page_label,
+
+                    "char_count": len(text),
+
+                    "is_empty": not bool(text),
+
+                    "parse_warnings": warnings,
+                },
             }
 
             pages.append(page_info)
@@ -60,28 +119,85 @@ def load_pdf_pages(
 def load_pdf_directory(
     paper_dir: Path,
 ) -> list[dict]:
-    """
-    Read all PDF files in a directory.
-    """
+    """Read all PDFs in a directory."""
     if not paper_dir.exists():
         raise FileNotFoundError(
             f"论文目录不存在：{paper_dir}"
         )
 
+    if not paper_dir.is_dir():
+        raise NotADirectoryError(
+            f"路径不是目录：{paper_dir}"
+        )
+
     all_pages: list[dict] = []
 
-    for pdf_path in sorted(
+    pdf_paths = sorted(
         paper_dir.glob("*.pdf")
-    ):
-        print(
-            f"正在读取：{pdf_path.name}"
+    )
+
+    if not pdf_paths:
+        raise FileNotFoundError(
+            f"目录中没有 PDF 文件：{paper_dir}"
         )
+
+    for pdf_path in pdf_paths:
+        print(f"正在读取：{pdf_path.name}")
 
         pages = load_pdf_pages(pdf_path)
 
         all_pages.extend(pages)
 
     return all_pages
+
+
+def print_quality_summary(
+    pages: list[dict],
+) -> None:
+    """Print a simple extraction-quality report."""
+    empty_pages = [
+        page
+        for page in pages
+        if page["metadata"]["is_empty"]
+    ]
+
+    warning_pages = [
+        page
+        for page in pages
+        if page["metadata"]["parse_warnings"]
+    ]
+
+    print()
+    print("=" * 70)
+    print("PDF 解析质量汇总")
+    print("=" * 70)
+
+    print(f"总页数：{len(pages)}")
+    print(f"空文本页：{len(empty_pages)}")
+    print(f"存在解析警告的页：{len(warning_pages)}")
+
+    if empty_pages:
+        print("\n空文本页：")
+
+        for page in empty_pages:
+            metadata = page["metadata"]
+
+            print(
+                f"- {metadata['file_name']} "
+                f"| PDF page {metadata['page_number']}"
+            )
+
+    if warning_pages:
+        print("\n解析警告：")
+
+        for page in warning_pages:
+            metadata = page["metadata"]
+
+            print(
+                f"- {metadata['file_name']} "
+                f"| PDF page {metadata['page_number']} "
+                f"| {metadata['parse_warnings']}"
+            )
 
 
 def main() -> None:
@@ -97,38 +213,42 @@ def main() -> None:
         paper_dir
     )
 
-    print()
-    print(
-        f"共读取 {len(pages)} 页"
-    )
+    print_quality_summary(pages)
 
-    for page in pages:
+    print()
+    print("=" * 70)
+    print("页面样例")
+    print("=" * 70)
+
+    for page in pages[:3]:
+        metadata = page["metadata"]
 
         print()
-        print("=" * 70)
-
         print(
-            f"文件：{page['file_name']}"
+            f"文件：{metadata['file_name']}"
         )
 
         print(
-            f"页码：{page['page_number']}"
+            f"PDF物理页码：{metadata['page_number']}"
         )
 
         print(
-            f"字符数：{len(page['text'])}"
+            f"PDF页面标签：{metadata['page_label']}"
+        )
+
+        print(
+            f"字符数：{metadata['char_count']}"
+        )
+
+        print(
+            f"解析警告：{metadata['parse_warnings']}"
         )
 
         print("-" * 70)
 
-        # 为避免终端一次输出几百页全文，
-        # 暂时显示每页前 600 个字符。
-        preview = page["text"][:600]
-
-        print(preview)
-
-        if len(page["text"]) > 600:
-            print("\n......")
+        print(
+            page["text"][:800]
+        )
 
 
 if __name__ == "__main__":

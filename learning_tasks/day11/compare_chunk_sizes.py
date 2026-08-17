@@ -157,6 +157,15 @@ def main() -> None:
             chunk_size=chunk_size,
             chunks=chunks,
         )
+        print_page_chunks(
+            chunks=chunks,
+            file_name=(
+                "SARGAN_A_Novel_SAR_Image_Generation_"
+                "Method_for_SAR_Ship_Detection_Task.pdf"
+            ),
+            page_number=4,
+            max_chunks=20,
+        )
 
 
 if __name__ == "__main__":

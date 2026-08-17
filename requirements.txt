@@ -3,3 +3,4 @@ python-dotenv
 streamlit
 torch
 pymupdf
+langchain-core

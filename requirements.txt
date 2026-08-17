@@ -4,3 +4,4 @@ streamlit
 torch
 pymupdf
 langchain-core
+langchain-text-splitters

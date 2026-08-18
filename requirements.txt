@@ -5,3 +5,6 @@ torch
 pymupdf
 langchain-core
 langchain-text-splitters
+langchain-huggingface
+sentence-transformers
+langchain-chroma

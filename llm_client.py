@@ -106,7 +106,7 @@ class LLMClient:
             f"调用模型时发生未知错误：{type(error).__name__}。"
         )
 
-    def chat(self, user_message: str) -> str:
+    def chat(self, user_message: str, temperature: float = 0.1) -> str:
         """
         Send a non-streaming request and return the complete answer.
 
@@ -130,6 +130,7 @@ class LLMClient:
                 model=self.settings.model,
                 messages=self._build_messages(cleaned_message),
                 stream=False,
+                temperature=temperature,
             )
 
             answer = response.choices[0].message.content
@@ -164,7 +165,7 @@ class LLMClient:
 
             raise self._convert_api_error(error) from error
 
-    def stream_chat(self, user_message: str) -> Iterator[str]:
+    def stream_chat(self, user_message: str,temperature: float = 0.1) -> Iterator[str]:
         """
         Send a streaming request and yield answer fragments.
 

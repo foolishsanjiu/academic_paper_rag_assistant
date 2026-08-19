@@ -294,6 +294,7 @@ class RAGChain:
         self,
         question: str,
         chat_history: list[dict] | None = None,
+        temperature: float = 0.1,
     ) -> RAGResponse:
         """
         Run the complete RAG pipeline.
@@ -366,7 +367,8 @@ class RAGChain:
         # ------------------------------------------
 
         answer = self.llm.chat(
-            prompt
+            prompt,
+            temperature=temperature,
         )
 
         return RAGResponse(

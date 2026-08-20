@@ -29,6 +29,7 @@ from vector_store import (
     get_vector_count,
     load_vector_store,
 )
+import re
 
 
 # ============================================================
@@ -317,6 +318,8 @@ def serialize_sources(
         serialized_sources.append(
             {
                 "rank": source.rank,
+                "document_id": source.document_id,
+                "document_type": source.document_type,
                 "file_name": source.file_name,
                 "page_number": source.page_number,
                 "chunk_id": source.chunk_id,
@@ -392,6 +395,66 @@ def render_sources(
 
             st.divider()
 
+def extract_cited_ranks(
+    answer: str,
+) -> set[int]:
+    """
+    Extract citation numbers such as [1], [2], [3]
+    from the generated RAG answer.
+    """
+    matches = re.findall(
+        r"\[(\d+)\]",
+        answer,
+    )
+
+    return {
+        int(match)
+        for match in matches
+    }
+
+def get_cited_sources(
+    answer: str,
+    sources: list[dict],
+) -> list[dict]:
+    """
+    Return only sources explicitly cited in the answer.
+    """
+    cited_ranks = extract_cited_ranks(
+        answer
+    )
+
+    return [
+        source
+        for source in sources
+        if source.get("rank")
+        in cited_ranks
+    ]
+
+def render_citation_summary(
+    answer: str,
+    sources: list[dict],
+) -> None:
+
+    cited_sources = get_cited_sources(
+        answer=answer,
+        sources=sources,
+    )
+
+    if not cited_sources:
+        return
+
+    st.markdown(
+        "**回答引用来源**"
+    )
+
+    for source in cited_sources:
+
+        st.markdown(
+            f"- [{source['rank']}] "
+            f"`{source['file_name']}` "
+            f"— PDF Page "
+            f"{source['page_number']}"
+        )
 
 def render_retrieval_query(
     retrieval_query: str | None,
@@ -759,31 +822,46 @@ rag = RAGChain(
 
 
 for message in st.session_state.messages:
+
     role = message["role"]
 
     with st.chat_message(role):
+
         if message.get("is_error"):
+
             st.error(
                 message["content"]
             )
+
         else:
+
             st.markdown(
                 message["content"]
             )
 
-        # Only RAG assistant messages contain these fields.
         if role == "assistant":
+
+            sources = message.get(
+                "sources",
+                [],
+            )
+
+            # 先显示回答真正引用的来源
+            render_citation_summary(
+                answer=message["content"],
+                sources=sources,
+            )
+
+            # 再显示实际 Retrieval Query
             render_retrieval_query(
                 message.get(
                     "retrieval_query"
                 )
             )
 
+            # 最后显示全部 Top-k
             render_sources(
-                message.get(
-                    "sources",
-                    [],
-                )
+                sources
             )
 
 
@@ -874,6 +952,13 @@ if prompt:
             serialized_sources = serialize_sources(
                 rag_response.sources
             )
+
+            # 显示回答真正引用的论文和页码
+            render_citation_summary(
+                answer=rag_response.answer,
+                sources=serialized_sources,
+            )
+
 
             render_sources(
                 serialized_sources

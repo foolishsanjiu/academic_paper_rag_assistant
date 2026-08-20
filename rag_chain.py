@@ -25,6 +25,8 @@ class RAGSource:
     """One retrieved source used by the RAG pipeline."""
 
     rank: int
+    document_id: str
+    document_type: str
     file_name: str
     page_number: int | str
     chunk_id: str
@@ -175,6 +177,20 @@ def build_sources(
                 metadata.get(
                     "file_name",
                     "unknown.pdf",
+                )
+            ),
+
+            document_id=str(
+                metadata.get(
+                    "document_id",
+                    "unknown",
+                )
+            ),
+
+            document_type=str(
+                metadata.get(
+                    "document_type",
+                    "unknown",
                 )
             ),
 

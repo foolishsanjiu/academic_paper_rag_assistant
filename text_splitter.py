@@ -101,6 +101,11 @@ def split_page_document(
         -1,
     )
 
+    document_id = document.metadata.get(
+        "document_id",
+        file_name,
+    )
+
     for chunk_index, chunk_text in enumerate(
         chunk_texts
     ):
@@ -109,7 +114,7 @@ def split_page_document(
         metadata = dict(document.metadata)
 
         chunk_id = (
-            f"{file_name}"
+            f"{document_id}"
             f"::page_{page_number}"
             f"::chunk_{chunk_index}"
         )

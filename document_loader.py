@@ -1,10 +1,31 @@
 """PDF document loading and basic quality checking."""
-
+import hashlib
 from pathlib import Path
 
 import pymupdf
 from langchain_core.documents import Document
 
+def compute_document_id(
+    pdf_path: Path,
+) -> str:
+    """
+    Generate a stable ID from PDF file content.
+
+    The same PDF content produces the same document ID,
+    even if the file is renamed.
+    """
+    hasher = hashlib.sha256()
+
+    with pdf_path.open("rb") as file:
+        while True:
+            block = file.read(1024 * 1024)
+
+            if not block:
+                break
+
+            hasher.update(block)
+
+    return hasher.hexdigest()[:16]
 
 def detect_text_warnings(text: str) -> list[str]:
     """
@@ -58,7 +79,6 @@ def detect_text_warnings(text: str) -> list[str]:
 
     return warnings
 
-
 def load_pdf_pages(
     pdf_path: Path,
 ) -> list[Document]:
@@ -103,6 +123,8 @@ def load_pdf_pages(
         raise ValueError(
             f"不是 PDF 文件：{pdf_path}"
         )
+    
+    document_id = compute_document_id(pdf_path)
 
     documents: list[Document] = []
 
@@ -136,6 +158,8 @@ def load_pdf_pages(
             document = Document(
                 page_content=text,
                 metadata={
+                    "document_id": document_id,
+                    "document_type": "academic_paper",
                     # 原始论文文件名
                     "file_name": pdf_path.name,
 

@@ -53,6 +53,16 @@ def print_results(
         )
 
         print(
+            "Document ID: "
+            f"{metadata.get('document_id')}"
+        )
+
+        print(
+            "Document type: "
+            f"{metadata.get('document_type')}"
+        )
+
+        print(
             "File: "
             f"{metadata.get('file_name')}"
         )

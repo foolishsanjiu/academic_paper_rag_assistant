@@ -1,7 +1,6 @@
 """Embedding model and Chroma vector-store utilities."""
 
 from pathlib import Path
-import shutil
 from typing import Any
 
 from langchain_chroma import Chroma
@@ -156,7 +155,7 @@ def build_vector_store(
     reset: bool = False,
 ) -> Chroma:
     """
-    Create a persistent Chroma vector database.
+    Create or rebuild a persistent Chroma vector database.
 
     Args:
         documents:
@@ -172,7 +171,7 @@ def build_vector_store(
             Chroma collection name.
 
         reset:
-            Delete the existing database before rebuilding.
+            Reset the existing Chroma collection before rebuilding.
 
     Returns:
         Chroma vector store.
@@ -182,20 +181,18 @@ def build_vector_store(
             "没有可写入向量数据库的 Document。"
         )
 
-    if reset and persist_directory.exists():
-        print(
-            f"删除旧向量数据库："
-            f"{persist_directory}"
-        )
-
-        shutil.rmtree(
-            persist_directory
-        )
+    # --------------------------------------------------
+    # 1. Ensure persistence directory exists
+    # --------------------------------------------------
 
     persist_directory.mkdir(
         parents=True,
         exist_ok=True,
     )
+
+    # --------------------------------------------------
+    # 2. Prepare documents
+    # --------------------------------------------------
 
     prepared_documents, ids = (
         prepare_documents_for_chroma(
@@ -208,6 +205,10 @@ def build_vector_store(
         "个 Chunk..."
     )
 
+    # --------------------------------------------------
+    # 3. Open or create Chroma collection
+    # --------------------------------------------------
+
     vector_store = Chroma(
         collection_name=collection_name,
         embedding_function=embeddings,
@@ -215,13 +216,29 @@ def build_vector_store(
             persist_directory
         ),
 
-        # 显式使用 cosine distance。
+        # Explicitly use cosine distance.
         collection_configuration={
             "hnsw": {
                 "space": "cosine",
             }
         },
     )
+
+    # --------------------------------------------------
+    # 4. Reset existing collection when rebuilding
+    # --------------------------------------------------
+
+    if reset:
+        print(
+            "重置旧 Chroma Collection："
+            f"{collection_name}"
+        )
+
+        vector_store.reset_collection()
+
+    # --------------------------------------------------
+    # 5. Insert new documents
+    # --------------------------------------------------
 
     vector_store.add_documents(
         documents=prepared_documents,

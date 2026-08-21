@@ -13,6 +13,7 @@ from knowledge_base import (
     DEFAULT_PAPER_DIRECTORY,
     get_paper_count,
     get_paper_names,
+    save_uploaded_pdf
 )
 from llm_client import LLMClient
 from logging_config import setup_logging
@@ -30,6 +31,11 @@ from vector_store import (
     load_vector_store,
 )
 import re
+
+from index_manifest import (
+    load_index_manifest,
+    write_index_manifest,
+)
 
 
 # ============================================================
@@ -117,89 +123,14 @@ def build_chat_history_for_rag() -> list[dict]:
 # ============================================================
 
 
-def validate_uploaded_pdf(uploaded_file) -> tuple[bool, str]:
-    """Validate extension, size, and basic PDF file signature."""
-    file_name = uploaded_file.name
-
-    if Path(file_name).suffix.lower() != ".pdf":
-        return False, f"{file_name}: 不是 PDF 文件。"
-
-    file_bytes = uploaded_file.getvalue()
-
-    if not file_bytes:
-        return False, f"{file_name}: 文件为空。"
-
-    file_size_mb = len(file_bytes) / (1024 * 1024)
-    if file_size_mb > MAX_UPLOAD_SIZE_MB:
-        return (
-            False,
-            f"{file_name}: 文件大小为 {file_size_mb:.1f} MB，"
-            f"超过 {MAX_UPLOAD_SIZE_MB} MB 限制。",
-        )
-
-    # Most normal PDF files start with b"%PDF-".
-    if not file_bytes.startswith(b"%PDF-"):
-        return False, f"{file_name}: 文件头不是有效的 PDF 标识。"
-
-    return True, ""
-
-
-def save_uploaded_pdfs(
-    uploaded_files,
-    overwrite_existing: bool,
-) -> tuple[list[str], list[str]]:
-    """Save validated uploaded PDFs into the local paper directory."""
-    saved_files: list[str] = []
-    errors: list[str] = []
-
-    DEFAULT_PAPER_DIRECTORY.mkdir(
-        parents=True,
-        exist_ok=True,
-    )
-
-    for uploaded_file in uploaded_files:
-        is_valid, error_message = validate_uploaded_pdf(uploaded_file)
-
-        if not is_valid:
-            errors.append(error_message)
-            continue
-
-        destination = DEFAULT_PAPER_DIRECTORY / Path(uploaded_file.name).name
-
-        if destination.exists() and not overwrite_existing:
-            errors.append(
-                f"{uploaded_file.name}: 知识库中已存在同名文件，"
-                "未覆盖。"
-            )
-            continue
-
-        try:
-            destination.write_bytes(
-                uploaded_file.getvalue()
-            )
-            saved_files.append(
-                destination.name
-            )
-
-        except OSError as error:
-            logger.exception(
-                "保存上传 PDF 失败 | file=%s",
-                uploaded_file.name,
-            )
-            errors.append(
-                f"{uploaded_file.name}: 保存失败：{error}"
-            )
-
-    return saved_files, errors
-
-
 def rebuild_knowledge_base(
     chunk_size: int,
     chunk_overlap: int,
 ) -> int:
     """
     Reload all PDFs, split them with the selected chunk parameters,
-    and rebuild the persistent Chroma vector store.
+    rebuild the persistent Chroma vector store,
+    and update the index manifest.
 
     Returns:
         Number of chunk records written into the vector store.
@@ -210,6 +141,7 @@ def rebuild_knowledge_base(
         )
 
     paper_count = get_paper_count()
+
     if paper_count == 0:
         raise ValueError(
             "论文目录中没有 PDF，无法重建向量库。"
@@ -247,7 +179,37 @@ def rebuild_knowledge_base(
         vector_store
     )
 
-    # Force Streamlit to reopen the newly rebuilt Chroma store on rerun.
+    # --------------------------------------------------------
+    # Verify rebuild result
+    # --------------------------------------------------------
+
+    if vector_count != len(chunk_documents):
+        raise RuntimeError(
+            "索引构建失败："
+            "Chunk 数量与 Chroma 数量不一致。"
+        )
+
+    # --------------------------------------------------------
+    # Update index manifest
+    # --------------------------------------------------------
+
+    write_index_manifest(
+        paper_count=paper_count,
+        page_count=len(
+            page_documents
+        ),
+        chunk_count=len(
+            chunk_documents
+        ),
+        chunk_size=chunk_size,
+        chunk_overlap=chunk_overlap,
+        embedding_model=(
+            DEFAULT_EMBEDDING_MODEL
+        ),
+    )
+
+    # Force Streamlit to reopen the newly rebuilt
+    # Chroma store on rerun.
     load_rag_resources.clear()
 
     return vector_count
@@ -503,6 +465,11 @@ except Exception as error:
 
     st.stop()
 
+# ------------------------------------------------------------
+# Load current index manifest
+# ------------------------------------------------------------
+
+index_manifest = load_index_manifest()
 
 # ============================================================
 # Main page
@@ -628,6 +595,56 @@ with st.sidebar:
         "索引参数"
     )
 
+    # --------------------------------------------------------
+    # Current actual index parameters
+    # --------------------------------------------------------
+
+    if index_manifest:
+        st.markdown(
+            "**当前索引实际参数**"
+        )
+
+        st.write(
+            "Chunk Size：",
+            index_manifest[
+                "chunk_size"
+            ],
+        )
+
+        st.write(
+            "Chunk Overlap：",
+            index_manifest[
+                "chunk_overlap"
+            ],
+        )
+
+        st.write(
+            "Chunk 数量：",
+            index_manifest[
+                "chunk_count"
+            ],
+        )
+
+        st.caption(
+            "构建时间："
+            f"{index_manifest['built_at']}"
+        )
+
+    else:
+        st.warning(
+            "暂未找到索引 Manifest，"
+            "无法确定当前向量库的实际构建参数。"
+        )
+
+    # --------------------------------------------------------
+    # Rebuild parameters
+    # --------------------------------------------------------
+
+
+    st.markdown(
+        "**重建参数**"
+    )
+
     chunk_size = st.slider(
         "Chunk Size",
         min_value=300,
@@ -656,12 +673,45 @@ with st.sidebar:
         value=default_overlap,
         step=50,
         help=(
-            "相邻 Chunk 的重叠长度。修改后必须重建向量库才会生效。"
+            "相邻 Chunk 的重叠长度。"
+            "修改后必须重建向量库才会生效。"
         ),
     )
 
+    # --------------------------------------------------------
+    # Warn if Slider parameters differ from current index
+    # --------------------------------------------------------
+
+    if index_manifest:
+
+        index_chunk_size = (
+            index_manifest[
+                "chunk_size"
+            ]
+        )
+
+        index_chunk_overlap = (
+            index_manifest[
+                "chunk_overlap"
+            ]
+        )
+
+        if (
+            chunk_size
+            != index_chunk_size
+            or
+            chunk_overlap
+            != index_chunk_overlap
+        ):
+            st.warning(
+                "Chunk 参数已经修改，"
+                "但当前 Chroma 仍使用旧参数。"
+                "请重建知识库后再使新参数生效。"
+            )
+
     st.caption(
-        "当前索引参数只有在点击“重建向量库”后才会真正写入 Chroma。"
+        "以上 Slider 是下一次重建向量库时使用的参数，"
+        "不会立即改变当前 Chroma 索引。"
     )
 
     st.divider()
@@ -679,13 +729,9 @@ with st.sidebar:
         type=["pdf"],
         accept_multiple_files=True,
         help=(
-            f"支持一次上传多篇 PDF；单个文件建议不超过 {MAX_UPLOAD_SIZE_MB} MB。"
+            f"支持一次上传多篇 PDF；"
+            f"单个文件建议不超过 {MAX_UPLOAD_SIZE_MB} MB。"
         ),
-    )
-
-    overwrite_existing = st.checkbox(
-        "允许覆盖同名 PDF",
-        value=False,
     )
 
     if st.button(
@@ -697,80 +743,95 @@ with st.sidebar:
             st.warning(
                 "请先选择至少一个 PDF 文件。"
             )
-        else:
+
+    else:
+        successful_uploads = []
+        failed_uploads = []
+
+        # ----------------------------------------------------
+        # Save and validate each PDF independently
+        # ----------------------------------------------------
+
+        for uploaded_file in uploaded_files:
             try:
-                saved_files, upload_errors = save_uploaded_pdfs(
-                    uploaded_files=uploaded_files,
-                    overwrite_existing=overwrite_existing,
+                file_path, validation = save_uploaded_pdf(
+                    file_name=uploaded_file.name,
+                    data=uploaded_file.getvalue(),
                 )
 
-                for error_message in upload_errors:
-                    st.warning(
-                        error_message
+                successful_uploads.append(
+                    {
+                        "file_name": validation.file_name,
+                        "document_id": validation.document_id,
+                        "page_count": validation.page_count,
+                        "text_char_count": validation.text_char_count,
+                    }
+                )
+
+            except (
+                ValueError,
+                FileExistsError,
+            ) as error:
+                failed_uploads.append(
+                    {
+                        "file_name": uploaded_file.name,
+                        "error": str(error),
+                    }
+                )
+
+        # ----------------------------------------------------
+        # Display upload results
+        # ----------------------------------------------------
+
+        for item in successful_uploads:
+            st.success(
+                "上传成功："
+                f"{item['file_name']} "
+                f"({item['page_count']} pages)"
+            )
+
+        for item in failed_uploads:
+            st.error(
+                f"{item['file_name']}："
+                f"{item['error']}"
+            )
+
+        # ----------------------------------------------------
+        # Rebuild vector store only if at least one PDF
+        # was successfully uploaded
+        # ----------------------------------------------------
+
+        if not successful_uploads:
+            st.error(
+                "没有成功保存任何 PDF，因此未重建向量库。"
+            )
+
+        else:
+            try:
+                with st.spinner(
+                    "正在解析 PDF、切分文本并重建 Chroma……"
+                ):
+                    new_vector_count = rebuild_knowledge_base(
+                        chunk_size=chunk_size,
+                        chunk_overlap=chunk_overlap,
                     )
 
-                if not saved_files:
-                    st.error(
-                        "没有成功保存任何 PDF，因此未重建向量库。"
-                    )
-                else:
-                    with st.spinner(
-                        "正在解析 PDF、切分文本并重建 Chroma……"
-                    ):
-                        new_vector_count = rebuild_knowledge_base(
-                            chunk_size=chunk_size,
-                            chunk_overlap=chunk_overlap,
-                        )
+                st.success(
+                    f"已成功保存 {len(successful_uploads)} 篇 PDF，"
+                    f"并重建向量库，共 {new_vector_count} 个 Chunk。"
+                )
 
-                    st.success(
-                        "已保存 "
-                        f"{len(saved_files)} 篇 PDF，"
-                        f"并重建向量库，共 {new_vector_count} 个 Chunk。"
-                    )
-
-                    st.rerun()
+                st.rerun()
 
             except Exception as error:
                 logger.exception(
-                    "上传 PDF 并重建知识库失败"
+                    "重建知识库失败"
                 )
+
                 st.error(
-                    "上传/重建失败："
+                    "PDF 已保存，但向量库重建失败："
                     f"{error}"
                 )
-
-    if st.button(
-        "按当前 Chunk 参数重建向量库",
-        use_container_width=True,
-        help=(
-            "不新增论文，只使用当前论文目录中的 PDF "
-            "按新的 Chunk Size / Overlap 重新建立 Chroma。"
-        ),
-    ):
-        try:
-            with st.spinner(
-                "正在重新解析论文并重建向量库……"
-            ):
-                new_vector_count = rebuild_knowledge_base(
-                    chunk_size=chunk_size,
-                    chunk_overlap=chunk_overlap,
-                )
-
-            st.success(
-                "向量库重建完成，"
-                f"共 {new_vector_count} 个 Chunk。"
-            )
-
-            st.rerun()
-
-        except Exception as error:
-            logger.exception(
-                "重建知识库失败"
-            )
-            st.error(
-                "重建失败："
-                f"{error}"
-            )
 
     st.divider()
 

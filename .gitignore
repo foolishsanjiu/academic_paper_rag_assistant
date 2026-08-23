@@ -39,4 +39,5 @@ temp/
 # Operating system files
 .DS_Store
 Thumbs.db
+learning_tasks/day18/output/
 

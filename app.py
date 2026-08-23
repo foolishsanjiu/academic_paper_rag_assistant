@@ -433,6 +433,54 @@ def render_retrieval_query(
             language=None,
         )
 
+def render_rag_parameters(
+    parameters: dict | None,
+) -> None:
+    """
+    Display the parameters actually used
+    for one RAG answer.
+    """
+    if not parameters:
+        return
+
+    with st.expander(
+        "查看本轮 RAG 参数"
+    ):
+
+        st.write(
+            "Top-k：",
+            parameters.get(
+                "top_k"
+            ),
+        )
+
+        st.write(
+            "Temperature：",
+            parameters.get(
+                "temperature"
+            ),
+        )
+
+        st.write(
+            "Chunk Size：",
+            parameters.get(
+                "chunk_size"
+            ),
+        )
+
+        st.write(
+            "Chunk Overlap：",
+            parameters.get(
+                "chunk_overlap"
+            ),
+        )
+
+        st.write(
+            "Embedding Model：",
+            parameters.get(
+                "embedding_model"
+            ),
+        )
 
 # ============================================================
 # Initialize application
@@ -912,6 +960,12 @@ for message in st.session_state.messages:
                 answer=message["content"],
                 sources=sources,
             )
+            # 显示本轮实际使用的 RAG 参数
+            render_rag_parameters(
+            message.get(
+                "rag_parameters"
+            )
+)
 
             # 再显示实际 Retrieval Query
             render_retrieval_query(
@@ -1034,6 +1088,35 @@ if prompt:
             "content": rag_response.answer,
             "retrieval_query": rag_response.retrieval_query,
             "sources": serialized_sources,
+
+            "rag_parameters": {
+                "top_k": top_k,
+                "temperature": temperature,
+
+                "chunk_size": (
+                    index_manifest.get(
+                        "chunk_size"
+                    )
+                    if index_manifest
+                    else None
+                ),
+
+                "chunk_overlap": (
+                    index_manifest.get(
+                        "chunk_overlap"
+                    )
+                    if index_manifest
+                    else None
+                ),
+
+                "embedding_model": (
+                    index_manifest.get(
+                        "embedding_model"
+                    )
+                    if index_manifest
+                    else None
+                ),
+            },
         }
 
         st.session_state.messages.append(

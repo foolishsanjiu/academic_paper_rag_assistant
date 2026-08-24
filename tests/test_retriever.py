@@ -4,7 +4,11 @@ import unittest
 
 from langchain_core.documents import Document
 
-from retriever import retrieve_with_scores
+from retriever import (
+    RetrievalStrategy,
+    get_retrieval_options,
+    retrieve_with_scores,
+)
 
 
 class FakeVectorStore:
@@ -80,6 +84,28 @@ class DiverseRetrievalTests(unittest.TestCase):
                 top_k=5,
                 max_chunks_per_file=0,
             )
+
+
+class RetrievalStrategyTests(unittest.TestCase):
+    def test_focused_strategy_preserves_plain_retrieval(self) -> None:
+        options = get_retrieval_options(RetrievalStrategy.FOCUSED)
+
+        self.assertEqual(options.top_k, 5)
+        self.assertIsNone(options.candidate_k)
+        self.assertIsNone(options.max_chunks_per_file)
+
+    def test_multi_document_strategy_uses_experiment_winner(self) -> None:
+        options = get_retrieval_options(
+            RetrievalStrategy.MULTI_DOCUMENT
+        )
+
+        self.assertEqual(options.top_k, 8)
+        self.assertEqual(options.candidate_k, 32)
+        self.assertEqual(options.max_chunks_per_file, 3)
+
+    def test_invalid_strategy_fails_with_allowed_values(self) -> None:
+        with self.assertRaisesRegex(ValueError, "focused"):
+            get_retrieval_options("unsupported")
 
 
 if __name__ == "__main__":

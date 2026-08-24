@@ -1,9 +1,75 @@
 """Semantic retrieval utilities for academic paper chunks."""
 
+from dataclasses import dataclass
+from enum import Enum
+
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
 
-from config import DEFAULT_TOP_K
+from config import (
+    DEFAULT_TOP_K,
+    MULTI_DOCUMENT_CANDIDATE_K,
+    MULTI_DOCUMENT_MAX_CHUNKS_PER_FILE,
+    MULTI_DOCUMENT_TOP_K,
+)
+
+
+class RetrievalStrategy(str, Enum):
+    """Supported retrieval behavior for the RAG pipeline."""
+
+    FOCUSED = "focused"
+    MULTI_DOCUMENT = "multi_document"
+
+
+@dataclass(frozen=True)
+class RetrievalOptions:
+    """Resolved low-level parameters for one retrieval strategy."""
+
+    strategy: RetrievalStrategy
+    top_k: int
+    candidate_k: int | None
+    max_chunks_per_file: int | None
+
+
+def get_retrieval_options(
+    strategy: RetrievalStrategy | str = RetrievalStrategy.FOCUSED,
+    top_k: int | None = None,
+) -> RetrievalOptions:
+    """Resolve a named strategy into tested retrieval parameters."""
+    try:
+        resolved_strategy = RetrievalStrategy(strategy)
+    except ValueError as error:
+        allowed = ", ".join(item.value for item in RetrievalStrategy)
+        raise ValueError(
+            f"不支持的检索策略：{strategy}。可选值：{allowed}"
+        ) from error
+
+    if top_k is not None:
+        validate_top_k(top_k)
+
+    if resolved_strategy is RetrievalStrategy.FOCUSED:
+        return RetrievalOptions(
+            strategy=resolved_strategy,
+            top_k=top_k or DEFAULT_TOP_K,
+            candidate_k=None,
+            max_chunks_per_file=None,
+        )
+
+    resolved_top_k = top_k or MULTI_DOCUMENT_TOP_K
+    candidate_k = (
+        MULTI_DOCUMENT_CANDIDATE_K
+        if resolved_top_k == MULTI_DOCUMENT_TOP_K
+        else resolved_top_k * 4
+    )
+
+    return RetrievalOptions(
+        strategy=resolved_strategy,
+        top_k=resolved_top_k,
+        candidate_k=candidate_k,
+        max_chunks_per_file=(
+            MULTI_DOCUMENT_MAX_CHUNKS_PER_FILE
+        ),
+    )
 
 
 def validate_query(query: str) -> str:

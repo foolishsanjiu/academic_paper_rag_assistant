@@ -5,10 +5,11 @@ from dataclasses import dataclass
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
 
-from config import DEFAULT_TOP_K
 from llm_client import LLMClient
 from retriever import (
+    RetrievalStrategy,
     cosine_distance_to_similarity,
+    get_retrieval_options,
     retrieve_with_scores,
 )
 
@@ -292,21 +293,33 @@ class RAGChain:
         self,
         llm: LLMClient,
         vector_store: Chroma,
-        top_k: int = DEFAULT_TOP_K,
+        top_k: int | None = None,
+        retrieval_strategy: RetrievalStrategy | str = (
+            RetrievalStrategy.FOCUSED
+        ),
         candidate_k: int | None = None,
         max_chunks_per_file: int | None = None,
     ) -> None:
 
-        if top_k <= 0:
-            raise ValueError(
-                "top_k 必须大于 0。"
-            )
+        options = get_retrieval_options(
+            strategy=retrieval_strategy,
+            top_k=top_k,
+        )
 
         self.llm = llm
         self.vector_store = vector_store
-        self.top_k = top_k
-        self.candidate_k = candidate_k
-        self.max_chunks_per_file = max_chunks_per_file
+        self.retrieval_strategy = options.strategy
+        self.top_k = options.top_k
+        self.candidate_k = (
+            candidate_k
+            if candidate_k is not None
+            else options.candidate_k
+        )
+        self.max_chunks_per_file = (
+            max_chunks_per_file
+            if max_chunks_per_file is not None
+            else options.max_chunks_per_file
+        )
 
     def ask(
         self,

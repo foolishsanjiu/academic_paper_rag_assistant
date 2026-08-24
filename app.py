@@ -7,7 +7,12 @@ from pathlib import Path
 
 import streamlit as st
 
-from config import get_settings
+from config import (
+    DEFAULT_CHUNK_OVERLAP,
+    DEFAULT_CHUNK_SIZE,
+    MAX_UPLOAD_SIZE_MB,
+    get_settings,
+)
 from document_loader import load_pdf_directory
 from knowledge_base import (
     DEFAULT_PAPER_DIRECTORY,
@@ -18,11 +23,7 @@ from knowledge_base import (
 from llm_client import LLMClient
 from logging_config import setup_logging
 from rag_chain import RAGChain
-from text_splitter import (
-    DEFAULT_CHUNK_OVERLAP,
-    DEFAULT_CHUNK_SIZE,
-    split_documents,
-)
+from text_splitter import split_documents
 from vector_store import (
     DEFAULT_EMBEDDING_MODEL,
     build_vector_store,
@@ -57,9 +58,6 @@ WELCOME_MESSAGE = (
     "当前已经接入本地 SAR 论文知识库，"
     "可以基于论文内容进行检索增强问答，并显示论文来源和 PDF 页码。"
 )
-
-MAX_UPLOAD_SIZE_MB = 50
-
 
 # ============================================================
 # Session state

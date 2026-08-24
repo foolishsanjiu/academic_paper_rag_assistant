@@ -6,16 +6,11 @@ from pathlib import Path
 
 import pymupdf
 
+from config import PAPER_DIRECTORY
 from document_loader import compute_document_id
 
 
-PROJECT_ROOT = Path(__file__).resolve().parent
-
-DEFAULT_PAPER_DIRECTORY = (
-    PROJECT_ROOT
-    / "data"
-    / "papers"
-)
+DEFAULT_PAPER_DIRECTORY = PAPER_DIRECTORY
 
 
 # ============================================================

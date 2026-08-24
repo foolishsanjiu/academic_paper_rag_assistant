@@ -7,16 +7,13 @@ from langchain_chroma import Chroma
 from langchain_core.documents import Document
 from langchain_huggingface import HuggingFaceEmbeddings
 
-
-PROJECT_ROOT = Path(__file__).resolve().parent
-
-DEFAULT_EMBEDDING_MODEL = "BAAI/bge-m3"
-
-DEFAULT_COLLECTION_NAME = "academic_papers"
-
-DEFAULT_PERSIST_DIRECTORY = (
-    PROJECT_ROOT / "chroma_db"
+from config import (
+    CHROMA_DIRECTORY,
+    DEFAULT_COLLECTION_NAME,
+    DEFAULT_EMBEDDING_MODEL,
 )
+
+DEFAULT_PERSIST_DIRECTORY = CHROMA_DIRECTORY
 
 
 def create_embedding_model(

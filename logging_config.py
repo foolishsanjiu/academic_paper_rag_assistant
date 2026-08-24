@@ -2,12 +2,10 @@
 
 import logging
 from logging.handlers import RotatingFileHandler
-from pathlib import Path
 
+from config import LOG_DIRECTORY, LOG_FILE
 
-PROJECT_ROOT = Path(__file__).resolve().parent
-LOG_DIR = PROJECT_ROOT / "logs"
-LOG_FILE = LOG_DIR / "app.log"
+LOG_DIR = LOG_DIRECTORY
 
 
 def setup_logging() -> None:

@@ -5,18 +5,9 @@ import json
 from pathlib import Path
 from typing import Any
 
+from config import INDEX_MANIFEST_PATH
 
-PROJECT_ROOT = (
-    Path(__file__)
-    .resolve()
-    .parent
-)
-
-DEFAULT_MANIFEST_PATH = (
-    PROJECT_ROOT
-    / "chroma_db"
-    / "index_manifest.json"
-)
+DEFAULT_MANIFEST_PATH = INDEX_MANIFEST_PATH
 
 
 def write_index_manifest(

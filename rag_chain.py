@@ -5,14 +5,12 @@ from dataclasses import dataclass
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
 
+from config import DEFAULT_TOP_K
 from llm_client import LLMClient
 from retriever import (
     cosine_distance_to_similarity,
     retrieve_with_scores,
 )
-
-
-DEFAULT_TOP_K = 5
 
 NO_ANSWER_MESSAGE = (
     "根据当前论文知识库中的检索内容，"

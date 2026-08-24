@@ -24,16 +24,25 @@ questions because only one local passage from the relevant paper survives.
 
 ## Selected configuration
 
-The full-generation evaluation will use:
+An initial full-generation run with a two-chunk cap improved multi-paper
+coverage but removed too much local evidence from several factual questions.
+A follow-up experiment therefore tested a three-chunk cap:
+
+| Top-k | All files | Any page | All pages | Avg. unique papers |
+|---:|---:|---:|---:|---:|
+| 8 | 90% | 90% | 55% | 4.08 |
+| 10 | 90% | 90% | 55% | 4.68 |
+
+The final full-generation evaluation uses:
 
 - Final Top-k: 8
 - Similarity candidate pool: 32
-- Maximum chunks per PDF: 2
+- Maximum chunks per PDF: 3
 
 This raises all-file retrieval from 75% for plain Top-k 8 to 90%, while keeping
-two passages available for each selected paper. Top-k 10 adds context for only a
-five-point all-file improvement, and the one-chunk cap risks under-supporting
-single-paper questions.
+three passages available for each selected paper. Top-k 10 adds context without
+improving any expected-source hit rate, and one- or two-chunk caps under-support
+some single-paper questions.
 
 The page metric is interpreted cautiously. Evaluation answers are anchored to
 abstract pages for auditability, but another page from the same expected paper

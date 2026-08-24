@@ -86,10 +86,14 @@ def run_retrieval_experiment(
     questions_path: Path,
     output_path: Path,
     top_k_values: list[int],
+    candidate_multiplier: int = 4,
+    max_chunks_per_file: int | None = None,
 ) -> dict[str, Any]:
     """Evaluate several Top-k values with one loaded embedding model."""
     if not top_k_values or any(value <= 0 for value in top_k_values):
         raise ValueError("所有 Top-k 值都必须大于 0。")
+    if candidate_multiplier <= 0:
+        raise ValueError("candidate_multiplier 必须大于 0。")
 
     questions = load_questions(questions_path)
     manifest = load_index_manifest()
@@ -124,6 +128,12 @@ def run_retrieval_experiment(
                 vector_store=vector_store,
                 query=item["question"],
                 top_k=top_k,
+                candidate_k=(
+                    top_k * candidate_multiplier
+                    if max_chunks_per_file is not None
+                    else None
+                ),
+                max_chunks_per_file=max_chunks_per_file,
             )
             sources = [
                 asdict(source)
@@ -165,6 +175,12 @@ def run_retrieval_experiment(
 
         run = {
             "top_k": top_k,
+            "candidate_k": (
+                top_k * candidate_multiplier
+                if max_chunks_per_file is not None
+                else top_k
+            ),
+            "max_chunks_per_file": max_chunks_per_file,
             "summary": summarize(results),
             "results": results,
         }
@@ -194,6 +210,12 @@ def parse_args() -> argparse.Namespace:
         nargs="+",
         default=[3, 5, 8, 10],
     )
+    parser.add_argument(
+        "--candidate-multiplier",
+        type=int,
+        default=4,
+    )
+    parser.add_argument("--max-chunks-per-file", type=int)
     return parser.parse_args()
 
 
@@ -203,6 +225,8 @@ def main() -> None:
         questions_path=args.questions,
         output_path=args.output,
         top_k_values=args.top_k,
+        candidate_multiplier=args.candidate_multiplier,
+        max_chunks_per_file=args.max_chunks_per_file,
     )
     for run in payload["runs"]:
         print(

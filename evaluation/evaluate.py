@@ -196,6 +196,8 @@ def run_evaluation(
     top_k: int,
     temperature: float,
     limit: int | None,
+    candidate_k: int | None = None,
+    max_chunks_per_file: int | None = None,
 ) -> dict[str, Any]:
     """Load project resources and evaluate every selected question."""
     from config import get_settings
@@ -237,6 +239,8 @@ def run_evaluation(
         llm=llm,
         vector_store=vector_store,
         top_k=top_k,
+        candidate_k=candidate_k,
+        max_chunks_per_file=max_chunks_per_file,
     )
 
     started_at = datetime.now().astimezone().isoformat(timespec="seconds")
@@ -248,6 +252,8 @@ def run_evaluation(
             "questions_path": str(questions_path.resolve()),
             "parameters": {
                 "top_k": top_k,
+                "candidate_k": candidate_k,
+                "max_chunks_per_file": max_chunks_per_file,
                 "temperature": temperature,
                 "chunk_size": manifest["chunk_size"],
                 "chunk_overlap": manifest["chunk_overlap"],
@@ -341,6 +347,8 @@ def parse_args() -> argparse.Namespace:
         default=DEFAULT_OUTPUT_PATH,
     )
     parser.add_argument("--top-k", type=int, default=5)
+    parser.add_argument("--candidate-k", type=int)
+    parser.add_argument("--max-chunks-per-file", type=int)
     parser.add_argument("--temperature", type=float, default=0.2)
     parser.add_argument("--limit", type=int)
     return parser.parse_args()
@@ -354,6 +362,8 @@ def main() -> None:
         top_k=args.top_k,
         temperature=args.temperature,
         limit=args.limit,
+        candidate_k=args.candidate_k,
+        max_chunks_per_file=args.max_chunks_per_file,
     )
     print(json.dumps(payload["summary"], ensure_ascii=False, indent=2))
     print(f"评测结果已保存：{args.output.resolve()}")

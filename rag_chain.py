@@ -295,6 +295,8 @@ class RAGChain:
         llm: LLMClient,
         vector_store: Chroma,
         top_k: int = DEFAULT_TOP_K,
+        candidate_k: int | None = None,
+        max_chunks_per_file: int | None = None,
     ) -> None:
 
         if top_k <= 0:
@@ -305,6 +307,8 @@ class RAGChain:
         self.llm = llm
         self.vector_store = vector_store
         self.top_k = top_k
+        self.candidate_k = candidate_k
+        self.max_chunks_per_file = max_chunks_per_file
 
     def ask(
         self,
@@ -347,6 +351,8 @@ class RAGChain:
             vector_store=self.vector_store,
             query=retrieval_query,
             top_k=self.top_k,
+            candidate_k=self.candidate_k,
+            max_chunks_per_file=self.max_chunks_per_file,
         )
 
         if not results:

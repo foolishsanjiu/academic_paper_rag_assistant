@@ -63,6 +63,8 @@ def retrieve_with_scores(
     vector_store: Chroma,
     query: str,
     top_k: int = DEFAULT_TOP_K,
+    candidate_k: int | None = None,
+    max_chunks_per_file: int | None = None,
 ) -> list[tuple[Document, float]]:
     """
     Retrieve the most relevant chunks with distance scores.
@@ -77,6 +79,14 @@ def retrieve_with_scores(
         top_k:
             Number of chunks to return.
 
+        candidate_k:
+            Number of similarity candidates considered before
+            source diversification. Defaults to ``top_k * 4`` when
+            ``max_chunks_per_file`` is set, otherwise ``top_k``.
+
+        max_chunks_per_file:
+            Optional cap on chunks contributed by one PDF.
+
     Returns:
         List of (Document, distance) tuples.
     """
@@ -88,14 +98,60 @@ def retrieve_with_scores(
         top_k
     )
 
+    if candidate_k is not None and candidate_k < top_k:
+        raise ValueError(
+            "candidate_k 不能小于 top_k。"
+        )
+
+    if (
+        max_chunks_per_file is not None
+        and max_chunks_per_file <= 0
+    ):
+        raise ValueError(
+            "max_chunks_per_file 必须大于 0。"
+        )
+
+    search_k = candidate_k or (
+        top_k * 4
+        if max_chunks_per_file is not None
+        else top_k
+    )
+
     results = (
         vector_store.similarity_search_with_score(
             query=cleaned_query,
-            k=top_k,
+            k=search_k,
         )
     )
 
-    return results
+    if max_chunks_per_file is None:
+        return results[:top_k]
+
+    selected: list[tuple[Document, float]] = []
+    file_counts: dict[str, int] = {}
+
+    for document, distance in results:
+        file_name = str(
+            document.metadata.get(
+                "file_name",
+                document.metadata.get(
+                    "document_id",
+                    "unknown",
+                ),
+            )
+        )
+        current_count = file_counts.get(file_name, 0)
+
+        if current_count >= max_chunks_per_file:
+            continue
+
+        selected.append((document, distance))
+        file_counts[file_name] = current_count + 1
+
+        if len(selected) == top_k:
+            break
+
+    return selected
 
 
 def create_retriever(

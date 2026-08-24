@@ -138,6 +138,13 @@ def rebuild_knowledge_base(
             "Chunk Overlap 必须小于 Chunk Size。"
         )
 
+    logger.info(
+        "Knowledge-base rebuild started | chunk_size=%s | "
+        "chunk_overlap=%s",
+        chunk_size,
+        chunk_overlap,
+    )
+
     paper_count = get_paper_count()
 
     if paper_count == 0:
@@ -210,6 +217,14 @@ def rebuild_knowledge_base(
     # Chroma store on rerun.
     load_rag_resources.clear()
 
+    logger.info(
+        "Knowledge-base rebuild completed | papers=%s | pages=%s | "
+        "chunks=%s",
+        paper_count,
+        len(page_documents),
+        vector_count,
+    )
+
     return vector_count
 
 
@@ -236,6 +251,7 @@ def load_rag_resources():
         vector_count:
             Number of indexed chunk records.
     """
+    logger.info("RAG resource load started")
     settings = get_settings()
 
     llm = LLMClient(
@@ -250,6 +266,11 @@ def load_rag_resources():
 
     vector_count = get_vector_count(
         vector_store
+    )
+
+    logger.info(
+        "RAG resource load completed | vector_count=%s",
+        vector_count,
     )
 
     return (

@@ -1,6 +1,7 @@
 """Core retrieval-augmented generation pipeline."""
 
 from dataclasses import dataclass
+import logging
 
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
@@ -12,6 +13,9 @@ from retriever import (
     get_retrieval_options,
     retrieve_with_scores,
 )
+
+
+logger = logging.getLogger(__name__)
 
 NO_ANSWER_MESSAGE = (
     "根据当前论文知识库中的检索内容，"
@@ -344,6 +348,15 @@ class RAGChain:
                 "问题不能为空。"
             )
 
+        logger.info(
+            "RAG request started | strategy=%s | top_k=%s | "
+            "question_length=%s | history_messages=%s",
+            self.retrieval_strategy.value,
+            self.top_k,
+            len(cleaned_question),
+            len(chat_history or []),
+        )
+
         # ------------------------------------------
         # Step 1: Query rewrite
         # ------------------------------------------
@@ -367,6 +380,11 @@ class RAGChain:
         )
 
         if not results:
+            logger.info(
+                "RAG request refused without retrieval results | "
+                "strategy=%s",
+                self.retrieval_strategy.value,
+            )
             return RAGResponse(
                 question=cleaned_question,
                 retrieval_query=retrieval_query,
@@ -402,6 +420,14 @@ class RAGChain:
         answer = self.llm.chat(
             prompt,
             temperature=temperature,
+        )
+
+        logger.info(
+            "RAG request completed | strategy=%s | sources=%s | "
+            "answer_length=%s",
+            self.retrieval_strategy.value,
+            len(sources),
+            len(answer),
         )
 
         return RAGResponse(

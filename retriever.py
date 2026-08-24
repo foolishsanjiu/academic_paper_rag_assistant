@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
+import logging
 
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
@@ -12,6 +13,9 @@ from config import (
     MULTI_DOCUMENT_MAX_CHUNKS_PER_FILE,
     MULTI_DOCUMENT_TOP_K,
 )
+
+
+logger = logging.getLogger(__name__)
 
 
 class RetrievalStrategy(str, Enum):
@@ -182,6 +186,15 @@ def retrieve_with_scores(
         else top_k
     )
 
+    logger.info(
+        "Retrieval started | query_length=%s | top_k=%s | "
+        "candidate_k=%s | max_chunks_per_file=%s",
+        len(cleaned_query),
+        top_k,
+        search_k,
+        max_chunks_per_file,
+    )
+
     results = (
         vector_store.similarity_search_with_score(
             query=cleaned_query,
@@ -190,7 +203,13 @@ def retrieve_with_scores(
     )
 
     if max_chunks_per_file is None:
-        return results[:top_k]
+        selected = results[:top_k]
+        logger.info(
+            "Retrieval completed | candidates=%s | selected=%s",
+            len(results),
+            len(selected),
+        )
+        return selected
 
     selected: list[tuple[Document, float]] = []
     file_counts: dict[str, int] = {}
@@ -216,6 +235,13 @@ def retrieve_with_scores(
         if len(selected) == top_k:
             break
 
+    logger.info(
+        "Diversified retrieval completed | candidates=%s | "
+        "selected=%s | unique_files=%s",
+        len(results),
+        len(selected),
+        len(file_counts),
+    )
     return selected
 
 

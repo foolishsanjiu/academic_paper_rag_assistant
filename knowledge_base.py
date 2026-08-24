@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 import hashlib
+import logging
 from pathlib import Path
 
 import pymupdf
@@ -11,6 +12,8 @@ from document_loader import compute_document_id
 
 
 DEFAULT_PAPER_DIRECTORY = PAPER_DIRECTORY
+
+logger = logging.getLogger(__name__)
 
 
 # ============================================================
@@ -164,7 +167,7 @@ def validate_pdf_bytes(
             "当前版本暂不支持纯扫描型 PDF。"
         )
 
-    return PDFValidationResult(
+    result = PDFValidationResult(
         file_name=safe_name,
         document_id=(
             compute_bytes_document_id(
@@ -177,6 +180,13 @@ def validate_pdf_bytes(
             text_char_count
         ),
     )
+    logger.info(
+        "PDF upload validated | file=%s | pages=%s | size_bytes=%s",
+        result.file_name,
+        result.page_count,
+        result.size_bytes,
+    )
+    return result
 
 
 # ============================================================
@@ -279,6 +289,12 @@ def save_uploaded_pdf(
 
     target_path.write_bytes(
         data
+    )
+
+    logger.info(
+        "PDF upload saved | file=%s | document_id=%s",
+        validation.file_name,
+        validation.document_id,
     )
 
     return (

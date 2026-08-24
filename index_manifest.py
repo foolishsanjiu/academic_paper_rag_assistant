@@ -2,12 +2,15 @@
 
 from datetime import datetime
 import json
+import logging
 from pathlib import Path
 from typing import Any
 
 from config import INDEX_MANIFEST_PATH
 
 DEFAULT_MANIFEST_PATH = INDEX_MANIFEST_PATH
+
+logger = logging.getLogger(__name__)
 
 
 def write_index_manifest(
@@ -82,6 +85,12 @@ def write_index_manifest(
     temp_path.replace(
         manifest_path
     )
+    logger.info(
+        "Index manifest written | path=%s | papers=%s | chunks=%s",
+        manifest_path,
+        paper_count,
+        chunk_count,
+    )
 
 
 def load_index_manifest(
@@ -125,3 +134,8 @@ def validate_index_manifest(
             f"Chroma={vector_count}, "
             f"Manifest={expected}"
         )
+
+    logger.info(
+        "Index manifest validated | vector_count=%s",
+        vector_count,
+    )

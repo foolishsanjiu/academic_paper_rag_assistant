@@ -1,9 +1,13 @@
 """PDF document loading and basic quality checking."""
 import hashlib
+import logging
 from pathlib import Path
 
 import pymupdf
 from langchain_core.documents import Document
+
+
+logger = logging.getLogger(__name__)
 
 def compute_document_id(
     pdf_path: Path,
@@ -124,6 +128,7 @@ def load_pdf_pages(
             f"不是 PDF 文件：{pdf_path}"
         )
     
+    logger.info("PDF load started | file=%s", pdf_path.name)
     document_id = compute_document_id(pdf_path)
 
     documents: list[Document] = []
@@ -188,6 +193,11 @@ def load_pdf_pages(
 
             documents.append(document)
 
+    logger.info(
+        "PDF load completed | file=%s | pages=%s",
+        pdf_path.name,
+        len(documents),
+    )
     return documents
 
 
@@ -232,6 +242,12 @@ def load_pdf_directory(
             f"目录中没有 PDF 文件：{paper_dir}"
         )
 
+    logger.info(
+        "PDF directory load started | directory=%s | papers=%s",
+        paper_dir,
+        len(pdf_paths),
+    )
+
     all_documents: list[Document] = []
 
     for pdf_path in pdf_paths:
@@ -248,6 +264,11 @@ def load_pdf_directory(
             documents
         )
 
+    logger.info(
+        "PDF directory load completed | directory=%s | pages=%s",
+        paper_dir,
+        len(all_documents),
+    )
     return all_documents
 
 

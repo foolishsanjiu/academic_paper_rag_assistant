@@ -1,5 +1,6 @@
 """Embedding model and Chroma vector-store utilities."""
 
+import logging
 from pathlib import Path
 from typing import Any
 
@@ -15,6 +16,8 @@ from config import (
 
 DEFAULT_PERSIST_DIRECTORY = CHROMA_DIRECTORY
 
+logger = logging.getLogger(__name__)
+
 
 def create_embedding_model(
     model_name: str = DEFAULT_EMBEDDING_MODEL,
@@ -29,9 +32,7 @@ def create_embedding_model(
     Returns:
         Configured HuggingFaceEmbeddings instance.
     """
-    print(
-        f"正在加载 Embedding 模型：{model_name}"
-    )
+    logger.info("Embedding model load started | model=%s", model_name)
 
     embeddings = HuggingFaceEmbeddings(
         model_name=model_name,
@@ -40,6 +41,7 @@ def create_embedding_model(
         },
     )
 
+    logger.info("Embedding model load completed | model=%s", model_name)
     return embeddings
 
 
@@ -178,6 +180,15 @@ def build_vector_store(
             "没有可写入向量数据库的 Document。"
         )
 
+    logger.info(
+        "Vector store build started | collection=%s | chunks=%s | "
+        "reset=%s | directory=%s",
+        collection_name,
+        len(documents),
+        reset,
+        persist_directory,
+    )
+
     # --------------------------------------------------
     # 1. Ensure persistence directory exists
     # --------------------------------------------------
@@ -226,6 +237,10 @@ def build_vector_store(
     # --------------------------------------------------
 
     if reset:
+        logger.info(
+            "Vector store collection reset | collection=%s",
+            collection_name,
+        )
         print(
             "重置旧 Chroma Collection："
             f"{collection_name}"
@@ -247,6 +262,11 @@ def build_vector_store(
         f"{persist_directory}"
     )
 
+    logger.info(
+        "Vector store build completed | collection=%s | chunks=%s",
+        collection_name,
+        len(prepared_documents),
+    )
     return vector_store
 
 
@@ -277,6 +297,12 @@ def load_vector_store(
             f"{persist_directory}"
         )
 
+    logger.info(
+        "Vector store load started | collection=%s | directory=%s",
+        collection_name,
+        persist_directory,
+    )
+
     vector_store = Chroma(
         collection_name=collection_name,
         embedding_function=embeddings,
@@ -285,6 +311,10 @@ def load_vector_store(
         ),
     )
 
+    logger.info(
+        "Vector store load completed | collection=%s",
+        collection_name,
+    )
     return vector_store
 
 

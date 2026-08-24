@@ -42,6 +42,16 @@ class DiverseRetrievalTests(unittest.TestCase):
         self.assertEqual(store.requested_k, 1)
         self.assertEqual(retrieved[0][0].metadata["file_name"], "a.pdf")
 
+    def test_retrieval_emits_start_and_completion_logs(self) -> None:
+        store = FakeVectorStore([result("a.pdf", 0.1)])
+
+        with self.assertLogs("retriever", level="INFO") as captured:
+            retrieve_with_scores(store, "query", top_k=1)
+
+        output = "\n".join(captured.output)
+        self.assertIn("Retrieval started", output)
+        self.assertIn("Retrieval completed", output)
+
     def test_diversification_caps_chunks_from_one_file(self) -> None:
         store = FakeVectorStore(
             [

@@ -1,9 +1,14 @@
 """Text splitting utilities for academic paper documents."""
 
+import logging
+
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from config import DEFAULT_CHUNK_OVERLAP, DEFAULT_CHUNK_SIZE
+
+
+logger = logging.getLogger(__name__)
 
 
 def create_text_splitter(
@@ -158,6 +163,14 @@ def split_documents(
     Returns:
         Chunk-level Documents.
     """
+    logger.info(
+        "Document split started | pages=%s | chunk_size=%s | "
+        "chunk_overlap=%s",
+        len(documents),
+        chunk_size,
+        chunk_overlap,
+    )
+
     splitter = create_text_splitter(
         chunk_size=chunk_size,
         chunk_overlap=chunk_overlap,
@@ -173,6 +186,11 @@ def split_documents(
 
         all_chunks.extend(chunks)
 
+    logger.info(
+        "Document split completed | pages=%s | chunks=%s",
+        len(documents),
+        len(all_chunks),
+    )
     return all_chunks
 
 

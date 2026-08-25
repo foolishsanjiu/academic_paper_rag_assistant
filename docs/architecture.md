@@ -1,70 +1,103 @@
 # Project Architecture
 
-## Core Modules
+## Runtime flow
 
-### app.py
-Streamlit Web interface and session-state management.
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant UI as Streamlit
+    participant R as Intent Router
+    participant VS as Chroma
+    participant L as LLM
+    participant P as PaperLibraryTool
+    participant S as SourceLookupTool
 
-### config.py
-Loads model API configuration from environment variables.
+    U->>UI: query
+    UI->>R: route_query
+    alt paper_qa
+        R-->>UI: focused or multi_document
+        UI->>VS: semantic retrieval
+        VS-->>UI: chunks + metadata
+        UI->>L: grounded prompt
+        L-->>UI: cited answer
+    else knowledge_base_query
+        R-->>UI: whitelisted action
+        UI->>P: validated arguments
+        P-->>UI: structured result
+    else source_lookup
+        R-->>UI: paper/page/chunk
+        UI->>S: exact metadata lookup
+        S-->>UI: original indexed chunks
+    else out_of_scope
+        R-->>UI: safe refusal
+    end
+    UI-->>U: answer + route/source metadata
+```
 
-### logging_config.py
-Configures application logging.
+The LLM Router must return a JSON object. `validate_llm_decision` converts that
+untrusted output into enums and whitelisted arguments; invalid JSON, API errors,
+or unsupported values fall back to deterministic routing rules. A model-provided
+function name is never executed.
 
-### document_loader.py
-Loads PDF papers with PyMuPDF and converts each page into a
-LangChain Document while preserving filename and page metadata.
+## Retrieval strategies
 
-### text_splitter.py
-Splits page-level Documents into chunk-level Documents and adds
-chunk metadata.
+| Strategy | Intended query | Final Top-k | Candidate pool | Per-file cap |
+|---|---|---:|---:|---:|
+| `focused` | Single-paper or focused factual question | 5 | 5 | none |
+| `multi_document` | Comparison or cross-paper synthesis | 8 | 32 | 3 |
 
-### vector_store.py
-Loads the BGE-M3 embedding model and manages the persistent
-Chroma vector store.
+The split is based on measured retrieval and answer-quality tradeoffs. The
+multi-document strategy improves all-expected-file recall but adds latency and
+can remove useful local evidence from a focused factual question.
 
-### retriever.py
-Performs Top-k semantic retrieval and returns relevant chunks
-with metadata and similarity information.
+## Index data model
 
-### llm_client.py
-Provides an OpenAI-compatible LLM client for DeepSeek.
+PDFs are loaded one page at a time and then split into chunks. Important Chroma
+metadata includes:
 
-### rag_chain.py
-Connects query rewriting, retrieval, context construction,
-grounded prompting, answer generation, and source citation.
+- `file_name`
+- `document_id`
+- `document_type`
+- `page_number` and `page_label`
+- `chunk_index`
+- `chunk_id`
 
-## Current Pipeline
+`SourceLookupTool` reads these fields directly with `Chroma.get`; it does not
+run semantic retrieval or load an embedding model.
 
-PDF
-→ Page Document
-→ Chunk Document
-→ BGE-M3 Embedding
-→ Chroma
-→ Top-k Retrieval
-→ Context Construction
-→ DeepSeek
-→ Answer + Citation
+## Module responsibilities
+
+| Module | Responsibility |
+|---|---|
+| `app.py` | Streamlit state, upload/rebuild controls and rendering |
+| `agent_router.py` | JSON routing, rule fallback, whitelist dispatch, call budget |
+| `agent_response.py` | Convert structured Tool results for the UI |
+| `rag_chain.py` | Query rewriting, context construction, grounded answer generation |
+| `retriever.py` | Similarity retrieval and source diversification |
+| `tools/paper_library.py` | Deterministic knowledge-base metadata queries |
+| `tools/source_lookup.py` | Exact PDF page/Chunk lookup |
+| `knowledge_base.py` | PDF discovery, validation and upload storage |
+| `document_loader.py` | Page-level parsing and document metadata |
+| `text_splitter.py` | Chunking and stable Chunk IDs |
+| `vector_store.py` | BGE-M3 embeddings and persistent Chroma operations |
+| `index_manifest.py` | Record and validate index build parameters |
+| `llm_client.py` | OpenAI-compatible chat, JSON and streaming calls |
+| `config.py` | Paths and runtime defaults |
+
+## Safety and failure boundaries
+
+- The only executable tools are `paper_library` and `source_lookup`.
+- Tool actions and retrieval strategies are enums, not arbitrary strings.
+- A per-request `ToolCallBudget` allows at most three calls.
+- Parameter errors and unavailable data return structured errors.
+- Unexpected Tool exceptions are logged and converted to safe responses.
+- File deletion and Shell execution are not exposed as tools.
+- Out-of-scope or prompt-injection-like requests are refused.
 
 ## Relationship to LLM-Universe
 
-This project was developed while referring to the
-Datawhale LLM-Universe tutorials for RAG concepts and
-implementation ideas.
-
-The current Academic Paper RAG Assistant is maintained
-as an independent project.
-
-Project-specific implementation includes:
-
-- PDF page-level parsing and parsing-quality inspection;
-- SAR-paper metadata design;
-- chunk-level metadata and chunk IDs;
-- BGE-M3 embedding integration;
-- persistent Chroma vector database;
-- semantic retrieval with metadata and similarity scores;
-- multi-turn retrieval query rewriting;
-- grounded RAG prompt construction;
-- paper/page/chunk citation mapping;
-- knowledge-base refusal behavior;
-- Streamlit RAG interface.
+The project began as a learning exercise informed by Datawhale LLM-Universe.
+Project-specific development includes PDF validation and upload, persistent
+source metadata, citation rendering, refusal evaluation, parameter experiments,
+named retrieval strategies, both domain tools, validated routing, failure
+guards, observability, and the integrated Streamlit Agent interface.

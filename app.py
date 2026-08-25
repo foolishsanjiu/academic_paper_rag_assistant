@@ -7,6 +7,8 @@ from pathlib import Path
 
 import streamlit as st
 
+from agent_response import format_tool_response, source_lookup_sources
+from agent_router import Intent, dispatch_route, route_query
 from config import (
     DEFAULT_CHUNK_OVERLAP,
     DEFAULT_CHUNK_SIZE,
@@ -23,6 +25,7 @@ from knowledge_base import (
 from llm_client import LLMClient
 from logging_config import setup_logging
 from rag_chain import RAGChain
+from retriever import RetrievalStrategy
 from text_splitter import split_documents
 from vector_store import (
     DEFAULT_EMBEDDING_MODEL,
@@ -56,7 +59,8 @@ st.set_page_config(
 WELCOME_MESSAGE = (
     "你好，我是 Academic Paper RAG Assistant。"
     "当前已经接入本地 SAR 论文知识库，"
-    "可以基于论文内容进行检索增强问答，并显示论文来源和 PDF 页码。"
+    "可以回答论文内容、查询知识库状态、定位 PDF 原文，"
+    "并显示论文来源和页码。"
 )
 
 # ============================================================
@@ -501,6 +505,19 @@ def render_rag_parameters(
             ),
         )
 
+
+def render_agent_route(message: dict) -> None:
+    """Show the validated route used for an assistant response."""
+    intent = message.get("intent")
+    if not intent:
+        return
+    details = [f"Intent: {intent}"]
+    if message.get("retrieval_strategy"):
+        details.append(f"Strategy: {message['retrieval_strategy']}")
+    if message.get("tool_name"):
+        details.append(f"Tool: {message['tool_name']}")
+    st.caption(" · ".join(details))
+
 # ============================================================
 # Initialize application
 # ============================================================
@@ -937,10 +954,17 @@ with st.sidebar:
 # ============================================================
 
 
-rag = RAGChain(
+focused_rag = RAGChain(
     llm=llm,
     vector_store=vector_store,
     top_k=top_k,
+    retrieval_strategy=RetrievalStrategy.FOCUSED,
+)
+
+multi_document_rag = RAGChain(
+    llm=llm,
+    vector_store=vector_store,
+    retrieval_strategy=RetrievalStrategy.MULTI_DOCUMENT,
 )
 
 
@@ -968,6 +992,8 @@ for message in st.session_state.messages:
             )
 
         if role == "assistant":
+
+            render_agent_route(message)
 
             sources = message.get(
                 "sources",
@@ -1006,8 +1032,7 @@ for message in st.session_state.messages:
 
 prompt = st.chat_input(
     (
-        "向论文知识库提问，例如："
-        "SARGAN 使用了什么数据集？"
+        "提问论文内容、知识库状态或指定 PDF 页码原文"
     ),
     max_chars=2000,
 )
@@ -1047,7 +1072,7 @@ if prompt:
         )
 
     # --------------------------------------------------------
-    # Run RAG
+    # Route and execute RAG / Tool
     # --------------------------------------------------------
 
     try:
@@ -1055,41 +1080,71 @@ if prompt:
             "assistant"
         ):
             with st.spinner(
-                "正在检索论文并生成回答……"
+                "正在判断意图并执行论文助手……"
             ):
-                rag_response = rag.ask(
-                    question=prompt,
-                    chat_history=chat_history,
-                    temperature=temperature,
+                decision = route_query(prompt, llm)
+                result = dispatch_route(
+                    decision,
+                    prompt,
+                    rag_handlers={
+                        RetrievalStrategy.FOCUSED: lambda question: focused_rag.ask(
+                            question=question,
+                            chat_history=chat_history,
+                            temperature=temperature,
+                        ),
+                        RetrievalStrategy.MULTI_DOCUMENT: lambda question: multi_document_rag.ask(
+                            question=question,
+                            chat_history=chat_history,
+                            temperature=temperature,
+                        ),
+                    },
                 )
 
-            # -----------------------------------------------
-            # Answer
-            # -----------------------------------------------
+            if decision.intent is Intent.PAPER_QA:
+                answer = result.answer
+                retrieval_query = result.retrieval_query
+                serialized_sources = serialize_sources(result.sources)
+                is_error = False
+            else:
+                answer = format_tool_response(result)
+                retrieval_query = None
+                serialized_sources = source_lookup_sources(result)
+                is_error = (
+                    not result.get("ok", False)
+                    and decision.intent is not Intent.OUT_OF_SCOPE
+                )
 
-            st.markdown(
-                rag_response.answer
-            )
+            if is_error:
+                st.error(answer)
+            else:
+                st.markdown(answer)
+
+            route_message = {
+                "intent": decision.intent.value,
+                "retrieval_strategy": (
+                    decision.retrieval_strategy.value
+                    if decision.retrieval_strategy
+                    else None
+                ),
+                "tool_name": decision.tool_name,
+            }
+            render_agent_route(route_message)
 
             # -----------------------------------------------
             # Retrieval query
             # -----------------------------------------------
 
             render_retrieval_query(
-                rag_response.retrieval_query
+                retrieval_query
             )
 
             # -----------------------------------------------
             # Sources
             # -----------------------------------------------
 
-            serialized_sources = serialize_sources(
-                rag_response.sources
-            )
-
             # 显示回答真正引用的论文和页码
             render_citation_summary(
-                answer=rag_response.answer,
+                answer=answer,
                 sources=serialized_sources,
             )
 
@@ -1104,12 +1159,18 @@ if prompt:
 
         assistant_message = {
             "role": "assistant",
-            "content": rag_response.answer,
-            "retrieval_query": rag_response.retrieval_query,
+            "content": answer,
+            "retrieval_query": retrieval_query,
             "sources": serialized_sources,
+            "is_error": is_error,
+            **route_message,
 
-            "rag_parameters": {
-                "top_k": top_k,
+            "rag_parameters": ({
+                "top_k": (
+                    focused_rag.top_k
+                    if decision.retrieval_strategy is RetrievalStrategy.FOCUSED
+                    else multi_document_rag.top_k
+                ),
                 "temperature": temperature,
 
                 "chunk_size": (
@@ -1135,7 +1196,7 @@ if prompt:
                     if index_manifest
                     else None
                 ),
-            },
+            } if decision.intent is Intent.PAPER_QA else None),
         }
 
         st.session_state.messages.append(
@@ -1147,12 +1208,12 @@ if prompt:
         RuntimeError,
     ) as error:
         logger.error(
-            "RAG 调用失败 | error=%s",
+            "Agent 调用失败 | error=%s",
             error,
         )
 
         error_message = (
-            f"RAG 调用失败：{error}"
+            f"Agent 调用失败：{error}"
         )
 
         with st.chat_message(
@@ -1172,11 +1233,11 @@ if prompt:
 
     except Exception as error:
         logger.exception(
-            "RAG 页面发生未预期异常"
+            "Agent 页面发生未预期异常"
         )
 
         error_message = (
-            "RAG 系统运行时发生未预期错误："
+            "Agent 运行时发生未预期错误："
             f"{error}"
         )
 

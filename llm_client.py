@@ -165,6 +165,50 @@ class LLMClient:
 
             raise self._convert_api_error(error) from error
 
+    def chat_json(self, user_message: str) -> str:
+        """Request one non-streaming JSON object from the model."""
+        cleaned_message = self._validate_message(user_message)
+        start_time = perf_counter()
+
+        logger.info(
+            "开始结构化 JSON 请求 | model=%s | input_length=%d",
+            self.settings.model,
+            len(cleaned_message),
+        )
+
+        try:
+            response = self.client.chat.completions.create(
+                model=self.settings.model,
+                messages=self._build_messages(cleaned_message),
+                response_format={"type": "json_object"},
+                stream=False,
+                temperature=0.0,
+            )
+            answer = response.choices[0].message.content
+            if not answer:
+                raise RuntimeError("模型返回了空 JSON 内容。")
+
+            logger.info(
+                "结构化 JSON 请求成功 | model=%s | elapsed=%.2fs",
+                self.settings.model,
+                perf_counter() - start_time,
+            )
+            return answer.strip()
+
+        except (
+            AuthenticationError,
+            RateLimitError,
+            APITimeoutError,
+            APIConnectionError,
+            APIStatusError,
+        ) as error:
+            logger.error(
+                "结构化 JSON 请求失败 | error=%s | elapsed=%.2fs",
+                type(error).__name__,
+                perf_counter() - start_time,
+            )
+            raise self._convert_api_error(error) from error
+
     def stream_chat(self, user_message: str,temperature: float = 0.1) -> Iterator[str]:
         """
         Send a streaming request and yield answer fragments.

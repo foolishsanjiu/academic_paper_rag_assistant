@@ -217,3 +217,8 @@ academic-paper-rag/
 本项目新增和深化的部分包括 PDF 上传与质量校验、页码/Chunk metadata、持久化
 Chroma 索引、拒答与引用、专业评测集、参数实验、双检索策略、Intent Router、
 PaperLibraryTool、SourceLookupTool、安全 Fallback、日志与 Streamlit Agent 界面。
+
+## Interview Materials
+
+简历项目描述、30 秒/3 分钟/10 分钟介绍和 12 个高频问题参考回答见
+[docs/career_materials.md](docs/career_materials.md)。

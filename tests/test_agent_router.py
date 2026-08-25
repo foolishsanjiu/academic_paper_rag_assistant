@@ -2,7 +2,13 @@ import json
 from pathlib import Path
 import unittest
 
-from agent_router import Intent, dispatch_route, route_query
+from agent_router import (
+    Intent,
+    RouteDecision,
+    ToolCallBudget,
+    dispatch_route,
+    route_query,
+)
 from retriever import RetrievalStrategy
 
 
@@ -117,9 +123,9 @@ class AgentRouterTests(unittest.TestCase):
         result = dispatch_route(
             decision,
             "有多少篇论文",
-            paper_library_tool=lambda **kwargs: kwargs,
+            paper_library_tool=lambda **kwargs: {"ok": True, **kwargs},
         )
-        self.assertEqual(result, {"action": "paper_count"})
+        self.assertEqual(result, {"ok": True, "action": "paper_count"})
 
     def test_source_dispatch_requires_paper_name(self):
         decision = route_query(
@@ -128,6 +134,88 @@ class AgentRouterTests(unittest.TestCase):
         )
         result = dispatch_route(decision, "显示第 2 页原文")
         self.assertEqual(result["error"]["code"], "missing_paper_name")
+
+    def test_tool_call_budget_blocks_fourth_call(self):
+        budget = ToolCallBudget()
+        decision = RouteDecision(
+            intent=Intent.KNOWLEDGE_BASE_QUERY,
+            tool_name="paper_library",
+            tool_args={"action": "paper_count"},
+        )
+        tool = lambda **_kwargs: {"ok": True}
+        for _ in range(3):
+            self.assertTrue(
+                dispatch_route(
+                    decision,
+                    "count",
+                    paper_library_tool=tool,
+                    tool_budget=budget,
+                )["ok"]
+            )
+        blocked = dispatch_route(
+            decision,
+            "count",
+            paper_library_tool=tool,
+            tool_budget=budget,
+        )
+        self.assertEqual(blocked["error"]["code"], "tool_call_limit_exceeded")
+        self.assertEqual(budget.calls, 3)
+
+    def test_invalid_tool_budget_is_rejected(self):
+        for value in (0, -1, True, 1.5):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                ToolCallBudget(max_calls=value)
+
+    def test_unapproved_tool_is_never_called(self):
+        called = False
+
+        def tool(**_kwargs):
+            nonlocal called
+            called = True
+            return {"ok": True}
+
+        decision = RouteDecision(
+            intent=Intent.KNOWLEDGE_BASE_QUERY,
+            tool_name="delete_files",
+            tool_args={"action": "paper_count"},
+        )
+        result = dispatch_route(
+            decision,
+            "delete",
+            paper_library_tool=tool,
+        )
+        self.assertFalse(called)
+        self.assertEqual(result["error"]["code"], "unsupported_tool")
+
+    def test_tool_exception_becomes_structured_error(self):
+        def broken_tool(**_kwargs):
+            raise OSError("database locked")
+
+        decision = RouteDecision(
+            intent=Intent.KNOWLEDGE_BASE_QUERY,
+            tool_name="paper_library",
+            tool_args={"action": "paper_count"},
+        )
+        result = dispatch_route(
+            decision,
+            "count",
+            paper_library_tool=broken_tool,
+        )
+        self.assertEqual(result["error"]["code"], "tool_exception")
+        self.assertNotIn("database locked", result["error"]["message"])
+
+    def test_invalid_tool_response_is_rejected(self):
+        decision = RouteDecision(
+            intent=Intent.KNOWLEDGE_BASE_QUERY,
+            tool_name="paper_library",
+            tool_args={"action": "paper_count"},
+        )
+        result = dispatch_route(
+            decision,
+            "count",
+            paper_library_tool=lambda **_kwargs: "invalid",
+        )
+        self.assertEqual(result["error"]["code"], "invalid_tool_response")
 
 
 if __name__ == "__main__":

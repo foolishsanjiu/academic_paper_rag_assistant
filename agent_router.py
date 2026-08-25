@@ -18,6 +18,7 @@ from tools.source_lookup import lookup_source
 
 
 logger = logging.getLogger(__name__)
+MAX_TOOL_CALLS = 3
 
 
 class Intent(str, Enum):
@@ -36,6 +37,28 @@ class RouteDecision:
     tool_name: str | None = None
     tool_args: dict[str, Any] | None = None
     route_source: str = "rule_fallback"
+
+
+@dataclass
+class ToolCallBudget:
+    """Per-request guard against repeated or recursive tool calls."""
+
+    max_calls: int = MAX_TOOL_CALLS
+    calls: int = 0
+
+    def __post_init__(self) -> None:
+        if (
+            isinstance(self.max_calls, bool)
+            or not isinstance(self.max_calls, int)
+            or self.max_calls < 1
+        ):
+            raise ValueError("max_calls 必须是大于等于 1 的整数。")
+
+    def consume(self) -> bool:
+        if self.calls >= self.max_calls:
+            return False
+        self.calls += 1
+        return True
 
 
 ROUTER_PROMPT = """
@@ -402,6 +425,7 @@ def dispatch_route(
     rag_handlers: dict[RetrievalStrategy, Callable[[str], Any]] | None = None,
     paper_library_tool: Callable[..., Any] = query_paper_library,
     source_lookup_tool: Callable[..., Any] = lookup_source,
+    tool_budget: ToolCallBudget | None = None,
 ) -> Any:
     """Execute only the operation selected by a validated route decision."""
     if decision.intent is Intent.PAPER_QA:
@@ -413,20 +437,68 @@ def dispatch_route(
             )
         return handler(clean_query(query))
 
-    if decision.intent is Intent.KNOWLEDGE_BASE_QUERY:
-        return paper_library_tool(**(decision.tool_args or {}))
+    if decision.intent in {
+        Intent.KNOWLEDGE_BASE_QUERY,
+        Intent.SOURCE_LOOKUP,
+    }:
+        expected_tool = (
+            "paper_library"
+            if decision.intent is Intent.KNOWLEDGE_BASE_QUERY
+            else "source_lookup"
+        )
+        if decision.tool_name != expected_tool:
+            return tool_failure(
+                "unsupported_tool",
+                "路由结果包含未授权工具，已拒绝执行。",
+                decision.tool_name,
+            )
 
-    if decision.intent is Intent.SOURCE_LOOKUP:
         args = decision.tool_args or {}
-        if "paper_name" not in args:
-            return {
-                "ok": False,
-                "error": {
-                    "code": "missing_paper_name",
-                    "message": "原文定位需要明确的 PDF 文件名。",
-                },
-            }
-        return source_lookup_tool(**args)
+        if (
+            decision.intent is Intent.SOURCE_LOOKUP
+            and "paper_name" not in args
+        ):
+            return tool_failure(
+                "missing_paper_name",
+                "原文定位需要明确的 PDF 文件名。",
+                expected_tool,
+            )
+
+        budget = tool_budget or ToolCallBudget()
+        if not budget.consume():
+            return tool_failure(
+                "tool_call_limit_exceeded",
+                f"单次请求最多允许调用 {budget.max_calls} 次工具。",
+                expected_tool,
+            )
+
+        selected_tool = (
+            paper_library_tool
+            if decision.intent is Intent.KNOWLEDGE_BASE_QUERY
+            else source_lookup_tool
+        )
+        try:
+            result = selected_tool(**args)
+        except Exception as error:
+            logger.exception(
+                "Tool execution failed | tool=%s | error=%s",
+                expected_tool,
+                type(error).__name__,
+            )
+            return tool_failure(
+                "tool_exception",
+                "工具执行失败，请检查日志后重试。",
+                expected_tool,
+            )
+
+        if not isinstance(result, dict) or "ok" not in result:
+            logger.error("Tool returned invalid response | tool=%s", expected_tool)
+            return tool_failure(
+                "invalid_tool_response",
+                "工具返回了无效的响应格式。",
+                expected_tool,
+            )
+        return result
 
     return {
         "ok": False,
@@ -434,4 +506,13 @@ def dispatch_route(
             "code": "out_of_scope",
             "message": "该请求不属于当前学术论文知识库助手的能力范围。",
         },
+    }
+
+
+def tool_failure(code: str, message: str, tool_name: str | None) -> dict[str, Any]:
+    """Build one safe, structured tool-dispatch failure."""
+    return {
+        "ok": False,
+        "tool": tool_name,
+        "error": {"code": code, "message": message},
     }

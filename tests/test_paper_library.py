@@ -69,6 +69,12 @@ class PaperLibraryToolTests(unittest.TestCase):
         self.assertEqual(len(result["paper"]["document_id"]), 16)
         self.assertGreater(result["paper"]["size_bytes"], 0)
 
+    def test_paper_info_reports_missing_paper(self) -> None:
+        result = self.call("paper_info", "Missing.pdf")
+
+        self.assertFalse(result["ok"])
+        self.assertEqual(result["error"]["code"], "paper_not_found")
+
     def test_index_status_reports_manifest_and_drift(self) -> None:
         self.manifest_path.write_text(
             json.dumps(

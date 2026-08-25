@@ -161,6 +161,17 @@ class SourceLookupToolTests(unittest.TestCase):
         self.assertFalse(result["ok"])
         self.assertEqual(result["error"]["code"], "invalid_paper_name")
 
+    def test_missing_index_is_a_structured_error(self) -> None:
+        result = lookup_source(
+            paper_name="Example.pdf",
+            page_number=1,
+            paper_directory=self.paper_directory,
+            persist_directory=Path(self.temporary_directory.name) / "missing",
+        )
+
+        self.assertFalse(result["ok"])
+        self.assertEqual(result["error"]["code"], "index_unavailable")
+
 
 if __name__ == "__main__":
     unittest.main()

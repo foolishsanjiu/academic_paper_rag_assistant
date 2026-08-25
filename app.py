@@ -818,17 +818,17 @@ with st.sidebar:
         ),
     )
 
-    if st.button(
+    rebuild_requested = st.button(
         "保存 PDF 并重建向量库",
         use_container_width=True,
         type="primary",
-    ):
-        if not uploaded_files:
-            st.warning(
-                "请先选择至少一个 PDF 文件。"
-            )
+    )
+    if rebuild_requested and not uploaded_files:
+        st.warning(
+            "请先选择至少一个 PDF 文件。"
+        )
 
-    else:
+    if rebuild_requested and uploaded_files:
         successful_uploads = []
         failed_uploads = []
 
@@ -1075,6 +1075,9 @@ if prompt:
     # Route and execute RAG / Tool
     # --------------------------------------------------------
 
+    decision = None
+    route_message = {}
+
     try:
         with st.chat_message(
             "assistant"
@@ -1083,6 +1086,15 @@ if prompt:
                 "正在判断意图并执行论文助手……"
             ):
                 decision = route_query(prompt, llm)
+                route_message = {
+                    "intent": decision.intent.value,
+                    "retrieval_strategy": (
+                        decision.retrieval_strategy.value
+                        if decision.retrieval_strategy
+                        else None
+                    ),
+                    "tool_name": decision.tool_name,
+                }
                 result = dispatch_route(
                     decision,
                     prompt,
@@ -1119,15 +1131,6 @@ if prompt:
             else:
                 st.markdown(answer)
 
-            route_message = {
-                "intent": decision.intent.value,
-                "retrieval_strategy": (
-                    decision.retrieval_strategy.value
-                    if decision.retrieval_strategy
-                    else None
-                ),
-                "tool_name": decision.tool_name,
-            }
             render_agent_route(route_message)
 
             # -----------------------------------------------
@@ -1222,12 +1225,14 @@ if prompt:
             st.error(
                 error_message
             )
+            render_agent_route(route_message)
 
         st.session_state.messages.append(
             {
                 "role": "assistant",
                 "content": error_message,
                 "is_error": True,
+                **route_message,
             }
         )
 
@@ -1247,11 +1252,13 @@ if prompt:
             st.error(
                 error_message
             )
+            render_agent_route(route_message)
 
         st.session_state.messages.append(
             {
                 "role": "assistant",
                 "content": error_message,
                 "is_error": True,
+                **route_message,
             }
         )

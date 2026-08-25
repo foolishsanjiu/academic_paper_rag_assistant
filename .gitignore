@@ -32,6 +32,9 @@ vector_store/
 *.log
 logs/
 
+# Raw evaluation outputs may contain copyrighted paper excerpts
+evaluation/results/
+
 # Temporary files
 tmp/
 temp/

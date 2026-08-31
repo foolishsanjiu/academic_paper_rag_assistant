@@ -22,6 +22,11 @@ from evaluation.evaluate import (  # noqa: E402
     load_questions,
     write_json_atomic,
 )
+from evaluation.dataset import load_qrels, validate_qrels  # noqa: E402
+from evaluation.metrics import (  # noqa: E402
+    calculate_ranked_retrieval_metrics,
+    mean_ranked_metrics,
+)
 from index_manifest import (  # noqa: E402
     load_index_manifest,
     validate_index_manifest,
@@ -79,6 +84,10 @@ def summarize(results: list[dict[str, Any]]) -> dict[str, Any]:
             sum(item["latency_seconds"] for item in results)
             / len(results)
         ),
+        **mean_ranked_metrics(
+            item.get("metrics", {})
+            for item in results
+        ),
     }
 
 
@@ -88,6 +97,7 @@ def run_retrieval_experiment(
     top_k_values: list[int],
     candidate_multiplier: int = 4,
     max_chunks_per_file: int | None = None,
+    qrels_path: Path | None = None,
 ) -> dict[str, Any]:
     """Evaluate several Top-k values with one loaded embedding model."""
     if not top_k_values or any(value <= 0 for value in top_k_values):
@@ -96,6 +106,9 @@ def run_retrieval_experiment(
         raise ValueError("candidate_multiplier 必须大于 0。")
 
     questions = load_questions(questions_path)
+    qrels = load_qrels(qrels_path) if qrels_path is not None else None
+    if qrels is not None:
+        validate_qrels(questions, qrels, require_complete=True)
     manifest = load_index_manifest()
     if manifest is None:
         raise FileNotFoundError("缺少 chroma_db/index_manifest.json。")
@@ -114,6 +127,11 @@ def run_retrieval_experiment(
             timespec="seconds"
         ),
         "questions_path": str(questions_path.resolve()),
+        "qrels_path": (
+            str(qrels_path.resolve())
+            if qrels_path is not None
+            else None
+        ),
         "index_manifest": manifest,
         "runs": runs,
     }
@@ -164,6 +182,14 @@ def run_retrieval_experiment(
                         item["source_files"],
                         item["source_pages"],
                         sources,
+                    ) | (
+                        calculate_ranked_retrieval_metrics(
+                            qrels.get(item["id"], []),
+                            sources,
+                            cutoffs=(top_k,),
+                        )
+                        if qrels is not None
+                        else {}
                     ),
                     "latency_seconds": round(
                         time.perf_counter() - start,
@@ -216,6 +242,7 @@ def parse_args() -> argparse.Namespace:
         default=4,
     )
     parser.add_argument("--max-chunks-per-file", type=int)
+    parser.add_argument("--qrels", type=Path)
     return parser.parse_args()
 
 
@@ -227,6 +254,7 @@ def main() -> None:
         top_k_values=args.top_k,
         candidate_multiplier=args.candidate_multiplier,
         max_chunks_per_file=args.max_chunks_per_file,
+        qrels_path=args.qrels,
     )
     for run in payload["runs"]:
         print(

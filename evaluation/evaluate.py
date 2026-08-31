@@ -15,46 +15,19 @@ from typing import Any
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
+
+from evaluation.dataset import (  # noqa: E402
+    load_qrels,
+    load_questions,
+    validate_qrels,
+)
+from evaluation.metrics import (  # noqa: E402
+    calculate_ranked_retrieval_metrics,
+    mean_ranked_metrics,
+)
+
 DEFAULT_QUESTIONS_PATH = Path(__file__).with_name("questions.json")
 DEFAULT_OUTPUT_PATH = Path(__file__).parent / "results" / "baseline.json"
-
-
-def load_questions(path: Path) -> list[dict[str, Any]]:
-    """Load and minimally validate the evaluation dataset."""
-    questions = json.loads(path.read_text(encoding="utf-8"))
-
-    if not isinstance(questions, list) or not questions:
-        raise ValueError("评测集必须是非空 JSON 数组。")
-
-    required_fields = {
-        "id",
-        "type",
-        "question",
-        "expected_answer",
-        "source_files",
-        "source_pages",
-    }
-    seen_ids: set[str] = set()
-
-    for item in questions:
-        missing = required_fields - set(item)
-        if missing:
-            raise ValueError(
-                f"问题缺少字段：{item.get('id', '<unknown>')} -> "
-                f"{sorted(missing)}"
-            )
-
-        question_id = str(item["id"])
-        if question_id in seen_ids:
-            raise ValueError(f"问题 ID 重复：{question_id}")
-        seen_ids.add(question_id)
-
-        if len(item["source_files"]) != len(item["source_pages"]):
-            raise ValueError(
-                f"来源文件与页码数量不一致：{question_id}"
-            )
-
-    return questions
 
 
 def calculate_retrieval_metrics(
@@ -176,6 +149,10 @@ def build_summary(results: list[dict[str, Any]]) -> dict[str, Any]:
             item["answer_score"] is None
             for item in completed
         ),
+        **mean_ranked_metrics(
+            item.get("metrics", {})
+            for item in completed
+        ),
     }
 
 
@@ -198,6 +175,7 @@ def run_evaluation(
     limit: int | None,
     candidate_k: int | None = None,
     max_chunks_per_file: int | None = None,
+    qrels_path: Path | None = None,
 ) -> dict[str, Any]:
     """Load project resources and evaluate every selected question."""
     from config import get_settings
@@ -217,6 +195,9 @@ def run_evaluation(
     )
 
     questions = load_questions(questions_path)
+    qrels = load_qrels(qrels_path) if qrels_path is not None else None
+    if qrels is not None:
+        validate_qrels(questions, qrels, require_complete=True)
     if limit is not None:
         if limit <= 0:
             raise ValueError("limit 必须大于 0。")
@@ -250,6 +231,11 @@ def run_evaluation(
             "started_at": started_at,
             "completed_at": None,
             "questions_path": str(questions_path.resolve()),
+            "qrels_path": (
+                str(qrels_path.resolve())
+                if qrels_path is not None
+                else None
+            ),
             "parameters": {
                 "top_k": top_k,
                 "candidate_k": candidate_k,
@@ -309,6 +295,15 @@ def run_evaluation(
                     response.answer,
                     NO_ANSWER_MESSAGE,
                 ),
+                **(
+                    calculate_ranked_retrieval_metrics(
+                        qrels.get(item["id"], []),
+                        sources,
+                        cutoffs=(top_k,),
+                    )
+                    if qrels is not None
+                    else {}
+                ),
             }
         except Exception as error:
             result["error"] = {
@@ -349,6 +344,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--top-k", type=int, default=5)
     parser.add_argument("--candidate-k", type=int)
     parser.add_argument("--max-chunks-per-file", type=int)
+    parser.add_argument("--qrels", type=Path)
     parser.add_argument("--temperature", type=float, default=0.2)
     parser.add_argument("--limit", type=int)
     return parser.parse_args()
@@ -364,6 +360,7 @@ def main() -> None:
         limit=args.limit,
         candidate_k=args.candidate_k,
         max_chunks_per_file=args.max_chunks_per_file,
+        qrels_path=args.qrels,
     )
     print(json.dumps(payload["summary"], ensure_ascii=False, indent=2))
     print(f"评测结果已保存：{args.output.resolve()}")

@@ -65,3 +65,18 @@ python evaluation/validate_dataset.py \
 Passing `--qrels evaluation/qrels.json` to `evaluate.py` or
 `evaluate_retrieval.py` adds Recall@k, MRR@k, and nDCG@k to question-level and
 summary results. Runs without qrels keep the historical output compatible.
+
+Build a deduplicated, deterministic annotation pool from one or more retrieval
+result files and every Chunk on the expected source pages:
+
+```bash
+python evaluation/build_annotation_pool.py \
+  --results evaluation/results/m0_dense_baseline.json \
+  --output evaluation/results/annotation_pool.json
+```
+
+Candidate ordering is a deterministic hash order rather than retrieval rank.
+Retrieval-system provenance is stored separately from candidate rows so an
+annotation interface can hide it while preserving auditability. Generated
+pools remain under the Git-ignored `evaluation/results/` directory because
+they contain paper excerpts.

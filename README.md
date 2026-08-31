@@ -20,7 +20,7 @@ Streamlit 提供交互界面。
 - `SourceLookupTool`：按 PDF 名称、页码或 Chunk ID 精确读取索引原文
 - LLM JSON Intent Router，失败时使用确定性规则回退
 - Tool 白名单、参数校验、结构化异常和最多 3 次调用限制
-- 100 题 RAG 评测集、Chunk 级 qrels、Dense/BM25 检索实验和 40 题 Router 评测集
+- 100 题 RAG 评测集、Chunk 级 qrels、Dense/BM25/Hybrid 检索实验和 40 题 Router 评测集
 
 ## 架构
 
@@ -118,7 +118,10 @@ python -m streamlit run app.py
 ## 评测结果
 
 当前评测语料为 15 篇英文 SAR 图像生成论文，共 218 页、2142 个 Chunk。
-评测集含 25 题：10 道事实题、5 道比较题、5 道跨文档题和 5 道无答案题。
+评测集含 100 题，固定划分为 25 道 legacy、25 道 dev 和 50 道 test；参数只能在
+dev 上选择。冻结 test 尚未用于 M4 调参。
+
+下表保留扩展前 25 道 legacy 题的端到端 RAG 基线，便于与历史报告对照：
 
 | 指标 | focused baseline（Top-k 5） | multi-document（Top-k 8） |
 |---|---:|---:|
@@ -145,6 +148,7 @@ Router 评测集包含四类共 40 条中英文请求：
 - [优化 RAG 评测](evaluation/optimized_rag_report.md)
 - [Top-k 实验](evaluation/top_k_report.md)
 - [来源多样化实验](evaluation/diversified_retrieval_report.md)
+- [M4 Hybrid/RRF 开发集消融](evaluation/m4_hybrid_rrf_dev_report.md)
 - [全流程测试记录](tests/full_flow_test_report.md)
 
 ## 复现评测
@@ -154,6 +158,10 @@ Router 评测集包含四类共 40 条中英文请求：
 ```bash
 python evaluation/evaluate_retrieval.py --method dense --qrels evaluation/qrels.json
 python evaluation/evaluate_retrieval.py --method bm25 --qrels evaluation/qrels.json
+python evaluation/evaluate_retrieval.py \
+  --method hybrid --split dev --top-k 10 \
+  --candidate-k 20 --rrf-k 60 --fusion-k 40 \
+  --qrels evaluation/qrels.json
 ```
 
 运行完整 RAG 评测：
@@ -186,6 +194,7 @@ academic-paper-rag/
 ├── rag_chain.py              # 查询改写、检索、Prompt 和生成
 ├── retriever.py              # focused / multi_document 检索
 ├── sparse_retriever.py       # 确定性 BM25 分词、内存索引与 Top-N
+├── hybrid_retriever.py       # Dense/BM25 候选标准化、去重与 RRF
 ├── tools/
 │   ├── paper_library.py      # 知识库信息查询
 │   └── source_lookup.py      # 页码/Chunk 精确定位
@@ -204,8 +213,8 @@ academic-paper-rag/
 
 ## 已知限制
 
-- 评测集包含中文问题，但 M3 的纯 BM25 只抽取英文、数字和连字符词项；
-  完全不含这些词项的中文查询需要后续 Dense + BM25 Hybrid Retrieval。
+- M4 Hybrid/RRF 目前只接入离线评测，尚未切换 RAGChain 和 Streamlit 的默认检索；
+  multi-document 开发集上的 nDCG@8 仍低于 Dense，需继续验证 Reranker 和 test 消融。
 - PDF 解析以文本层为主，不处理扫描件 OCR、图表视觉理解和复杂公式结构。
 - SourceLookupTool 需要明确的 PDF 文件名；缺少来源信息时不会猜测文件。
 - Chroma 为本地单用户存储；重建索引期间不适合并发读写。

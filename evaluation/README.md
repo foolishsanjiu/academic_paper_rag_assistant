@@ -81,6 +81,26 @@ The runtime index uses `rank-bm25==0.2.2`, sorts the corpus by persistent
 `chunk_id`, and records its tokenizer and BM25 parameters in the result file.
 BM25 scores are stored as `bm25_score`, never mislabeled as cosine similarity.
 
+Run the M4 Hybrid/RRF development grid without calling an LLM:
+
+```bash
+python evaluation/evaluate_retrieval.py \
+  --method hybrid \
+  --split dev \
+  --top-k 10 \
+  --candidate-k 20 32 50 \
+  --rrf-k 30 60 \
+  --fusion-k 40 \
+  --qrels evaluation/qrels.json \
+  --output evaluation/results/m4_hybrid_dev_grid.json
+```
+
+Hybrid retrieves equal-sized Dense and BM25 candidate sets, deduplicates by
+`chunk_id`, and applies deterministic Reciprocal Rank Fusion. The selected M4
+development parameters are candidate k 20, RRF k 60, and fusion k 40. Do not
+use the `test` split for further parameter selection. See
+`m4_hybrid_rrf_dev_report.md` for the ablation results and limitations.
+
 Build a deduplicated, deterministic annotation pool from one or more retrieval
 result files and every Chunk on the expected source pages:
 

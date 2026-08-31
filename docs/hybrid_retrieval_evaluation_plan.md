@@ -190,13 +190,17 @@ Unicode normalize
 RRF(d) = Σ 1 / (rrf_k + rank_i(d))
 ```
 
-初始固定：
+M4 开发集实验前的初始值：
 
 - `rrf_k = 60`
 - Dense candidate k = 32
 - BM25 candidate k = 32
 - 融合后最多保留 40 个唯一 Chunk
 - 根据 `chunk_id` 去重
+
+M4 在 `dev` 集比较 candidate k `{20, 32, 50}` 和 RRF k `{30, 60}` 后，
+按最高 nDCG@10 冻结为 candidate k `20`、RRF k `60`、fusion k `40`。
+完整结果见 `evaluation/m4_hybrid_rrf_dev_report.md`。
 
 RRF 同分时按以下顺序稳定排序：
 
@@ -588,15 +592,22 @@ Claim citation coverage = 有至少一个支持性引用的可验证事实句 / 
 
 ### M4：Hybrid/RRF
 
+状态（2026-09-01）：已完成。配置 C 已实现并仅在冻结 `dev` 集完成参数选择；
+最终参数为 candidate k `20`、RRF k `60`、fusion k `40`。未读取 test 调参，
+未调用 LLM，未修改应用默认检索路径。
+
 工作：
 
 - 标准化 Dense 和 Sparse 候选。
 - 实现 chunk_id 去重和 RRF。
 - 接入配置 C。
 
-验证：使用固定假数据手算 RRF；Dense-only 兼容结果不变。
+验证：固定假数据手算 RRF 通过；Hybrid 重复运行排序一致且无重复 Chunk；
+Dense-only legacy Top-5 与 M0 排名逐题完全一致。Focused dev 上 Hybrid 相对
+Dense 的 Recall@10、MRR@10、nDCG@10 分别提升 21.36%、6.25%、9.15%；
+multi-document 的 nDCG@8 下降 5.38%，因此暂不切换线上默认值。
 
-停止点：完成 dev 检索实验，不调用 LLM。
+停止点：已完成 dev 检索实验；不调用 LLM，不实现 Reranker。
 
 ### M5：Reranker
 

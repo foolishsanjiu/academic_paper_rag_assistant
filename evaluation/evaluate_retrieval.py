@@ -23,6 +23,9 @@ from config import (  # noqa: E402
     DEFAULT_COLLECTION_NAME,
     DEFAULT_HYBRID_CANDIDATE_K,
     DEFAULT_HYBRID_FUSION_K,
+    DEFAULT_RERANK_CANDIDATE_K,
+    DEFAULT_RERANKER_BATCH_SIZE,
+    DEFAULT_RERANKER_MODEL,
     DEFAULT_RRF_K,
 )
 from evaluation.evaluate import (  # noqa: E402
@@ -41,6 +44,13 @@ from index_manifest import (  # noqa: E402
 )
 from hybrid_retriever import FusedCandidate, HybridRetriever  # noqa: E402
 from rag_chain import build_sources  # noqa: E402
+from reranker import (  # noqa: E402
+    RerankedCandidate,
+    TransformersCrossEncoderReranker,
+    dense_rerank_candidates,
+    hybrid_rerank_candidates,
+    rerank_candidates,
+)
 from retriever import retrieve_with_scores  # noqa: E402
 from sparse_retriever import build_sparse_retriever  # noqa: E402
 from vector_store import (  # noqa: E402
@@ -67,7 +77,19 @@ DEFAULT_HYBRID_OUTPUT_PATH = (
     / "results"
     / "retrieval_hybrid.json"
 )
-RETRIEVAL_METHODS = {"dense", "bm25", "hybrid"}
+DEFAULT_DENSE_RERANK_OUTPUT_PATH = (
+    Path(__file__).parent / "results" / "retrieval_dense_rerank.json"
+)
+DEFAULT_HYBRID_RERANK_OUTPUT_PATH = (
+    Path(__file__).parent / "results" / "retrieval_hybrid_rerank.json"
+)
+RETRIEVAL_METHODS = {
+    "dense",
+    "bm25",
+    "hybrid",
+    "dense_rerank",
+    "hybrid_rerank",
+}
 
 
 def build_sparse_sources(
@@ -115,6 +137,39 @@ def build_hybrid_sources(
                 ),
                 "bm25_score": candidate.bm25_score,
                 "rrf_score": candidate.rrf_score,
+                "dense_rank": candidate.dense_rank,
+                "sparse_rank": candidate.sparse_rank,
+                "text": candidate.document.page_content,
+            }
+        )
+    return sources
+
+
+def build_reranked_sources(
+    candidates: list[RerankedCandidate],
+) -> list[dict[str, Any]]:
+    """Serialize final reranked candidates with retrieval diagnostics."""
+    sources: list[dict[str, Any]] = []
+    for rank, item in enumerate(candidates, start=1):
+        candidate = item.candidate
+        metadata = candidate.document.metadata
+        sources.append(
+            {
+                "rank": rank,
+                "file_name": str(metadata.get("file_name", "unknown.pdf")),
+                "document_id": str(metadata.get("document_id", "unknown")),
+                "document_type": str(metadata.get("document_type", "unknown")),
+                "page_number": metadata.get("page_number", "unknown"),
+                "chunk_id": candidate.chunk_id,
+                "similarity": (
+                    1.0 - candidate.dense_distance
+                    if candidate.dense_distance is not None
+                    else None
+                ),
+                "bm25_score": candidate.bm25_score,
+                "rrf_score": candidate.rrf_score,
+                "rerank_score": item.rerank_score,
+                "retrieval_rank": candidate.retrieval_rank,
                 "dense_rank": candidate.dense_rank,
                 "sparse_rank": candidate.sparse_rank,
                 "text": candidate.document.page_content,
@@ -177,8 +232,12 @@ def run_retrieval_experiment(
     rrf_k_values: list[int] | None = None,
     fusion_k: int = DEFAULT_HYBRID_FUSION_K,
     split: str | None = None,
+    reranker_model: str = DEFAULT_RERANKER_MODEL,
+    reranker_batch_size: int = DEFAULT_RERANKER_BATCH_SIZE,
+    reranker_candidate_k: int = DEFAULT_RERANK_CANDIDATE_K,
+    reranker_device: str = "cpu",
 ) -> dict[str, Any]:
-    """Evaluate Dense, BM25, or Hybrid retrieval without LLM calls."""
+    """Evaluate retrieval and optional reranking without LLM calls."""
     if not top_k_values or any(value <= 0 for value in top_k_values):
         raise ValueError("所有 Top-k 值都必须大于 0。")
     if candidate_multiplier <= 0:
@@ -199,6 +258,20 @@ def run_retrieval_experiment(
         raise ValueError("所有 rrf_k 都必须大于 0。")
     if fusion_k <= 0:
         raise ValueError("fusion_k 必须大于 0。")
+    if (
+        method in {"hybrid", "hybrid_rerank"}
+        and fusion_k < max(top_k_values)
+    ):
+        raise ValueError("fusion_k 不能小于最大 Top-k。")
+    if reranker_batch_size <= 0:
+        raise ValueError("reranker_batch_size 必须大于 0。")
+    if reranker_candidate_k <= 0:
+        raise ValueError("reranker_candidate_k 必须大于 0。")
+    if method in {"dense_rerank", "hybrid_rerank"}:
+        if not reranker_model.strip():
+            raise ValueError("Reranker 模型路径不能为空。")
+        if reranker_candidate_k < max(top_k_values):
+            raise ValueError("reranker_candidate_k 不能小于最大 Top-k。")
 
     questions = load_questions(questions_path)
     qrels = load_qrels(qrels_path) if qrels_path is not None else None
@@ -215,12 +288,13 @@ def run_retrieval_experiment(
     vector_store = None
     sparse_retriever = None
     hybrid_retriever = None
-    if method == "dense":
+    cross_encoder = None
+    if method in {"dense", "dense_rerank"}:
         embeddings = create_embedding_model(DEFAULT_EMBEDDING_MODEL)
         vector_store = load_vector_store(embeddings)
         vector_count = get_vector_count(vector_store)
         retrieval_identity: dict[str, Any] = {
-            "method": "dense",
+            "method": method,
             "embedding_model": DEFAULT_EMBEDDING_MODEL,
         }
     elif method == "bm25":
@@ -246,7 +320,11 @@ def run_retrieval_experiment(
             )
         hybrid_retriever = HybridRetriever(vector_store, sparse_retriever)
         retrieval_identity = {
-            "method": "hybrid_rrf",
+            "method": (
+                "hybrid_rrf"
+                if method == "hybrid"
+                else "hybrid_rrf_rerank"
+            ),
             "dense": {"embedding_model": DEFAULT_EMBEDDING_MODEL},
             "sparse": sparse_retriever.identity(),
         }
@@ -254,6 +332,19 @@ def run_retrieval_experiment(
         vector_count=vector_count,
         manifest=manifest,
     )
+    if method in {"dense_rerank", "hybrid_rerank"}:
+        cross_encoder = TransformersCrossEncoderReranker(
+            reranker_model,
+            batch_size=reranker_batch_size,
+            device=reranker_device,
+            local_files_only=True,
+        )
+        retrieval_identity["reranker"] = {
+            "model": reranker_model,
+            "batch_size": reranker_batch_size,
+            "candidate_k": reranker_candidate_k,
+            "device": reranker_device,
+        }
 
     runs: list[dict[str, Any]] = []
     payload = {
@@ -274,7 +365,7 @@ def run_retrieval_experiment(
 
     configurations: list[tuple[int | None, int | None]] = (
         list(product(validate_values, validate_rrf_values))
-        if method == "hybrid"
+        if method in {"hybrid", "hybrid_rerank"}
         else [(None, None)]
     )
     for resolved_candidate_k, resolved_rrf_k in configurations:
@@ -314,7 +405,35 @@ def run_retrieval_experiment(
                         top_k=top_k,
                     )
                     sources = build_sparse_sources(retrieved)
-                else:
+                elif method == "dense_rerank":
+                    if vector_store is None or cross_encoder is None:
+                        raise RuntimeError("Dense Rerank 资源未初始化。")
+                    dense_start = time.perf_counter()
+                    retrieved = retrieve_with_scores(
+                        vector_store=vector_store,
+                        query=item["question"],
+                        top_k=reranker_candidate_k,
+                    )
+                    dense_latency = time.perf_counter() - dense_start
+                    rerank_result = rerank_candidates(
+                        item["question"],
+                        dense_rerank_candidates(retrieved),
+                        cross_encoder,
+                        top_k=top_k,
+                        max_chunks_per_file=max_chunks_per_file,
+                    )
+                    sources = build_reranked_sources(
+                        rerank_result.candidates
+                    )
+                    latency_breakdown = {
+                        "dense": round(dense_latency, 6),
+                        "rerank": round(rerank_result.latency_seconds, 6),
+                        "retrieval_total": round(
+                            dense_latency + rerank_result.latency_seconds,
+                            6,
+                        ),
+                    }
+                elif method == "hybrid":
                     if hybrid_retriever is None:
                         raise RuntimeError("Hybrid retriever 未初始化。")
                     if resolved_candidate_k is None or resolved_rrf_k is None:
@@ -340,6 +459,48 @@ def run_retrieval_experiment(
                         ),
                         "retrieval_total": round(
                             hybrid_result.total_latency_seconds, 6
+                        ),
+                    }
+                else:
+                    if hybrid_retriever is None or cross_encoder is None:
+                        raise RuntimeError("Hybrid Rerank 资源未初始化。")
+                    if resolved_candidate_k is None or resolved_rrf_k is None:
+                        raise RuntimeError("Hybrid 参数未初始化。")
+                    hybrid_result = hybrid_retriever.search(
+                        item["question"],
+                        top_k=fusion_k,
+                        candidate_k=resolved_candidate_k,
+                        rrf_k=resolved_rrf_k,
+                        fusion_k=fusion_k,
+                    )
+                    rerank_input = hybrid_rerank_candidates(
+                        hybrid_result.candidates[:reranker_candidate_k]
+                    )
+                    rerank_result = rerank_candidates(
+                        item["question"],
+                        rerank_input,
+                        cross_encoder,
+                        top_k=top_k,
+                        max_chunks_per_file=max_chunks_per_file,
+                    )
+                    sources = build_reranked_sources(
+                        rerank_result.candidates
+                    )
+                    latency_breakdown = {
+                        "dense": round(
+                            hybrid_result.dense_latency_seconds, 6
+                        ),
+                        "bm25": round(
+                            hybrid_result.sparse_latency_seconds, 6
+                        ),
+                        "fusion": round(
+                            hybrid_result.fusion_latency_seconds, 6
+                        ),
+                        "rerank": round(rerank_result.latency_seconds, 6),
+                        "retrieval_total": round(
+                            hybrid_result.total_latency_seconds
+                            + rerank_result.latency_seconds,
+                            6,
                         ),
                     }
 
@@ -388,11 +549,15 @@ def run_retrieval_experiment(
 
             run_candidate_k = (
                 resolved_candidate_k
-                if method == "hybrid"
+                if method in {"hybrid", "hybrid_rerank"}
                 else (
-                    top_k * candidate_multiplier
-                    if max_chunks_per_file is not None
-                    else top_k
+                    reranker_candidate_k
+                    if method == "dense_rerank"
+                    else (
+                        top_k * candidate_multiplier
+                        if max_chunks_per_file is not None
+                        else top_k
+                    )
                 )
             )
             run = {
@@ -400,7 +565,16 @@ def run_retrieval_experiment(
                 "top_k": top_k,
                 "candidate_k": run_candidate_k,
                 "rrf_k": resolved_rrf_k,
-                "fusion_k": fusion_k if method == "hybrid" else None,
+                "fusion_k": (
+                    fusion_k
+                    if method in {"hybrid", "hybrid_rerank"}
+                    else None
+                ),
+                "reranker_candidate_k": (
+                    reranker_candidate_k
+                    if method in {"dense_rerank", "hybrid_rerank"}
+                    else None
+                ),
                 "max_chunks_per_file": max_chunks_per_file,
                 "summary": summarize(results),
                 "results": results,
@@ -458,6 +632,25 @@ def parse_args() -> argparse.Namespace:
         "--split",
         choices=["legacy", "dev", "test"],
     )
+    parser.add_argument(
+        "--reranker-model",
+        default=DEFAULT_RERANKER_MODEL,
+    )
+    parser.add_argument(
+        "--reranker-batch-size",
+        type=int,
+        default=DEFAULT_RERANKER_BATCH_SIZE,
+    )
+    parser.add_argument(
+        "--reranker-candidate-k",
+        type=int,
+        default=DEFAULT_RERANK_CANDIDATE_K,
+    )
+    parser.add_argument(
+        "--reranker-device",
+        choices=["cpu", "cuda"],
+        default="cpu",
+    )
     parser.add_argument("--max-chunks-per-file", type=int)
     parser.add_argument("--qrels", type=Path)
     return parser.parse_args()
@@ -469,6 +662,8 @@ def main() -> None:
         "dense": DEFAULT_OUTPUT_PATH,
         "bm25": DEFAULT_BM25_OUTPUT_PATH,
         "hybrid": DEFAULT_HYBRID_OUTPUT_PATH,
+        "dense_rerank": DEFAULT_DENSE_RERANK_OUTPUT_PATH,
+        "hybrid_rerank": DEFAULT_HYBRID_RERANK_OUTPUT_PATH,
     }
     output_path = args.output or default_outputs[args.method]
     payload = run_retrieval_experiment(
@@ -483,6 +678,10 @@ def main() -> None:
         rrf_k_values=args.rrf_k,
         fusion_k=args.fusion_k,
         split=args.split,
+        reranker_model=args.reranker_model,
+        reranker_batch_size=args.reranker_batch_size,
+        reranker_candidate_k=args.reranker_candidate_k,
+        reranker_device=args.reranker_device,
     )
     for run in payload["runs"]:
         print(

@@ -143,6 +143,23 @@ class HybridRetrieverTests(unittest.TestCase):
         self.assertEqual(result.candidates[0].chunk_id, "dense")
         self.assertIsNone(result.candidates[0].sparse_rank)
 
+    def test_can_return_union_larger_than_each_branch(self) -> None:
+        vector_store = FakeVectorStore(
+            [(document("dense-1"), 0.1), (document("dense-2"), 0.2)]
+        )
+        sparse = FakeSparseRetriever(
+            [(document("sparse-1"), 4.0), (document("sparse-2"), 3.0)]
+        )
+
+        result = HybridRetriever(vector_store, sparse).search(
+            "query",
+            top_k=4,
+            candidate_k=2,
+            fusion_k=4,
+        )
+
+        self.assertEqual(len(result.candidates), 4)
+
 
 if __name__ == "__main__":
     unittest.main()

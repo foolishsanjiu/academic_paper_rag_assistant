@@ -611,16 +611,23 @@ multi-document 的 nDCG@8 下降 5.38%，因此暂不切换线上默认值。
 
 ### M5：Reranker
 
+状态（2026-09-01）：已完成。`BAAI/bge-reranker-v2-m3` 的 SHA-256、离线加载、
+20/40 candidates CPU 基准和配置 D/E dev 消融均已完成。没有新增 Python 依赖，
+没有读取 test 或调用 LLM。
+
 工作：
 
 - 先做真实模型资源门禁。
-- 定义协议并实现 FlagEmbedding adapter。
+- 定义协议并实现 Transformers Cross-Encoder adapter。
 - 支持批量评分、稳定 tie-break、Fake Reranker 测试。
 - 接入配置 D/E。
 
-验证：40 candidates smoke test；模型异常有清晰错误，不静默回退并污染实验。
+验证：40 candidates 的 batch 8 P50/P95 为 10.30/10.63 秒，重复分数差为 0，
+峰值工作集约 2.27 GB。D/E 均完成 25 题 dev 实验；E 相对 C 的 Recall@10
+提升 7.20%，但 MRR@10 和 nDCG@10 分别下降 27.22% 和 8.09%。模型异常会
+显式失败，不静默回退并污染实验。
 
-停止点：只完成检索级消融。
+停止点：只完成检索级消融；D/E 未通过默认配置选择门禁，不进入应用集成。
 
 ### M6：RAG 和 UI 集成
 

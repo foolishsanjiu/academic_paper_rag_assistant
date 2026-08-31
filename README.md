@@ -20,7 +20,7 @@ Streamlit 提供交互界面。
 - `SourceLookupTool`：按 PDF 名称、页码或 Chunk ID 精确读取索引原文
 - LLM JSON Intent Router，失败时使用确定性规则回退
 - Tool 白名单、参数校验、结构化异常和最多 3 次调用限制
-- 100 题 RAG 评测集、Chunk 级 qrels、Dense/BM25/Hybrid 检索实验和 40 题 Router 评测集
+- 100 题 RAG 评测集、Chunk 级 qrels、Dense/BM25/Hybrid/Reranker 消融和 40 题 Router 评测集
 
 ## 架构
 
@@ -149,6 +149,7 @@ Router 评测集包含四类共 40 条中英文请求：
 - [Top-k 实验](evaluation/top_k_report.md)
 - [来源多样化实验](evaluation/diversified_retrieval_report.md)
 - [M4 Hybrid/RRF 开发集消融](evaluation/m4_hybrid_rrf_dev_report.md)
+- [M5 Reranker 资源门禁与消融](evaluation/m5_reranker_dev_report.md)
 - [全流程测试记录](tests/full_flow_test_report.md)
 
 ## 复现评测
@@ -195,6 +196,7 @@ academic-paper-rag/
 ├── retriever.py              # focused / multi_document 检索
 ├── sparse_retriever.py       # 确定性 BM25 分词、内存索引与 Top-N
 ├── hybrid_retriever.py       # Dense/BM25 候选标准化、去重与 RRF
+├── reranker.py               # 本地 Cross-Encoder 批量评分与稳定重排
 ├── tools/
 │   ├── paper_library.py      # 知识库信息查询
 │   └── source_lookup.py      # 页码/Chunk 精确定位
@@ -213,8 +215,8 @@ academic-paper-rag/
 
 ## 已知限制
 
-- M4 Hybrid/RRF 目前只接入离线评测，尚未切换 RAGChain 和 Streamlit 的默认检索；
-  multi-document 开发集上的 nDCG@8 仍低于 Dense，需继续验证 Reranker 和 test 消融。
+- Hybrid/RRF 和 Reranker 目前只接入离线评测，尚未切换 RAGChain 和 Streamlit；
+  Reranker 在 CPU 上约需 9～11 秒/题，且 dev 的 MRR/nDCG 低于不重排的配置 C。
 - PDF 解析以文本层为主，不处理扫描件 OCR、图表视觉理解和复杂公式结构。
 - SourceLookupTool 需要明确的 PDF 文件名；缺少来源信息时不会猜测文件。
 - Chroma 为本地单用户存储；重建索引期间不适合并发读写。

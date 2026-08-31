@@ -101,6 +101,32 @@ development parameters are candidate k 20, RRF k 60, and fusion k 40. Do not
 use the `test` split for further parameter selection. See
 `m4_hybrid_rrf_dev_report.md` for the ablation results and limitations.
 
+Run the M5 local Reranker resource gate and configurations D/E:
+
+```bash
+python evaluation/benchmark_reranker.py \
+  --model /path/to/bge-reranker-v2-m3 \
+  --results evaluation/results/m4_hybrid_dev_grid.json
+
+python evaluation/evaluate_retrieval.py \
+  --method dense_rerank --split dev --top-k 10 \
+  --reranker-model /path/to/bge-reranker-v2-m3 \
+  --reranker-candidate-k 40 --reranker-batch-size 8 \
+  --qrels evaluation/qrels.json
+
+python evaluation/evaluate_retrieval.py \
+  --method hybrid_rerank --split dev --top-k 10 \
+  --candidate-k 20 --rrf-k 60 --fusion-k 40 \
+  --reranker-model /path/to/bge-reranker-v2-m3 \
+  --reranker-candidate-k 40 --reranker-batch-size 8 \
+  --qrels evaluation/qrels.json
+```
+
+M5 uses the existing Transformers and CPU PyTorch packages, so it adds no
+runtime dependency. The Reranker increased Recall but reduced MRR; configuration
+C remains the dev winner. See `m5_reranker_dev_report.md` for the resource gate,
+A-E comparison, and stopping decision.
+
 Build a deduplicated, deterministic annotation pool from one or more retrieval
 result files and every Chunk on the expected source pages:
 

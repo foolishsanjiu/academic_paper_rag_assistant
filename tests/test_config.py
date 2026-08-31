@@ -29,6 +29,11 @@ class ProjectConfigurationTests(unittest.TestCase):
         self.assertEqual(config.MULTI_DOCUMENT_CANDIDATE_K, 32)
         self.assertEqual(config.MULTI_DOCUMENT_MAX_CHUNKS_PER_FILE, 3)
 
+    def test_reranker_defaults_match_resource_gate(self) -> None:
+        self.assertEqual(config.DEFAULT_RERANKER_BATCH_SIZE, 8)
+        self.assertEqual(config.DEFAULT_RERANKER_MAX_LENGTH, 512)
+        self.assertEqual(config.DEFAULT_RERANK_CANDIDATE_K, 40)
+
 
 if __name__ == "__main__":
     unittest.main()

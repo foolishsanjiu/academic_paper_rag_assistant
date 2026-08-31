@@ -161,8 +161,6 @@ class HybridRetriever:
         validate_top_k(top_k)
         validate_top_k(candidate_k)
         validate_top_k(fusion_k)
-        if candidate_k < top_k:
-            raise ValueError("candidate_k 不能小于 top_k。")
         if fusion_k < top_k:
             raise ValueError("fusion_k 不能小于 top_k。")
 

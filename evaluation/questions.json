@@ -223,5 +223,665 @@
     "source_files": [],
     "source_pages": [],
     "notes": "Out-of-domain but technically phrased refusal case."
+  },
+  {
+    "id": "fact_011", "split": "dev", "type": "fact", "language": "en", "difficulty": "medium",
+    "tags": ["method_mechanism", "paraphrase"],
+    "question": "Why does AGSGAN divide the viewing-angle range adaptively instead of modeling every SAR azimuth with one shared distribution?",
+    "expected_answer": "AGSGAN assumes SAR statistics change with azimuth, so it partitions azimuths into adaptive intervals whose images have similar statistics and models each interval separately.",
+    "expected_key_points": ["Statistics vary with azimuth", "Images within an adaptive interval should have similar statistics"],
+    "source_files": ["A_Directional_Generation_Algorithm_for_SAR_Image_Based_on_Azimuth-Guided_Statistical_Generative_Adversarial_Network.pdf"], "source_pages": [1],
+    "notes": "Tests causal understanding of adaptive interval construction."
+  },
+  {
+    "id": "fact_012", "split": "dev", "type": "fact", "language": "zh", "difficulty": "medium",
+    "tags": ["zh_query_en_corpus", "method_mechanism", "acronym"],
+    "question": "AGSGAN 在生成指定方位区间的 SAR 图像时，向网络输入哪两类信息？",
+    "expected_answer": "它输入从该自适应方位区间拟合的 G0 分布中采样的随机噪声，以及该自适应方位区间的序号；前者提供统计特性，后者作为方位控制条件。",
+    "expected_key_points": ["Noise sampled from the fitted G0 distribution", "Adaptive azimuth interval serial number"],
+    "source_files": ["A_Directional_Generation_Algorithm_for_SAR_Image_Based_on_Azimuth-Guided_Statistical_Generative_Adversarial_Network.pdf"], "source_pages": [1],
+    "notes": "Chinese query over English evidence."
+  },
+  {
+    "id": "fact_013", "split": "dev", "type": "fact", "language": "en", "difficulty": "easy",
+    "tags": ["method_mechanism", "lexical_mismatch"],
+    "question": "Which oil-spill shape classes drive CG-DM, and where is that information injected?",
+    "expected_answer": "CG-DM uses blocky, elongated, and patchy morphology classes, and conditions every reverse-diffusion step on the selected class.",
+    "expected_key_points": ["Blocky, elongated, and patchy classes", "Condition every reverse-diffusion step"],
+    "source_files": ["Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf"], "source_pages": [1],
+    "notes": "Separates morphology guidance from the other CG-DM components."
+  },
+  {
+    "id": "fact_014", "split": "dev", "type": "fact", "language": "zh", "difficulty": "hard",
+    "tags": ["zh_query_en_corpus", "numeric_detail", "experiment_result"],
+    "question": "CG-DM 在 M4D 数据集上的 FID、KID 以及极少样本条件下的检测 IoU 提升分别是多少？",
+    "expected_answer": "论文报告 FID 为 203.14、KID 为 0.124；在极端数据稀缺时，使用 CG-DM 合成样本可使油污检测 IoU 最多提升 81%。",
+    "expected_key_points": ["FID 203.14", "KID 0.124", "Detection IoU improvement up to 81%"],
+    "source_files": ["Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf"], "source_pages": [1],
+    "notes": "Multi-number retrieval case."
+  },
+  {
+    "id": "fact_015", "split": "dev", "type": "fact", "language": "en", "difficulty": "medium",
+    "tags": ["method_mechanism", "paraphrase"],
+    "question": "How does reframing SAR generation as image-to-image translation help ATGAN control aspect angle?",
+    "expected_answer": "ATGAN learns an angle transformation in deep feature space and applies it to the representation of an input SAR target image, producing a new view while preserving target details.",
+    "expected_key_points": ["Learn angle transformation in feature space", "Manipulate an input image representation", "Preserve target details"],
+    "source_files": ["ATGAN_A_SAR_Target_Image_Generation_Method_for_Automatic_Target_Recognition.pdf"], "source_pages": [1],
+    "notes": "Tests the central image-to-image formulation."
+  },
+  {
+    "id": "fact_016", "split": "dev", "type": "fact", "language": "en", "difficulty": "hard",
+    "tags": ["numeric_detail", "experiment_result"],
+    "question": "What input-to-target azimuth separation does ATGAN recommend at the interval boundary?",
+    "expected_answer": "ATGAN reports that the azimuth interval boundary between the input and target SAR images should be between 20 and 30 degrees.",
+    "expected_key_points": ["Recommended interval is 20 to 30 degrees"],
+    "source_files": ["ATGAN_A_SAR_Target_Image_Generation_Method_for_Automatic_Target_Recognition.pdf"], "source_pages": [16],
+    "notes": "Non-abstract numeric detail."
+  },
+  {
+    "id": "fact_017", "split": "dev", "type": "fact", "language": "en", "difficulty": "easy",
+    "tags": ["method_mechanism", "acronym"],
+    "question": "What attributes condition AGGAN, and what normalization is used to stabilize few-shot training?",
+    "expected_answer": "AGGAN is conditioned on target category and aspect-angle labels, and it uses spectral normalization to stabilize training in the few-shot setting.",
+    "expected_key_points": ["Category label", "Aspect-angle label", "Spectral normalization"],
+    "source_files": ["Attribute-Guided_Generative_Adversarial_Network_With_Improved_Episode_Training_Strategy_for_Few-Shot_SAR_Image_Generation.pdf"], "source_pages": [1],
+    "notes": "Focused architecture question."
+  },
+  {
+    "id": "fact_018", "split": "dev", "type": "fact", "language": "zh", "difficulty": "medium",
+    "tags": ["zh_query_en_corpus", "numeric_detail", "experiment_result"],
+    "question": "在 5-shot SAR 识别实验中，AGGAN 生成数据至少带来了多少平均识别准确率提升？",
+    "expected_answer": "论文报告平均识别准确率至少提升 4%。",
+    "expected_key_points": ["At least 4% average recognition accuracy improvement"],
+    "source_files": ["Attribute-Guided_Generative_Adversarial_Network_With_Improved_Episode_Training_Strategy_for_Few-Shot_SAR_Image_Generation.pdf"], "source_pages": [1],
+    "notes": "Chinese numeric retrieval case."
+  },
+  {
+    "id": "fact_019", "split": "dev", "type": "fact", "language": "en", "difficulty": "medium",
+    "tags": ["method_mechanism", "lexical_mismatch"],
+    "question": "What exactly is changed and what must remain intact when BCNet performs target-background conversion?",
+    "expected_answer": "BCNet replaces the background of a target-of-interest slice with a large-scene background under the same operating condition while preserving the target scattering characteristics.",
+    "expected_key_points": ["Convert TOI background to large-scene background", "Preserve target scattering characteristics"],
+    "source_files": ["BCNet_Background_Conversion_Network_for_SAR_Data_Generation.pdf"], "source_pages": [1],
+    "notes": "Distinguishes background style conversion from target generation."
+  },
+  {
+    "id": "fact_020", "split": "dev", "type": "fact", "language": "en", "difficulty": "medium",
+    "tags": ["multi_evidence", "downstream_task"],
+    "question": "Which downstream uses does BCNet identify for its converted target slices beyond few-shot recognition?",
+    "expected_answer": "BCNet identifies embedding targets into large SAR scenes, SAR deception jamming, and augmenting target-detection datasets as downstream uses, in addition to few-shot ATR.",
+    "expected_key_points": ["Large-scene SAR generation", "SAR deception jamming", "Target-detection dataset augmentation"],
+    "source_files": ["BCNet_Background_Conversion_Network_for_SAR_Data_Generation.pdf"], "source_pages": [1],
+    "notes": "Abstract application-list question."
+  },
+  {
+    "id": "fact_021", "split": "test", "type": "fact", "language": "en", "difficulty": "medium",
+    "tags": ["method_mechanism", "acronym", "lexical_mismatch"],
+    "question": "What frequency-domain hypothesis motivates DiffuSAR's FAM?",
+    "expected_answer": "DiffuSAR finds high-frequency SAR components especially important for generation and uses an FFT-based frequency adjustment module to keep low-frequency components from interfering with them.",
+    "expected_key_points": ["High-frequency components are crucial", "FFT-based FAM", "Prevent low-frequency interference"],
+    "source_files": ["DiffuSAR_Frequency_Domain-Aware_Diffusion_Model_for_SAR_Image_Generation.pdf"], "source_pages": [1],
+    "notes": "Paraphrased frequency-domain mechanism."
+  },
+  {
+    "id": "fact_022", "split": "test", "type": "fact", "language": "zh", "difficulty": "medium",
+    "tags": ["zh_query_en_corpus", "numeric_detail", "experiment_result"],
+    "question": "DiffuSAR 的频率调整模块在消融实验中使 FID 降低了多少？",
+    "expected_answer": "FAM 使 Fréchet inception distance 降低了 2.85%。",
+    "expected_key_points": ["FID reduction of 2.85%"],
+    "source_files": ["DiffuSAR_Frequency_Domain-Aware_Diffusion_Model_for_SAR_Image_Generation.pdf"], "source_pages": [1],
+    "notes": "Chinese numeric ablation question."
+  },
+  {
+    "id": "fact_023", "split": "test", "type": "fact", "language": "en", "difficulty": "medium",
+    "tags": ["method_mechanism", "hard_negative"],
+    "question": "Why does LDGAN put class information directly into its objective instead of only changing the image generator?",
+    "expected_answer": "LDGAN adds label information to its loss so that generation does not produce large numbers of target images without usable class labels; this makes the synthetic samples suitable for supervised ATR training.",
+    "expected_key_points": ["Label information is included in the loss", "Avoid unlabeled generated targets", "Support supervised ATR"],
+    "source_files": ["LDGAN_A_Synthetic_Aperture_Radar_Image_Generation_Method_for_Automatic_Target_Recognition.pdf"], "source_pages": [1],
+    "notes": "Separates label loss from Wasserstein mode-collapse motivation."
+  },
+  {
+    "id": "fact_024", "split": "test", "type": "fact", "language": "en", "difficulty": "hard",
+    "tags": ["experiment_result", "multi_evidence"],
+    "question": "Which kinds of evidence did LDGAN use to compare its generated SAR targets with other directed-generation methods?",
+    "expected_answer": "LDGAN compared statistical features, gradient features, classic SAR target features, independence from real images, and the usefulness of generated images for ATR.",
+    "expected_key_points": ["Statistical and gradient features", "Classic SAR target features", "Independence from real images", "ATR performance"],
+    "source_files": ["LDGAN_A_Synthetic_Aperture_Radar_Image_Generation_Method_for_Automatic_Target_Recognition.pdf"], "source_pages": [1],
+    "notes": "Evaluation-dimensions question."
+  },
+  {
+    "id": "fact_025", "split": "test", "type": "fact", "language": "en", "difficulty": "medium",
+    "tags": ["method_mechanism", "acronym"],
+    "question": "How do the encoder/discriminator and the two cyclic losses interact in the SAR adversarial autoencoder?",
+    "expected_answer": "The generator decodes target knowledge into SAR images, while the adversarial discriminator also encodes real or generated images back into target knowledge; two cyclic losses enforce consistency between these inputs and outputs.",
+    "expected_key_points": ["Generator decodes target knowledge", "Discriminator encodes images back to knowledge", "Two cyclic consistency losses"],
+    "source_files": ["Learning_to_Generate_SAR_Images_With_Adversarial_Autoencoder.pdf"], "source_pages": [1],
+    "notes": "Architecture and consistency question."
+  },
+  {
+    "id": "fact_026", "split": "test", "type": "fact", "language": "zh", "difficulty": "hard",
+    "tags": ["zh_query_en_corpus", "numeric_detail", "experiment_result"],
+    "question": "对抗自编码器仅使用多少训练样本和至少多大的方位间隔，就生成了其余多少个方位样本？",
+    "expected_answer": "它只使用 90 个训练样本，方位间隔至少为 25°，并生成了其余 1748 个其他方位角样本。",
+    "expected_key_points": ["90 training samples", "At least 25-degree orientation interval", "1748 generated remaining samples"],
+    "source_files": ["Learning_to_Generate_SAR_Images_With_Adversarial_Autoencoder.pdf"], "source_pages": [1],
+    "notes": "Three-number Chinese evidence retrieval."
+  },
+  {
+    "id": "fact_027", "split": "test", "type": "fact", "language": "en", "difficulty": "medium",
+    "tags": ["method_mechanism", "paraphrase"],
+    "question": "Which two pixel-magnitude transformations make the novel-view model insensitive to SAR radiometry and speckle?",
+    "expected_answer": "It combines multiplicative Rayleigh-speckle augmentation with random monotonic intensity remapping, learning features invariant to speckle while retaining structural and geometric information.",
+    "expected_key_points": ["Multiplicative Rayleigh speckle", "Random monotonic intensity remapping", "Preserve structural and geometric cues"],
+    "source_files": ["Noise-Tolerant_Novel-View_SAR_Synthesis_via_Denoising_Diffusion.pdf"], "source_pages": [1],
+    "notes": "Terminology mismatch between radiometry and named augmentations."
+  },
+  {
+    "id": "fact_028", "split": "test", "type": "fact", "language": "en", "difficulty": "medium",
+    "tags": ["method_mechanism", "lexical_mismatch"],
+    "question": "What replaces direct pixel-space supervision in the noise-tolerant novel-view diffusion model?",
+    "expected_answer": "Noise-robust self-supervised representations supervise a zero-1-to-3-based latent-diffusion generator through projected feature-matching loss, replacing fragile pixel-space comparisons.",
+    "expected_key_points": ["Projected feature-matching loss", "Noise-robust learned representations", "Latent diffusion adapted from zero-1-to-3"],
+    "source_files": ["Noise-Tolerant_Novel-View_SAR_Synthesis_via_Denoising_Diffusion.pdf"], "source_pages": [1],
+    "notes": "Asks for the supervision substitution rather than augmentation details."
+  },
+  {
+    "id": "fact_029", "split": "test", "type": "fact", "language": "en", "difficulty": "easy",
+    "tags": ["method_mechanism", "acronym"],
+    "question": "What modeling choices does the SAR DDPM baseline investigate for conditional and unconditional synthesis?",
+    "expected_answer": "It adapts a denoising diffusion probabilistic model to SAR and investigates the neural-network choice and diffusion parameters for both conditional and unconditional image generation.",
+    "expected_key_points": ["DDPM adapted to SAR", "Network choice", "Diffusion parameters", "Conditional and unconditional generation"],
+    "source_files": ["SAR_Image_Synthesis_with_Diffusion_Models.pdf"], "source_pages": [1],
+    "notes": "Baseline scope question."
+  },
+  {
+    "id": "fact_030", "split": "test", "type": "fact", "language": "en", "difficulty": "medium",
+    "tags": ["experiment_result", "lexical_mismatch"],
+    "question": "What benefit does large-scale clutter pretraining provide to the SAR diffusion baseline?",
+    "expected_answer": "Pretraining the DDPM on large-scale clutter data improves the quality of the generated SAR images beyond the already stronger DDPM baseline.",
+    "expected_key_points": ["Pretraining on large-scale clutter", "Higher-quality generated SAR images"],
+    "source_files": ["SAR_Image_Synthesis_with_Diffusion_Models.pdf"], "source_pages": [1],
+    "notes": "Focused pretraining effect."
+  },
+  {
+    "id": "fact_031", "split": "test", "type": "fact", "language": "en", "difficulty": "medium",
+    "tags": ["method_mechanism", "multi_evidence"],
+    "question": "How do the three modules in the azimuth-controllable GAN divide responsibility for producing an intermediate-angle target?",
+    "expected_answer": "The generator fuses target features from two known-angle inputs, the similarity discriminator enforces realism, and the azimuth predictor minimizes the difference between generated and desired azimuths.",
+    "expected_key_points": ["Generator fuses two inputs", "Similarity discriminator enforces realism", "Azimuth predictor enforces desired angle"],
+    "source_files": ["SAR_Target_Image_Generation_Method_Using_Azimuth-Controllable_Generative_Adversarial_Network.pdf"], "source_pages": [1],
+    "notes": "Three-component responsibility question."
+  },
+  {
+    "id": "fact_032", "split": "test", "type": "fact", "language": "zh", "difficulty": "hard",
+    "tags": ["zh_query_en_corpus", "numeric_detail", "experiment_result"],
+    "question": "方位可控 GAN 在约 200 个训练样本条件下报告的识别率是多少？",
+    "expected_answer": "论文报告在训练样本约为 200 个时，识别率仍达到 96.44%。",
+    "expected_key_points": ["Recognition rate 96.44%", "Around 200 training samples"],
+    "source_files": ["SAR_Target_Image_Generation_Method_Using_Azimuth-Controllable_Generative_Adversarial_Network.pdf"], "source_pages": [15],
+    "notes": "Non-abstract Chinese numeric result."
+  },
+  {
+    "id": "fact_033", "split": "test", "type": "fact", "language": "en", "difficulty": "medium",
+    "tags": ["method_mechanism", "downstream_task"],
+    "question": "What conditions does Ship-Go consume, and what training-ready output accompanies each inpainted SAR image?",
+    "expected_answer": "Ship-Go conditions its DDPM on visual ship instances and environment prompts, generates backscatter intensity for the inpainted SAR image, and produces corresponding instance-level annotations usable by detectors.",
+    "expected_key_points": ["Visual instance condition", "Environment prompt", "Instance-level annotations"],
+    "source_files": ["Ship_Go_SARShipImagesInpaintingviainstance_to_image Generative.pdf"], "source_pages": [1],
+    "notes": "Connects conditioning with detector-ready output."
+  },
+  {
+    "id": "fact_034", "split": "test", "type": "fact", "language": "en", "difficulty": "medium",
+    "tags": ["method_mechanism", "experiment_result"],
+    "question": "Which two generation scenarios does Ship-Go use to diversify objects and backgrounds?",
+    "expected_answer": "Ship-Go uses in-domain augmentation and out-of-domain augmentation to expand object and background diversity in the original dataset.",
+    "expected_key_points": ["In-domain augmentation", "Out-of-domain augmentation"],
+    "source_files": ["Ship_Go_SARShipImagesInpaintingviainstance_to_image Generative.pdf"], "source_pages": [1],
+    "notes": "Two-scenario distinction."
+  },
+  {
+    "id": "fact_035", "split": "test", "type": "fact", "language": "en", "difficulty": "medium",
+    "tags": ["method_mechanism", "lexical_mismatch"],
+    "question": "How are elevation or precipitation inputs incorporated when synthesizing imagery from a land-cover map?",
+    "expected_answer": "Spatially adaptive normalization layers fuse the land-cover map with auxiliary rasters such as DEM or precipitation data inside an encoder-decoder generator, adding information absent from the semantic map.",
+    "expected_key_points": ["Spatially adaptive normalization", "Fuse land-cover and auxiliary rasters", "Encoder-decoder generator"],
+    "source_files": ["Synthesizing_Optical_and_SAR_Imagery_From_Land_Cover_Maps_and_Auxiliary_Raster_Data.pdf"], "source_pages": [1],
+    "notes": "Auxiliary-fusion mechanism."
+  },
+  {
+    "id": "fact_036", "split": "test", "type": "fact", "language": "zh", "difficulty": "hard",
+    "tags": ["zh_query_en_corpus", "numeric_detail", "experiment_result"],
+    "question": "土地覆盖图条件生成方法验证了哪两种空间分辨率，并使用哪些指标评估辅助数据融合？",
+    "expected_answer": "该方法分别合成了 10 米中分辨率和 1 米高分辨率图像，并使用 mIoU、像素准确率和 FID 评估数据融合效果。",
+    "expected_key_points": ["10 m and 1 m resolution", "mIoU", "Pixel accuracy", "FID"],
+    "source_files": ["Synthesizing_Optical_and_SAR_Imagery_From_Land_Cover_Maps_and_Auxiliary_Raster_Data.pdf"], "source_pages": [1],
+    "notes": "Chinese multi-number and metric question."
+  },
+  {
+    "id": "fact_037", "split": "test", "type": "fact", "language": "en", "difficulty": "hard",
+    "tags": ["method_mechanism", "lexical_mismatch", "acronym"],
+    "question": "How is a diffusion prior made conditional on measured radar data despite having no explicit latent variable to optimize?",
+    "expected_answer": "The method embeds the maximum-a-posteriori SAR inverse-imaging objective derived from the received signal into diffusion conditional guidance, bypassing the lack of an explicit latent space.",
+    "expected_key_points": ["MAP SAR inverse-imaging objective", "Received signal", "Inserted as conditional diffusion guidance"],
+    "source_files": ["Synthetic_Aperture_Radar_Deep_Statistical_Imaging_Through_Diffusion_Generative_Model_Conditional_Inference.pdf"], "source_pages": [1],
+    "notes": "Mechanism without naming the paper."
+  },
+  {
+    "id": "fact_038", "split": "test", "type": "fact", "language": "en", "difficulty": "medium",
+    "tags": ["hard_negative", "method_mechanism"],
+    "question": "What limitation of existing plug-and-play SAR imaging motivates replacing its denoiser prior with a diffusion generative prior?",
+    "expected_answer": "Existing handcrafted or data-driven PnP denoisers are insufficient for complex remote-sensing scenes, whereas a stronger unconditional generative model can provide a more expressive image prior.",
+    "expected_key_points": ["Existing PnP denoisers insufficient for complex scenes", "Diffusion model provides stronger image prior"],
+    "source_files": ["Synthetic_Aperture_Radar_Deep_Statistical_Imaging_Through_Diffusion_Generative_Model_Conditional_Inference.pdf"], "source_pages": [1],
+    "notes": "Contrasts PnP and diffusion prior roles."
+  },
+  {
+    "id": "fact_039", "split": "test", "type": "fact", "language": "en", "difficulty": "medium",
+    "tags": ["privacy", "method_mechanism", "acronym"],
+    "question": "How does FAGD enable collaborative SAR generation without centralizing client imagery?",
+    "expected_answer": "Its federated-learning framework has clients exchange model weights rather than raw SAR data, reducing exposure of sensitive imagery while collaboratively training the generator.",
+    "expected_key_points": ["Exchange model weights", "No raw data exchange", "Collaborative federated training"],
+    "source_files": ["Towards_Secure_SAR_Image_Generation_via_Federated_Angle-Aware_Generative_Diffusion_Framework.pdf"], "source_pages": [1],
+    "notes": "Privacy mechanism question."
+  },
+  {
+    "id": "fact_040", "split": "test", "type": "fact", "language": "zh", "difficulty": "hard",
+    "tags": ["zh_query_en_corpus", "method_mechanism", "hard_negative"],
+    "question": "FAGD 的本地数据知识蒸馏如何缓解 non-IID 联邦训练中的过拟合？",
+    "expected_answer": "LDKD 让模型主要从较少出现的类别中蒸馏知识，从而在 non-IID 数据分布下改善泛化能力和鲁棒性并减轻过拟合。",
+    "expected_key_points": ["Distill primarily from less frequent classes", "Mitigate non-IID overfitting", "Improve generalization and robustness"],
+    "source_files": ["Towards_Secure_SAR_Image_Generation_via_Federated_Angle-Aware_Generative_Diffusion_Framework.pdf"], "source_pages": [1],
+    "notes": "Chinese query distinguishing LDKD from ordinary federated averaging."
+  },
+  {
+    "id": "comparison_006", "split": "dev", "type": "comparison", "language": "en", "difficulty": "hard",
+    "tags": ["angle_control", "architecture_comparison"],
+    "question": "How do AGSGAN and ATGAN differ in the way they control target azimuth and preserve SAR characteristics?",
+    "expected_answer": "AGSGAN uses an azimuth-guided statistical GAN to generate a target at a specified direction while matching SAR statistical distributions; ATGAN instead transforms an input SAR target image to another azimuth through an image-to-image generator and constrains feature/content preservation.",
+    "expected_key_points": ["AGSGAN uses azimuth guidance and statistical constraints", "ATGAN transforms an input image", "Different preservation mechanisms"],
+    "source_files": ["A_Directional_Generation_Algorithm_for_SAR_Image_Based_on_Azimuth-Guided_Statistical_Generative_Adversarial_Network.pdf", "ATGAN_A_SAR_Target_Image_Generation_Method_for_Automatic_Target_Recognition.pdf"], "source_pages": [1, 1],
+    "notes": "Compares two angle-controlled GAN formulations."
+  },
+  {
+    "id": "comparison_007", "split": "dev", "type": "comparison", "language": "zh", "difficulty": "hard",
+    "tags": ["zh_query_en_corpus", "angle_control", "architecture_comparison"],
+    "question": "ATGAN 与方位可控 GAN 的输入设计有何不同？",
+    "expected_answer": "ATGAN 以一幅已有 SAR 目标图像为输入并学习角度变换；方位可控 GAN 则输入两幅已知方位的 SAR 图像，融合二者的目标特征并生成两者之间的目标方位图像。",
+    "expected_key_points": ["ATGAN uses one existing image", "Azimuth-controllable GAN uses two known-azimuth images", "Single-image transformation versus two-image feature fusion"],
+    "source_files": ["ATGAN_A_SAR_Target_Image_Generation_Method_for_Automatic_Target_Recognition.pdf", "SAR_Target_Image_Generation_Method_Using_Azimuth-Controllable_Generative_Adversarial_Network.pdf"], "source_pages": [1, 1],
+    "notes": "Chinese architecture comparison."
+  },
+  {
+    "id": "comparison_008", "split": "dev", "type": "comparison", "language": "en", "difficulty": "hard",
+    "tags": ["diffusion", "annotation_generation"],
+    "question": "How do the classification-guided oil-spill diffusion model and Ship-Go obtain annotations together with synthetic images?",
+    "expected_answer": "The oil-spill method uses a classification-guided diffusion process to synthesize images and pixel-level masks synchronously, whereas Ship-Go conditions inpainting on ship instances and environment prompts and outputs corresponding instance-level annotations for each generated ship scene.",
+    "expected_key_points": ["Oil-spill model produces pixel masks", "Ship-Go produces instance annotations", "Both synchronize labels with images"],
+    "source_files": ["Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf", "Ship_Go_SARShipImagesInpaintingviainstance_to_image Generative.pdf"], "source_pages": [1, 1],
+    "notes": "Compares label granularity and conditioning."
+  },
+  {
+    "id": "comparison_009", "split": "dev", "type": "comparison", "language": "en", "difficulty": "hard",
+    "tags": ["diffusion", "frequency_domain", "hard_negative"],
+    "question": "What is the main model adaptation in DiffuSAR compared with the earlier general diffusion approach for SAR image synthesis?",
+    "expected_answer": "The earlier approach adapts a DDPM to SAR synthesis and studies pretraining and downstream utility; DiffuSAR explicitly separates and models frequency-domain characteristics with a frequency-aware module so that low- and high-frequency information receive different treatment.",
+    "expected_key_points": ["General DDPM adaptation in the baseline", "DiffuSAR adds frequency-aware modeling", "Different handling of frequency components"],
+    "source_files": ["SAR_Image_Synthesis_with_Diffusion_Models.pdf", "DiffuSAR_Frequency_Domain-Aware_Diffusion_Model_for_SAR_Image_Generation.pdf"], "source_pages": [1, 1],
+    "notes": "Distinguishes two similarly named diffusion papers."
+  },
+  {
+    "id": "comparison_010", "split": "dev", "type": "comparison", "language": "en", "difficulty": "hard",
+    "tags": ["few_shot", "architecture_comparison"],
+    "question": "How do the attribute-guided GAN and adversarial autoencoder differ in addressing few-shot SAR target generation?",
+    "expected_answer": "The attribute-guided GAN conditions generation on target attributes and uses an improved episodic training strategy for few-shot learning; the adversarial autoencoder learns encoded target knowledge with adversarial and cyclic-consistency objectives and uses rotated cropping to represent orientation under scarce samples.",
+    "expected_key_points": ["Attribute conditioning and episodic training", "Autoencoder latent and reconstruction learning", "Different scarcity strategies"],
+    "source_files": ["Attribute-Guided_Generative_Adversarial_Network_With_Improved_Episode_Training_Strategy_for_Few-Shot_SAR_Image_Generation.pdf", "Learning_to_Generate_SAR_Images_With_Adversarial_Autoencoder.pdf"], "source_pages": [1, 1],
+    "notes": "Few-shot mechanism comparison."
+  },
+  {
+    "id": "comparison_011", "split": "test", "type": "comparison", "language": "en", "difficulty": "hard",
+    "tags": ["scene_generation", "conditioning"],
+    "question": "How does BCNet's control over SAR backgrounds differ from synthesis conditioned on land-cover maps and auxiliary rasters?",
+    "expected_answer": "BCNet converts the background of an existing target image while preserving its target content, so control is tied to an input SAR sample. The land-cover method generates an entire optical or SAR scene from a semantic land-cover map and optionally fuses elevation or precipitation rasters for spatial control.",
+    "expected_key_points": ["BCNet converts an existing background", "Land-cover method generates a full scene", "Semantic and auxiliary raster conditioning"],
+    "source_files": ["BCNet_Background_Conversion_Network_for_SAR_Data_Generation.pdf", "Synthesizing_Optical_and_SAR_Imagery_From_Land_Cover_Maps_and_Auxiliary_Raster_Data.pdf"], "source_pages": [1, 1],
+    "notes": "Background conversion versus scene synthesis."
+  },
+  {
+    "id": "comparison_012", "split": "test", "type": "comparison", "language": "en", "difficulty": "hard",
+    "tags": ["few_shot", "conditioning"],
+    "question": "How do LDGAN and the attribute-guided GAN use labels or attributes differently during scarce-data SAR generation?",
+    "expected_answer": "LDGAN incorporates label information into an image-to-image adversarial framework to improve class-consistent target generation for recognition, while the attribute-guided GAN uses explicit target attributes together with episodic training to generalize from few examples.",
+    "expected_key_points": ["LDGAN uses class labels in image-to-image generation", "Attribute-guided GAN uses attributes", "Episodic few-shot objective"],
+    "source_files": ["LDGAN_A_Synthetic_Aperture_Radar_Image_Generation_Method_for_Automatic_Target_Recognition.pdf", "Attribute-Guided_Generative_Adversarial_Network_With_Improved_Episode_Training_Strategy_for_Few-Shot_SAR_Image_Generation.pdf"], "source_pages": [1, 1],
+    "notes": "Label-conditioning comparison."
+  },
+  {
+    "id": "comparison_013", "split": "test", "type": "comparison", "language": "en", "difficulty": "hard",
+    "tags": ["diffusion", "inverse_imaging", "noise_robustness"],
+    "question": "What roles does diffusion play in noise-tolerant novel-view synthesis versus deep statistical SAR imaging?",
+    "expected_answer": "In novel-view synthesis, diffusion is trained to generate alternate target views while remaining robust to noisy training imagery. In deep statistical imaging, an unconditional diffusion model serves as an image prior and is guided by the MAP inverse-imaging objective derived from measured radar signals.",
+    "expected_key_points": ["Novel-view generation under noisy data", "Diffusion as an image prior", "MAP measurement guidance"],
+    "source_files": ["Noise-Tolerant_Novel-View_SAR_Synthesis_via_Denoising_Diffusion.pdf", "Synthetic_Aperture_Radar_Deep_Statistical_Imaging_Through_Diffusion_Generative_Model_Conditional_Inference.pdf"], "source_pages": [1, 1],
+    "notes": "Separates synthesis and inverse-imaging uses."
+  },
+  {
+    "id": "comparison_014", "split": "test", "type": "comparison", "language": "zh", "difficulty": "hard",
+    "tags": ["zh_query_en_corpus", "diffusion", "conditioning"],
+    "question": "FAGD 与分类引导油污扩散模型中的条件信息分别服务于什么目标？",
+    "expected_answer": "FAGD 的角度条件用于在联邦训练中生成指定观测方位的 SAR 目标并提升跨客户端协作；油污模型的分类引导用于区分油污类别并同步生成图像与像素级掩膜，以摆脱人工标注。",
+    "expected_key_points": ["FAGD uses angle conditioning", "Oil-spill model uses class guidance", "Privacy-aware generation versus annotation-free segmentation data"],
+    "source_files": ["Towards_Secure_SAR_Image_Generation_via_Federated_Angle-Aware_Generative_Diffusion_Framework.pdf", "Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf"], "source_pages": [1, 1],
+    "notes": "Chinese comparison of conditional purposes."
+  },
+  {
+    "id": "comparison_015", "split": "test", "type": "comparison", "language": "en", "difficulty": "medium",
+    "tags": ["downstream_task", "data_augmentation"],
+    "question": "How are Ship-Go and BCNet synthetic samples used to improve downstream target detection or recognition?",
+    "expected_answer": "Ship-Go creates diverse inpainted ship scenes with instance annotations that can directly augment detector training. BCNet converts target backgrounds to enlarge environmental diversity while retaining target identity, producing additional samples for SAR target recognition.",
+    "expected_key_points": ["Ship-Go supplies annotated detector data", "BCNet diversifies backgrounds", "Both augment downstream training"],
+    "source_files": ["Ship_Go_SARShipImagesInpaintingviainstance_to_image Generative.pdf", "BCNet_Background_Conversion_Network_for_SAR_Data_Generation.pdf"], "source_pages": [1, 1],
+    "notes": "Downstream data-use comparison."
+  },
+  {
+    "id": "comparison_016", "split": "test", "type": "comparison", "language": "en", "difficulty": "medium",
+    "tags": ["scene_generation", "conditioning"],
+    "question": "What conditioning inputs distinguish land-cover-based scene synthesis from Ship-Go ship-image inpainting?",
+    "expected_answer": "Land-cover synthesis uses a semantic land-cover map plus optional geospatial rasters such as elevation or precipitation. Ship-Go uses visual ship-instance conditions and textual or categorical environment prompts to inpaint backscatter into an existing SAR scene.",
+    "expected_key_points": ["Land-cover map and auxiliary rasters", "Ship instances and environment prompts", "Full-scene synthesis versus inpainting"],
+    "source_files": ["Synthesizing_Optical_and_SAR_Imagery_From_Land_Cover_Maps_and_Auxiliary_Raster_Data.pdf", "Ship_Go_SARShipImagesInpaintingviainstance_to_image Generative.pdf"], "source_pages": [1, 1],
+    "notes": "Compares spatial conditioning inputs."
+  },
+  {
+    "id": "comparison_017", "split": "test", "type": "comparison", "language": "en", "difficulty": "hard",
+    "tags": ["angle_control", "few_shot"],
+    "question": "How is orientation diversity obtained in the adversarial-autoencoder approach versus the azimuth-controllable GAN?",
+    "expected_answer": "The adversarial-autoencoder pipeline uses rotated cropping while learning cyclically consistent reconstructions, so orientation diversity is augmentation-based. The azimuth-controllable GAN fuses two input images at known azimuths and uses an azimuth predictor to generate a desired intermediate view.",
+    "expected_key_points": ["Rotated cropping and cyclic consistency in AAE", "Two known-azimuth inputs and an azimuth predictor", "Augmentation versus controllable feature fusion"],
+    "source_files": ["Learning_to_Generate_SAR_Images_With_Adversarial_Autoencoder.pdf", "SAR_Target_Image_Generation_Method_Using_Azimuth-Controllable_Generative_Adversarial_Network.pdf"], "source_pages": [1, 1],
+    "notes": "Orientation mechanism distinction."
+  },
+  {
+    "id": "comparison_018", "split": "test", "type": "comparison", "language": "en", "difficulty": "hard",
+    "tags": ["angle_control", "privacy"],
+    "question": "How do AGSGAN and FAGD combine angle control with their respective secondary objectives?",
+    "expected_answer": "AGSGAN combines azimuth guidance with statistical constraints to improve directional SAR fidelity in a centralized GAN. FAGD combines angle-aware diffusion with federated optimization and local knowledge distillation so clients can collaborate without sharing raw data and remain robust to non-IID distributions.",
+    "expected_key_points": ["AGSGAN adds statistical constraints", "FAGD adds federated privacy", "Both condition on angle"],
+    "source_files": ["A_Directional_Generation_Algorithm_for_SAR_Image_Based_on_Azimuth-Guided_Statistical_Generative_Adversarial_Network.pdf", "Towards_Secure_SAR_Image_Generation_via_Federated_Angle-Aware_Generative_Diffusion_Framework.pdf"], "source_pages": [1, 1],
+    "notes": "Angle control with statistical versus federated goals."
+  },
+  {
+    "id": "comparison_019", "split": "test", "type": "comparison", "language": "en", "difficulty": "hard",
+    "tags": ["diffusion", "frequency_domain", "noise_robustness"],
+    "question": "Which failure mode is targeted by DiffuSAR and which by the noise-tolerant novel-view diffusion method?",
+    "expected_answer": "DiffuSAR targets inadequate modeling of SAR-specific high- and low-frequency content by adding frequency-aware processing. The noise-tolerant method targets degradation caused by noisy training images and seeks stable novel-view synthesis despite that contamination.",
+    "expected_key_points": ["DiffuSAR addresses frequency modeling", "Noise-tolerant method addresses contaminated training data", "Different failure modes"],
+    "source_files": ["DiffuSAR_Frequency_Domain-Aware_Diffusion_Model_for_SAR_Image_Generation.pdf", "Noise-Tolerant_Novel-View_SAR_Synthesis_via_Denoising_Diffusion.pdf"], "source_pages": [1, 1],
+    "notes": "Hard negative between diffusion variants."
+  },
+  {
+    "id": "comparison_020", "split": "test", "type": "comparison", "language": "en", "difficulty": "hard",
+    "tags": ["diffusion", "inverse_imaging"],
+    "question": "How does ordinary SAR image synthesis with a diffusion model differ from diffusion-based deep statistical imaging conditional inference?",
+    "expected_answer": "Ordinary synthesis learns the distribution of processed SAR images and samples new images, with pretraining evaluated for downstream tasks. Deep statistical imaging solves an inverse problem: an unconditional diffusion prior is steered by a MAP data-fidelity objective derived from received radar measurements to reconstruct an image.",
+    "expected_key_points": ["Unconditional distribution sampling", "Measurement-conditioned inverse reconstruction", "MAP data fidelity"],
+    "source_files": ["SAR_Image_Synthesis_with_Diffusion_Models.pdf", "Synthetic_Aperture_Radar_Deep_Statistical_Imaging_Through_Diffusion_Generative_Model_Conditional_Inference.pdf"], "source_pages": [1, 1],
+    "notes": "Synthesis versus inverse-imaging distinction."
+  },
+  {
+    "id": "cross_006", "split": "dev", "type": "cross_document", "language": "en", "difficulty": "hard",
+    "tags": ["angle_control", "multi_method_synthesis"],
+    "question": "Across AGSGAN, ATGAN, and the azimuth-controllable GAN, what are the three distinct routes to azimuth-controlled SAR target generation?",
+    "expected_answer": "AGSGAN injects adaptive-interval azimuth guidance into a statistically constrained GAN; ATGAN performs image-to-image transformation from one existing target view; the azimuth-controllable GAN fuses two target images at known azimuths and uses an azimuth predictor to generate a desired intermediate view.",
+    "expected_key_points": ["Statistical adaptive-interval guidance", "Single-image azimuth transformation", "Two-image feature fusion plus azimuth prediction"],
+    "source_files": ["A_Directional_Generation_Algorithm_for_SAR_Image_Based_on_Azimuth-Guided_Statistical_Generative_Adversarial_Network.pdf", "ATGAN_A_SAR_Target_Image_Generation_Method_for_Automatic_Target_Recognition.pdf", "SAR_Target_Image_Generation_Method_Using_Azimuth-Controllable_Generative_Adversarial_Network.pdf"], "source_pages": [1, 1, 1],
+    "notes": "Three-document angle-control synthesis."
+  },
+  {
+    "id": "cross_007", "split": "dev", "type": "cross_document", "language": "zh", "difficulty": "hard",
+    "tags": ["zh_query_en_corpus", "diffusion", "conditioning"],
+    "question": "油污分类引导模型、Ship-Go 与 FAGD 分别使用什么条件来控制扩散生成？",
+    "expected_answer": "油污模型使用类别引导并同步生成像素掩膜；Ship-Go 使用可视化船舶实例和环境提示进行图像修复；FAGD 使用观测角度条件，并在联邦学习中通过参数协作完成隐私保护训练。",
+    "expected_key_points": ["Class guidance", "Ship instance and environment prompt", "Angle-aware federated conditioning"],
+    "source_files": ["Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf", "Ship_Go_SARShipImagesInpaintingviainstance_to_image Generative.pdf", "Towards_Secure_SAR_Image_Generation_via_Federated_Angle-Aware_Generative_Diffusion_Framework.pdf"], "source_pages": [1, 1, 1],
+    "notes": "Chinese three-way diffusion-conditioning synthesis."
+  },
+  {
+    "id": "cross_008", "split": "dev", "type": "cross_document", "language": "en", "difficulty": "hard",
+    "tags": ["few_shot", "experiment_result"],
+    "question": "What evidence do the attribute-guided GAN, adversarial autoencoder, and classification-guided diffusion papers give that synthesis helps when labeled SAR data are scarce?",
+    "expected_answer": "The attribute-guided GAN reports improved few-shot generation through episodic training, the adversarial autoencoder augments very small target sets with reconstructed and transformed samples for recognition, and the classification-guided diffusion model creates oil-spill images together with masks so segmentation can be trained without manual annotations.",
+    "expected_key_points": ["Episodic few-shot generation", "Autoencoder-based scarce-sample augmentation", "Annotation-free image-mask generation"],
+    "source_files": ["Attribute-Guided_Generative_Adversarial_Network_With_Improved_Episode_Training_Strategy_for_Few-Shot_SAR_Image_Generation.pdf", "Learning_to_Generate_SAR_Images_With_Adversarial_Autoencoder.pdf", "Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf"], "source_pages": [1, 1, 1],
+    "notes": "Cross-paper scarce-label evidence."
+  },
+  {
+    "id": "cross_009", "split": "dev", "type": "cross_document", "language": "en", "difficulty": "hard",
+    "tags": ["content_preservation", "architecture_comparison"],
+    "question": "How do BCNet, noise-tolerant novel-view diffusion, and ATGAN preserve task-relevant target information while changing an image?",
+    "expected_answer": "BCNet changes the background while constraining the foreground target to remain intact; the noise-tolerant diffusion model learns stable target structure despite noisy inputs while synthesizing a new view; ATGAN uses image-to-image constraints to retain target identity and features as it changes azimuth.",
+    "expected_key_points": ["BCNet preserves foreground target", "Noise-tolerant diffusion preserves structure under noise", "ATGAN preserves identity across azimuth transformation"],
+    "source_files": ["BCNet_Background_Conversion_Network_for_SAR_Data_Generation.pdf", "Noise-Tolerant_Novel-View_SAR_Synthesis_via_Denoising_Diffusion.pdf", "ATGAN_A_SAR_Target_Image_Generation_Method_for_Automatic_Target_Recognition.pdf"], "source_pages": [1, 1, 1],
+    "notes": "Three preservation mechanisms."
+  },
+  {
+    "id": "cross_010", "split": "dev", "type": "cross_document", "language": "en", "difficulty": "hard",
+    "tags": ["labels", "downstream_task"],
+    "question": "How are labels or annotations used differently by LDGAN, the oil-spill diffusion model, and Ship-Go?",
+    "expected_answer": "LDGAN consumes target class labels as generation supervision for recognition-oriented samples. The oil-spill diffusion model generates pixel-level segmentation masks together with images. Ship-Go consumes ship-instance conditions and emits corresponding instance-level annotations for detector training.",
+    "expected_key_points": ["LDGAN consumes class labels", "Oil-spill model emits pixel masks", "Ship-Go consumes and emits instance information"],
+    "source_files": ["LDGAN_A_Synthetic_Aperture_Radar_Image_Generation_Method_for_Automatic_Target_Recognition.pdf", "Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf", "Ship_Go_SARShipImagesInpaintingviainstance_to_image Generative.pdf"], "source_pages": [1, 1, 1],
+    "notes": "Input supervision versus generated labels."
+  },
+  {
+    "id": "cross_011", "split": "test", "type": "cross_document", "language": "en", "difficulty": "hard",
+    "tags": ["statistics", "frequency_domain", "inverse_imaging"],
+    "question": "How are SAR-specific statistics or frequency characteristics exploited by AGSGAN, DiffuSAR, and deep statistical diffusion imaging?",
+    "expected_answer": "AGSGAN constrains generated targets with statistical SAR descriptors while following azimuth guidance. DiffuSAR explicitly processes high- and low-frequency components during diffusion generation. Deep statistical imaging combines a learned diffusion prior with a MAP physical measurement objective for conditional reconstruction.",
+    "expected_key_points": ["Statistical constraints in AGSGAN", "Frequency-aware processing in DiffuSAR", "MAP measurement statistics in inverse imaging"],
+    "source_files": ["A_Directional_Generation_Algorithm_for_SAR_Image_Based_on_Azimuth-Guided_Statistical_Generative_Adversarial_Network.pdf", "DiffuSAR_Frequency_Domain-Aware_Diffusion_Model_for_SAR_Image_Generation.pdf", "Synthetic_Aperture_Radar_Deep_Statistical_Imaging_Through_Diffusion_Generative_Model_Conditional_Inference.pdf"], "source_pages": [1, 1, 1],
+    "notes": "Cross-document SAR-prior synthesis."
+  },
+  {
+    "id": "cross_012", "split": "test", "type": "cross_document", "language": "en", "difficulty": "hard",
+    "tags": ["few_shot", "atr"],
+    "question": "What complementary strategies do the attribute-guided GAN, adversarial autoencoder, and LDGAN use to support ATR with limited samples?",
+    "expected_answer": "The attribute-guided GAN combines semantic attributes with episodic few-shot training; the adversarial autoencoder learns reconstructive latent representations and augments them through rotations or cropping; LDGAN injects class-label information into image-to-image adversarial generation to produce recognition-consistent targets.",
+    "expected_key_points": ["Attribute-guided episodic learning", "Autoencoder reconstruction and augmentation", "Label-driven image-to-image GAN"],
+    "source_files": ["Attribute-Guided_Generative_Adversarial_Network_With_Improved_Episode_Training_Strategy_for_Few-Shot_SAR_Image_Generation.pdf", "Learning_to_Generate_SAR_Images_With_Adversarial_Autoencoder.pdf", "LDGAN_A_Synthetic_Aperture_Radar_Image_Generation_Method_for_Automatic_Target_Recognition.pdf"], "source_pages": [1, 1, 1],
+    "notes": "Three few-shot ATR routes."
+  },
+  {
+    "id": "cross_013", "split": "test", "type": "cross_document", "language": "zh", "difficulty": "hard",
+    "tags": ["zh_query_en_corpus", "scene_generation", "conditioning"],
+    "question": "BCNet、Ship-Go 和土地覆盖图生成方法分别在什么粒度上控制 SAR 场景？",
+    "expected_answer": "BCNet 在已有目标图像上替换背景并保持目标；Ship-Go 在已有场景中按船舶实例和环境提示修复局部区域；土地覆盖图方法依据语义地图和辅助栅格生成完整场景。",
+    "expected_key_points": ["Background-level conversion", "Instance-level inpainting", "Full-scene semantic synthesis"],
+    "source_files": ["BCNet_Background_Conversion_Network_for_SAR_Data_Generation.pdf", "Ship_Go_SARShipImagesInpaintingviainstance_to_image Generative.pdf", "Synthesizing_Optical_and_SAR_Imagery_From_Land_Cover_Maps_and_Auxiliary_Raster_Data.pdf"], "source_pages": [1, 1, 1],
+    "notes": "Chinese scene-control granularity synthesis."
+  },
+  {
+    "id": "cross_014", "split": "test", "type": "cross_document", "language": "en", "difficulty": "hard",
+    "tags": ["diffusion", "architecture_comparison"],
+    "question": "What distinct SAR adaptations are introduced by the baseline diffusion synthesis paper, DiffuSAR, and the noise-tolerant novel-view method?",
+    "expected_answer": "The baseline demonstrates that a DDPM can learn SAR image distributions and benefit from pretraining. DiffuSAR adds explicit frequency-domain awareness. The noise-tolerant method modifies denoising diffusion for stable novel-view generation from contaminated SAR training data.",
+    "expected_key_points": ["General DDPM adaptation and pretraining", "Frequency-domain awareness", "Noise-tolerant novel-view learning"],
+    "source_files": ["SAR_Image_Synthesis_with_Diffusion_Models.pdf", "DiffuSAR_Frequency_Domain-Aware_Diffusion_Model_for_SAR_Image_Generation.pdf", "Noise-Tolerant_Novel-View_SAR_Synthesis_via_Denoising_Diffusion.pdf"], "source_pages": [1, 1, 1],
+    "notes": "Three diffusion adaptations."
+  },
+  {
+    "id": "cross_015", "split": "test", "type": "cross_document", "language": "en", "difficulty": "hard",
+    "tags": ["privacy", "noise_robustness", "labels"],
+    "question": "Which data risk is addressed by FAGD, the noise-tolerant diffusion method, and the classification-guided oil-spill model, respectively?",
+    "expected_answer": "FAGD addresses privacy and non-IID collaboration by federating model updates instead of raw imagery; the noise-tolerant method addresses corrupted training images; the oil-spill model addresses missing manual labels by jointly synthesizing images and masks.",
+    "expected_key_points": ["Privacy and non-IID federation", "Noisy training data", "Label scarcity"],
+    "source_files": ["Towards_Secure_SAR_Image_Generation_via_Federated_Angle-Aware_Generative_Diffusion_Framework.pdf", "Noise-Tolerant_Novel-View_SAR_Synthesis_via_Denoising_Diffusion.pdf", "Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf"], "source_pages": [1, 1, 1],
+    "notes": "Maps methods to different data risks."
+  },
+  {
+    "id": "cross_016", "split": "test", "type": "cross_document", "language": "en", "difficulty": "hard",
+    "tags": ["gan", "architecture_comparison"],
+    "question": "How do the discriminator or adversarial objectives differ across ATGAN, the azimuth-controllable GAN, and the adversarial autoencoder?",
+    "expected_answer": "ATGAN uses adversarial image-to-image learning together with constraints that preserve target content across azimuths. The azimuth-controllable GAN judges both realism and consistency with the requested angle. The adversarial autoencoder uses an adversarial discriminator to regularize the encoded latent distribution while reconstruction preserves the input.",
+    "expected_key_points": ["ATGAN image realism and content preservation", "Angle consistency in azimuth GAN", "Latent-distribution regularization in AAE"],
+    "source_files": ["ATGAN_A_SAR_Target_Image_Generation_Method_for_Automatic_Target_Recognition.pdf", "SAR_Target_Image_Generation_Method_Using_Azimuth-Controllable_Generative_Adversarial_Network.pdf", "Learning_to_Generate_SAR_Images_With_Adversarial_Autoencoder.pdf"], "source_pages": [1, 1, 1],
+    "notes": "Adversarial-objective comparison."
+  },
+  {
+    "id": "cross_017", "split": "test", "type": "cross_document", "language": "en", "difficulty": "hard",
+    "tags": ["image_to_image", "content_preservation"],
+    "question": "What is transformed and what should remain invariant in ATGAN, LDGAN, and BCNet?",
+    "expected_answer": "ATGAN transforms target azimuth while retaining identity and structural features. LDGAN maps labeled source samples into additional class-consistent SAR target images for recognition. BCNet transforms the surrounding background while keeping the foreground target unchanged.",
+    "expected_key_points": ["ATGAN changes azimuth", "LDGAN generates label-consistent targets", "BCNet changes background"],
+    "source_files": ["ATGAN_A_SAR_Target_Image_Generation_Method_for_Automatic_Target_Recognition.pdf", "LDGAN_A_Synthetic_Aperture_Radar_Image_Generation_Method_for_Automatic_Target_Recognition.pdf", "BCNet_Background_Conversion_Network_for_SAR_Data_Generation.pdf"], "source_pages": [1, 1, 1],
+    "notes": "Transformation and invariance synthesis."
+  },
+  {
+    "id": "cross_018", "split": "test", "type": "cross_document", "language": "en", "difficulty": "hard",
+    "tags": ["downstream_task", "scene_generation"],
+    "question": "Which downstream task is supported by synthetic data in the oil-spill model, Ship-Go, and land-cover-conditioned synthesis?",
+    "expected_answer": "The oil-spill model supplies paired images and pixel masks for segmentation; Ship-Go supplies diverse ship scenes and instance annotations for object detection; land-cover-conditioned synthesis is evaluated through semantic consistency and supports remote-sensing mapping or data augmentation across scene domains.",
+    "expected_key_points": ["Oil-spill segmentation", "Ship detection", "Semantic remote-sensing scene mapping or augmentation"],
+    "source_files": ["Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf", "Ship_Go_SARShipImagesInpaintingviainstance_to_image Generative.pdf", "Synthesizing_Optical_and_SAR_Imagery_From_Land_Cover_Maps_and_Auxiliary_Raster_Data.pdf"], "source_pages": [1, 1, 1],
+    "notes": "Downstream-task mapping."
+  },
+  {
+    "id": "cross_019", "split": "test", "type": "cross_document", "language": "en", "difficulty": "hard",
+    "tags": ["conditioning", "diffusion", "inverse_imaging"],
+    "question": "What prior or condition steers generation in deep statistical diffusion imaging, classification-guided oil-spill synthesis, and FAGD?",
+    "expected_answer": "Deep statistical imaging uses a learned unconditional diffusion image prior steered by a MAP objective from radar measurements. Oil-spill synthesis uses class guidance to control image-mask generation. FAGD uses observation-angle conditioning within federated diffusion training.",
+    "expected_key_points": ["MAP measurement condition", "Class guidance", "Angle condition"],
+    "source_files": ["Synthetic_Aperture_Radar_Deep_Statistical_Imaging_Through_Diffusion_Generative_Model_Conditional_Inference.pdf", "Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf", "Towards_Secure_SAR_Image_Generation_via_Federated_Angle-Aware_Generative_Diffusion_Framework.pdf"], "source_pages": [1, 1, 1],
+    "notes": "Three types of diffusion guidance."
+  },
+  {
+    "id": "cross_020", "split": "test", "type": "cross_document", "language": "zh", "difficulty": "hard",
+    "tags": ["zh_query_en_corpus", "limitations", "hard_negative"],
+    "question": "三篇论文分别试图克服哪些局限：油污 GAN 数据生成、PnP SAR 成像和仅用土地覆盖图的场景生成？",
+    "expected_answer": "油污工作指出 GAN 难以稳定生成高保真样本并同步获得可靠掩膜；深度统计成像指出传统或数据驱动 PnP 去噪先验难以表达复杂场景；土地覆盖图工作指出语义图不含高程、降水等信息，因此需要辅助栅格减少场景歧义。",
+    "expected_key_points": ["GAN fidelity and annotation limitation", "PnP prior insufficient for complex scenes", "Land-cover map lacks auxiliary physical information"],
+    "source_files": ["Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf", "Synthetic_Aperture_Radar_Deep_Statistical_Imaging_Through_Diffusion_Generative_Model_Conditional_Inference.pdf", "Synthesizing_Optical_and_SAR_Imagery_From_Land_Cover_Maps_and_Auxiliary_Raster_Data.pdf"], "source_pages": [1, 1, 1],
+    "notes": "Chinese cross-document limitation synthesis."
+  },
+  {
+    "id": "no_answer_006", "split": "dev", "type": "no_answer", "language": "en", "difficulty": "hard",
+    "tags": ["unanswerable", "resource_cost"],
+    "question": "What carbon emissions, in kilograms of CO2 equivalent, did each paper report for one complete training run?",
+    "expected_answer": "The provided papers do not report standardized carbon-emission measurements for complete training runs.",
+    "expected_key_points": ["Not reported in the corpus"], "source_files": [], "source_pages": [],
+    "notes": "Domain-relevant missing sustainability evidence."
+  },
+  {
+    "id": "no_answer_007", "split": "dev", "type": "no_answer", "language": "zh", "difficulty": "hard",
+    "tags": ["unanswerable", "deployment"],
+    "question": "这些方法在统一边缘 GPU 上进行实时推理时的 FPS 排名是什么？",
+    "expected_answer": "论文集没有在统一边缘 GPU 和统一输入设置下报告可比较的实时 FPS 排名。",
+    "expected_key_points": ["No standardized edge-GPU benchmark"], "source_files": [], "source_pages": [],
+    "notes": "Chinese unanswerable deployment benchmark."
+  },
+  {
+    "id": "no_answer_008", "split": "dev", "type": "no_answer", "language": "en", "difficulty": "hard",
+    "tags": ["unanswerable", "raw_signal"],
+    "question": "Which method best preserves phase fidelity when generating raw complex I/Q SAR data rather than detected intensity images?",
+    "expected_answer": "The corpus does not provide a controlled comparison of raw complex I/Q generation and phase fidelity.",
+    "expected_key_points": ["Raw complex I/Q comparison absent"], "source_files": [], "source_pages": [],
+    "notes": "Plausible but unsupported modality comparison."
+  },
+  {
+    "id": "no_answer_009", "split": "dev", "type": "no_answer", "language": "en", "difficulty": "hard",
+    "tags": ["unanswerable", "polarimetry"],
+    "question": "How accurately do the generators preserve the full polarimetric coherency matrix across HH, HV, VH, and VV channels?",
+    "expected_answer": "The selected papers do not report full-polarimetric coherency-matrix preservation across all four channels.",
+    "expected_key_points": ["Full-polarimetric evidence absent"], "source_files": [], "source_pages": [],
+    "notes": "In-domain missing polarimetric evaluation."
+  },
+  {
+    "id": "no_answer_010", "split": "dev", "type": "no_answer", "language": "en", "difficulty": "hard",
+    "tags": ["unanswerable", "interferometry"],
+    "question": "What interferometric phase error do the methods achieve when their outputs are used to form an InSAR pair?",
+    "expected_answer": "No interferometric phase-accuracy experiment for generated InSAR pairs is reported in the corpus.",
+    "expected_key_points": ["InSAR phase experiment absent"], "source_files": [], "source_pages": [],
+    "notes": "In-domain unsupported evaluation."
+  },
+  {
+    "id": "no_answer_011", "split": "test", "type": "no_answer", "language": "en", "difficulty": "hard",
+    "tags": ["unanswerable", "compute"],
+    "question": "What is the exact FLOP count of every method under a standardized 256 by 256 input and batch size of one?",
+    "expected_answer": "The papers do not provide standardized FLOP counts for every method under that common setting.",
+    "expected_key_points": ["Standardized FLOP comparison absent"], "source_files": [], "source_pages": [],
+    "notes": "Missing cross-paper compute benchmark."
+  },
+  {
+    "id": "no_answer_012", "split": "test", "type": "no_answer", "language": "en", "difficulty": "hard",
+    "tags": ["unanswerable", "security"],
+    "question": "Which generator is most robust to a white-box adversarial attack on the downstream SAR classifier?",
+    "expected_answer": "The corpus does not report a common white-box adversarial-attack evaluation of downstream classifiers.",
+    "expected_key_points": ["Adversarial robustness comparison absent"], "source_files": [], "source_pages": [],
+    "notes": "Security topic distinct from federated privacy."
+  },
+  {
+    "id": "no_answer_013", "split": "test", "type": "no_answer", "language": "en", "difficulty": "hard",
+    "tags": ["unanswerable", "uncertainty"],
+    "question": "What expected calibration error does each model achieve for uncertainty estimates on generated SAR images?",
+    "expected_answer": "Expected calibration error for uncertainty estimates is not reported across these generation methods.",
+    "expected_key_points": ["Uncertainty calibration evidence absent"], "source_files": [], "source_pages": [],
+    "notes": "Missing uncertainty-calibration evidence."
+  },
+  {
+    "id": "no_answer_014", "split": "test", "type": "no_answer", "language": "zh", "difficulty": "hard",
+    "tags": ["unanswerable", "geophysical_retrieval"],
+    "question": "使用合成 SAR 图像后，海面风速反演的均方根误差降低了多少？",
+    "expected_answer": "当前论文集没有报告合成图像对海面风速反演误差的影响。",
+    "expected_key_points": ["Wind-speed retrieval evidence absent"], "source_files": [], "source_pages": [],
+    "notes": "Chinese in-domain unsupported downstream task."
+  },
+  {
+    "id": "no_answer_015", "split": "test", "type": "no_answer", "language": "en", "difficulty": "hard",
+    "tags": ["unanswerable", "deployment"],
+    "question": "What end-to-end latency is achieved when each model runs onboard a satellite from raw echo ingestion to image output?",
+    "expected_answer": "No satellite-onboard end-to-end latency from raw echo ingestion is reported for these models.",
+    "expected_key_points": ["Onboard latency evidence absent"], "source_files": [], "source_pages": [],
+    "notes": "Deployment question unsupported by corpus."
+  },
+  {
+    "id": "no_answer_016", "split": "test", "type": "no_answer", "language": "en", "difficulty": "hard",
+    "tags": ["unanswerable", "security"],
+    "question": "Which framework passed a formal third-party security audit for deployment with classified SAR imagery?",
+    "expected_answer": "The papers do not report a formal third-party security certification or audit for classified deployment.",
+    "expected_key_points": ["Formal security audit absent"], "source_files": [], "source_pages": [],
+    "notes": "Avoids confusing a research privacy claim with certification."
+  },
+  {
+    "id": "no_answer_017", "split": "test", "type": "no_answer", "language": "en", "difficulty": "hard",
+    "tags": ["unanswerable", "human_evaluation"],
+    "question": "What mean-opinion score did trained SAR analysts assign to each method in a blinded perceptual study?",
+    "expected_answer": "No common blinded analyst study with mean-opinion scores is reported in the selected corpus.",
+    "expected_key_points": ["Blinded human study absent"], "source_files": [], "source_pages": [],
+    "notes": "Missing human-evaluation benchmark."
+  },
+  {
+    "id": "no_answer_018", "split": "test", "type": "no_answer", "language": "en", "difficulty": "hard",
+    "tags": ["unanswerable", "causality"],
+    "question": "What formal causal guarantee proves that changing only the azimuth condition cannot alter target identity?",
+    "expected_answer": "The angle-controlled papers do not provide a formal causal invariance proof of target identity.",
+    "expected_key_points": ["Causal guarantee absent"], "source_files": [], "source_pages": [],
+    "notes": "Hard unanswerable about a stronger claim than empirical control."
+  },
+  {
+    "id": "no_answer_019", "split": "test", "type": "no_answer", "language": "zh", "difficulty": "hard",
+    "tags": ["unanswerable", "regulation"],
+    "question": "哪些生成模型已经获得可用于军事遥感生产流程的监管认证？",
+    "expected_answer": "论文集没有提供任何面向军事遥感生产部署的监管认证信息。",
+    "expected_key_points": ["Regulatory certification absent"], "source_files": [], "source_pages": [],
+    "notes": "Chinese unsupported certification question."
+  },
+  {
+    "id": "no_answer_020", "split": "test", "type": "no_answer", "language": "en", "difficulty": "hard",
+    "tags": ["unanswerable", "cross_sensor"],
+    "question": "After calibration on one sensor, what absolute radiometric error do all methods achieve on every other SAR satellite?",
+    "expected_answer": "The corpus does not provide an all-method, all-sensor radiometric calibration benchmark.",
+    "expected_key_points": ["Cross-sensor calibration benchmark absent"], "source_files": [], "source_pages": [],
+    "notes": "Missing standardized cross-sensor evidence."
   }
 ]

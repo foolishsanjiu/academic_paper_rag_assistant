@@ -1,0 +1,1673 @@
+{
+  "fact_001": [
+    {
+      "chunk_id": "94745577d08eeecb::page_1::chunk_2",
+      "file_name": "A_Directional_Generation_Algorithm_for_SAR_Image_Based_on_Azimuth-Guided_Statistical_Generative_Adversarial_Network.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "fact_002": [
+    {
+      "chunk_id": "839765ec83c5d156::page_1::chunk_2",
+      "file_name": "Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "839765ec83c5d156::page_1::chunk_3",
+      "file_name": "Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "fact_003": [
+    {
+      "chunk_id": "35a65a0ca386b260::page_1::chunk_2",
+      "file_name": "ATGAN_A_SAR_Target_Image_Generation_Method_for_Automatic_Target_Recognition.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "fact_004": [
+    {
+      "chunk_id": "3a87dfa17edb9a9c::page_1::chunk_2",
+      "file_name": "Attribute-Guided_Generative_Adversarial_Network_With_Improved_Episode_Training_Strategy_for_Few-Shot_SAR_Image_Generation.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "fact_005": [
+    {
+      "chunk_id": "b69d94be1b887bf1::page_1::chunk_2",
+      "file_name": "BCNet_Background_Conversion_Network_for_SAR_Data_Generation.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "fact_006": [
+    {
+      "chunk_id": "cf46cdbeb0170998::page_1::chunk_2",
+      "file_name": "DiffuSAR_Frequency_Domain-Aware_Diffusion_Model_for_SAR_Image_Generation.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "fact_007": [
+    {
+      "chunk_id": "e59f7083701ab7a5::page_1::chunk_1",
+      "file_name": "LDGAN_A_Synthetic_Aperture_Radar_Image_Generation_Method_for_Automatic_Target_Recognition.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "e59f7083701ab7a5::page_1::chunk_2",
+      "file_name": "LDGAN_A_Synthetic_Aperture_Radar_Image_Generation_Method_for_Automatic_Target_Recognition.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "fact_008": [
+    {
+      "chunk_id": "23cb1d819b8f4260::page_1::chunk_2",
+      "file_name": "Learning_to_Generate_SAR_Images_With_Adversarial_Autoencoder.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "23cb1d819b8f4260::page_1::chunk_3",
+      "file_name": "Learning_to_Generate_SAR_Images_With_Adversarial_Autoencoder.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "fact_009": [
+    {
+      "chunk_id": "37adac4f62176ddb::page_1::chunk_1",
+      "file_name": "Noise-Tolerant_Novel-View_SAR_Synthesis_via_Denoising_Diffusion.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "fact_010": [
+    {
+      "chunk_id": "851b27fc272a4fe3::page_1::chunk_2",
+      "file_name": "Synthetic_Aperture_Radar_Deep_Statistical_Imaging_Through_Diffusion_Generative_Model_Conditional_Inference.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "851b27fc272a4fe3::page_1::chunk_3",
+      "file_name": "Synthetic_Aperture_Radar_Deep_Statistical_Imaging_Through_Diffusion_Generative_Model_Conditional_Inference.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "comparison_001": [
+    {
+      "chunk_id": "35a65a0ca386b260::page_1::chunk_2",
+      "file_name": "ATGAN_A_SAR_Target_Image_Generation_Method_for_Automatic_Target_Recognition.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "9ea1895421b1ad48::page_1::chunk_2",
+      "file_name": "SAR_Target_Image_Generation_Method_Using_Azimuth-Controllable_Generative_Adversarial_Network.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "comparison_002": [
+    {
+      "chunk_id": "94745577d08eeecb::page_1::chunk_2",
+      "file_name": "A_Directional_Generation_Algorithm_for_SAR_Image_Based_on_Azimuth-Guided_Statistical_Generative_Adversarial_Network.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "cf46cdbeb0170998::page_1::chunk_2",
+      "file_name": "DiffuSAR_Frequency_Domain-Aware_Diffusion_Model_for_SAR_Image_Generation.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "comparison_003": [
+    {
+      "chunk_id": "3a87dfa17edb9a9c::page_1::chunk_2",
+      "file_name": "Attribute-Guided_Generative_Adversarial_Network_With_Improved_Episode_Training_Strategy_for_Few-Shot_SAR_Image_Generation.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "23cb1d819b8f4260::page_1::chunk_1",
+      "file_name": "Learning_to_Generate_SAR_Images_With_Adversarial_Autoencoder.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "23cb1d819b8f4260::page_1::chunk_2",
+      "file_name": "Learning_to_Generate_SAR_Images_With_Adversarial_Autoencoder.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "comparison_004": [
+    {
+      "chunk_id": "839765ec83c5d156::page_1::chunk_2",
+      "file_name": "Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "f88cb45fe593fe8e::page_1::chunk_3",
+      "file_name": "Ship_Go_SARShipImagesInpaintingviainstance_to_image Generative.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "comparison_005": [
+    {
+      "chunk_id": "3d3ee0ab76489bbe::page_1::chunk_1",
+      "file_name": "SAR_Image_Synthesis_with_Diffusion_Models.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "3d3ee0ab76489bbe::page_1::chunk_2",
+      "file_name": "SAR_Image_Synthesis_with_Diffusion_Models.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "cf46cdbeb0170998::page_1::chunk_2",
+      "file_name": "DiffuSAR_Frequency_Domain-Aware_Diffusion_Model_for_SAR_Image_Generation.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "cf46cdbeb0170998::page_1::chunk_3",
+      "file_name": "DiffuSAR_Frequency_Domain-Aware_Diffusion_Model_for_SAR_Image_Generation.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "cross_001": [
+    {
+      "chunk_id": "839765ec83c5d156::page_1::chunk_1",
+      "file_name": "Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "cf46cdbeb0170998::page_1::chunk_1",
+      "file_name": "DiffuSAR_Frequency_Domain-Aware_Diffusion_Model_for_SAR_Image_Generation.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "cross_002": [
+    {
+      "chunk_id": "94745577d08eeecb::page_1::chunk_2",
+      "file_name": "A_Directional_Generation_Algorithm_for_SAR_Image_Based_on_Azimuth-Guided_Statistical_Generative_Adversarial_Network.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "9ea1895421b1ad48::page_1::chunk_1",
+      "file_name": "SAR_Target_Image_Generation_Method_Using_Azimuth-Controllable_Generative_Adversarial_Network.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "9ea1895421b1ad48::page_1::chunk_2",
+      "file_name": "SAR_Target_Image_Generation_Method_Using_Azimuth-Controllable_Generative_Adversarial_Network.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "5b120767fbe94ef9::page_1::chunk_2",
+      "file_name": "Towards_Secure_SAR_Image_Generation_via_Federated_Angle-Aware_Generative_Diffusion_Framework.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "cross_003": [
+    {
+      "chunk_id": "3a87dfa17edb9a9c::page_1::chunk_2",
+      "file_name": "Attribute-Guided_Generative_Adversarial_Network_With_Improved_Episode_Training_Strategy_for_Few-Shot_SAR_Image_Generation.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "3a87dfa17edb9a9c::page_1::chunk_3",
+      "file_name": "Attribute-Guided_Generative_Adversarial_Network_With_Improved_Episode_Training_Strategy_for_Few-Shot_SAR_Image_Generation.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "b69d94be1b887bf1::page_1::chunk_1",
+      "file_name": "BCNet_Background_Conversion_Network_for_SAR_Data_Generation.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "b69d94be1b887bf1::page_1::chunk_3",
+      "file_name": "BCNet_Background_Conversion_Network_for_SAR_Data_Generation.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "f88cb45fe593fe8e::page_1::chunk_3",
+      "file_name": "Ship_Go_SARShipImagesInpaintingviainstance_to_image Generative.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "f88cb45fe593fe8e::page_1::chunk_4",
+      "file_name": "Ship_Go_SARShipImagesInpaintingviainstance_to_image Generative.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "cross_004": [
+    {
+      "chunk_id": "839765ec83c5d156::page_1::chunk_2",
+      "file_name": "Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "f88cb45fe593fe8e::page_1::chunk_3",
+      "file_name": "Ship_Go_SARShipImagesInpaintingviainstance_to_image Generative.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "e1080d32ffe042fc::page_1::chunk_1",
+      "file_name": "Synthesizing_Optical_and_SAR_Imagery_From_Land_Cover_Maps_and_Auxiliary_Raster_Data.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "cross_005": [
+    {
+      "chunk_id": "37adac4f62176ddb::page_1::chunk_1",
+      "file_name": "Noise-Tolerant_Novel-View_SAR_Synthesis_via_Denoising_Diffusion.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "5b120767fbe94ef9::page_1::chunk_2",
+      "file_name": "Towards_Secure_SAR_Image_Generation_via_Federated_Angle-Aware_Generative_Diffusion_Framework.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "5b120767fbe94ef9::page_1::chunk_3",
+      "file_name": "Towards_Secure_SAR_Image_Generation_via_Federated_Angle-Aware_Generative_Diffusion_Framework.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "no_answer_001": [],
+  "no_answer_002": [],
+  "no_answer_003": [],
+  "no_answer_004": [],
+  "no_answer_005": [],
+  "fact_011": [
+    {
+      "chunk_id": "94745577d08eeecb::page_1::chunk_1",
+      "file_name": "A_Directional_Generation_Algorithm_for_SAR_Image_Based_on_Azimuth-Guided_Statistical_Generative_Adversarial_Network.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "94745577d08eeecb::page_1::chunk_2",
+      "file_name": "A_Directional_Generation_Algorithm_for_SAR_Image_Based_on_Azimuth-Guided_Statistical_Generative_Adversarial_Network.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "fact_012": [
+    {
+      "chunk_id": "94745577d08eeecb::page_1::chunk_2",
+      "file_name": "A_Directional_Generation_Algorithm_for_SAR_Image_Based_on_Azimuth-Guided_Statistical_Generative_Adversarial_Network.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "fact_013": [
+    {
+      "chunk_id": "839765ec83c5d156::page_1::chunk_1",
+      "file_name": "Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "839765ec83c5d156::page_1::chunk_2",
+      "file_name": "Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "fact_014": [
+    {
+      "chunk_id": "839765ec83c5d156::page_1::chunk_3",
+      "file_name": "Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "839765ec83c5d156::page_1::chunk_4",
+      "file_name": "Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "fact_015": [
+    {
+      "chunk_id": "35a65a0ca386b260::page_1::chunk_1",
+      "file_name": "ATGAN_A_SAR_Target_Image_Generation_Method_for_Automatic_Target_Recognition.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "35a65a0ca386b260::page_1::chunk_2",
+      "file_name": "ATGAN_A_SAR_Target_Image_Generation_Method_for_Automatic_Target_Recognition.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "fact_016": [
+    {
+      "chunk_id": "35a65a0ca386b260::page_16::chunk_1",
+      "file_name": "ATGAN_A_SAR_Target_Image_Generation_Method_for_Automatic_Target_Recognition.pdf",
+      "page_number": 16,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "fact_017": [
+    {
+      "chunk_id": "3a87dfa17edb9a9c::page_1::chunk_2",
+      "file_name": "Attribute-Guided_Generative_Adversarial_Network_With_Improved_Episode_Training_Strategy_for_Few-Shot_SAR_Image_Generation.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "fact_018": [
+    {
+      "chunk_id": "3a87dfa17edb9a9c::page_1::chunk_4",
+      "file_name": "Attribute-Guided_Generative_Adversarial_Network_With_Improved_Episode_Training_Strategy_for_Few-Shot_SAR_Image_Generation.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "fact_019": [
+    {
+      "chunk_id": "b69d94be1b887bf1::page_1::chunk_1",
+      "file_name": "BCNet_Background_Conversion_Network_for_SAR_Data_Generation.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "fact_020": [
+    {
+      "chunk_id": "b69d94be1b887bf1::page_1::chunk_3",
+      "file_name": "BCNet_Background_Conversion_Network_for_SAR_Data_Generation.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "fact_021": [
+    {
+      "chunk_id": "cf46cdbeb0170998::page_1::chunk_2",
+      "file_name": "DiffuSAR_Frequency_Domain-Aware_Diffusion_Model_for_SAR_Image_Generation.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "fact_022": [
+    {
+      "chunk_id": "cf46cdbeb0170998::page_1::chunk_3",
+      "file_name": "DiffuSAR_Frequency_Domain-Aware_Diffusion_Model_for_SAR_Image_Generation.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "fact_023": [
+    {
+      "chunk_id": "e59f7083701ab7a5::page_1::chunk_2",
+      "file_name": "LDGAN_A_Synthetic_Aperture_Radar_Image_Generation_Method_for_Automatic_Target_Recognition.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "fact_024": [
+    {
+      "chunk_id": "e59f7083701ab7a5::page_1::chunk_3",
+      "file_name": "LDGAN_A_Synthetic_Aperture_Radar_Image_Generation_Method_for_Automatic_Target_Recognition.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "fact_025": [
+    {
+      "chunk_id": "23cb1d819b8f4260::page_1::chunk_1",
+      "file_name": "Learning_to_Generate_SAR_Images_With_Adversarial_Autoencoder.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "23cb1d819b8f4260::page_1::chunk_2",
+      "file_name": "Learning_to_Generate_SAR_Images_With_Adversarial_Autoencoder.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "fact_026": [
+    {
+      "chunk_id": "23cb1d819b8f4260::page_1::chunk_3",
+      "file_name": "Learning_to_Generate_SAR_Images_With_Adversarial_Autoencoder.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "fact_027": [
+    {
+      "chunk_id": "37adac4f62176ddb::page_1::chunk_1",
+      "file_name": "Noise-Tolerant_Novel-View_SAR_Synthesis_via_Denoising_Diffusion.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "fact_028": [
+    {
+      "chunk_id": "37adac4f62176ddb::page_1::chunk_1",
+      "file_name": "Noise-Tolerant_Novel-View_SAR_Synthesis_via_Denoising_Diffusion.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "fact_029": [
+    {
+      "chunk_id": "3d3ee0ab76489bbe::page_1::chunk_1",
+      "file_name": "SAR_Image_Synthesis_with_Diffusion_Models.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "fact_030": [
+    {
+      "chunk_id": "3d3ee0ab76489bbe::page_1::chunk_2",
+      "file_name": "SAR_Image_Synthesis_with_Diffusion_Models.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "fact_031": [
+    {
+      "chunk_id": "9ea1895421b1ad48::page_1::chunk_1",
+      "file_name": "SAR_Target_Image_Generation_Method_Using_Azimuth-Controllable_Generative_Adversarial_Network.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "9ea1895421b1ad48::page_1::chunk_2",
+      "file_name": "SAR_Target_Image_Generation_Method_Using_Azimuth-Controllable_Generative_Adversarial_Network.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "fact_032": [
+    {
+      "chunk_id": "9ea1895421b1ad48::page_15::chunk_1",
+      "file_name": "SAR_Target_Image_Generation_Method_Using_Azimuth-Controllable_Generative_Adversarial_Network.pdf",
+      "page_number": 15,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "9ea1895421b1ad48::page_15::chunk_2",
+      "file_name": "SAR_Target_Image_Generation_Method_Using_Azimuth-Controllable_Generative_Adversarial_Network.pdf",
+      "page_number": 15,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "fact_033": [
+    {
+      "chunk_id": "f88cb45fe593fe8e::page_1::chunk_3",
+      "file_name": "Ship_Go_SARShipImagesInpaintingviainstance_to_image Generative.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "fact_034": [
+    {
+      "chunk_id": "f88cb45fe593fe8e::page_1::chunk_4",
+      "file_name": "Ship_Go_SARShipImagesInpaintingviainstance_to_image Generative.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "fact_035": [
+    {
+      "chunk_id": "e1080d32ffe042fc::page_1::chunk_0",
+      "file_name": "Synthesizing_Optical_and_SAR_Imagery_From_Land_Cover_Maps_and_Auxiliary_Raster_Data.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "e1080d32ffe042fc::page_1::chunk_1",
+      "file_name": "Synthesizing_Optical_and_SAR_Imagery_From_Land_Cover_Maps_and_Auxiliary_Raster_Data.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "fact_036": [
+    {
+      "chunk_id": "e1080d32ffe042fc::page_1::chunk_1",
+      "file_name": "Synthesizing_Optical_and_SAR_Imagery_From_Land_Cover_Maps_and_Auxiliary_Raster_Data.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "e1080d32ffe042fc::page_1::chunk_2",
+      "file_name": "Synthesizing_Optical_and_SAR_Imagery_From_Land_Cover_Maps_and_Auxiliary_Raster_Data.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "fact_037": [
+    {
+      "chunk_id": "851b27fc272a4fe3::page_1::chunk_2",
+      "file_name": "Synthetic_Aperture_Radar_Deep_Statistical_Imaging_Through_Diffusion_Generative_Model_Conditional_Inference.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "851b27fc272a4fe3::page_1::chunk_3",
+      "file_name": "Synthetic_Aperture_Radar_Deep_Statistical_Imaging_Through_Diffusion_Generative_Model_Conditional_Inference.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "fact_038": [
+    {
+      "chunk_id": "851b27fc272a4fe3::page_1::chunk_1",
+      "file_name": "Synthetic_Aperture_Radar_Deep_Statistical_Imaging_Through_Diffusion_Generative_Model_Conditional_Inference.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "851b27fc272a4fe3::page_1::chunk_2",
+      "file_name": "Synthetic_Aperture_Radar_Deep_Statistical_Imaging_Through_Diffusion_Generative_Model_Conditional_Inference.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "fact_039": [
+    {
+      "chunk_id": "5b120767fbe94ef9::page_1::chunk_2",
+      "file_name": "Towards_Secure_SAR_Image_Generation_via_Federated_Angle-Aware_Generative_Diffusion_Framework.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "fact_040": [
+    {
+      "chunk_id": "5b120767fbe94ef9::page_1::chunk_3",
+      "file_name": "Towards_Secure_SAR_Image_Generation_via_Federated_Angle-Aware_Generative_Diffusion_Framework.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "comparison_006": [
+    {
+      "chunk_id": "94745577d08eeecb::page_1::chunk_1",
+      "file_name": "A_Directional_Generation_Algorithm_for_SAR_Image_Based_on_Azimuth-Guided_Statistical_Generative_Adversarial_Network.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "94745577d08eeecb::page_1::chunk_2",
+      "file_name": "A_Directional_Generation_Algorithm_for_SAR_Image_Based_on_Azimuth-Guided_Statistical_Generative_Adversarial_Network.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "35a65a0ca386b260::page_1::chunk_1",
+      "file_name": "ATGAN_A_SAR_Target_Image_Generation_Method_for_Automatic_Target_Recognition.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "35a65a0ca386b260::page_1::chunk_2",
+      "file_name": "ATGAN_A_SAR_Target_Image_Generation_Method_for_Automatic_Target_Recognition.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "comparison_007": [
+    {
+      "chunk_id": "35a65a0ca386b260::page_1::chunk_1",
+      "file_name": "ATGAN_A_SAR_Target_Image_Generation_Method_for_Automatic_Target_Recognition.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "35a65a0ca386b260::page_1::chunk_2",
+      "file_name": "ATGAN_A_SAR_Target_Image_Generation_Method_for_Automatic_Target_Recognition.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "9ea1895421b1ad48::page_1::chunk_1",
+      "file_name": "SAR_Target_Image_Generation_Method_Using_Azimuth-Controllable_Generative_Adversarial_Network.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "9ea1895421b1ad48::page_1::chunk_2",
+      "file_name": "SAR_Target_Image_Generation_Method_Using_Azimuth-Controllable_Generative_Adversarial_Network.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "comparison_008": [
+    {
+      "chunk_id": "839765ec83c5d156::page_1::chunk_2",
+      "file_name": "Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "f88cb45fe593fe8e::page_1::chunk_3",
+      "file_name": "Ship_Go_SARShipImagesInpaintingviainstance_to_image Generative.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "comparison_009": [
+    {
+      "chunk_id": "3d3ee0ab76489bbe::page_1::chunk_1",
+      "file_name": "SAR_Image_Synthesis_with_Diffusion_Models.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "3d3ee0ab76489bbe::page_1::chunk_2",
+      "file_name": "SAR_Image_Synthesis_with_Diffusion_Models.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "cf46cdbeb0170998::page_1::chunk_2",
+      "file_name": "DiffuSAR_Frequency_Domain-Aware_Diffusion_Model_for_SAR_Image_Generation.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "comparison_010": [
+    {
+      "chunk_id": "3a87dfa17edb9a9c::page_1::chunk_2",
+      "file_name": "Attribute-Guided_Generative_Adversarial_Network_With_Improved_Episode_Training_Strategy_for_Few-Shot_SAR_Image_Generation.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "23cb1d819b8f4260::page_1::chunk_1",
+      "file_name": "Learning_to_Generate_SAR_Images_With_Adversarial_Autoencoder.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "23cb1d819b8f4260::page_1::chunk_2",
+      "file_name": "Learning_to_Generate_SAR_Images_With_Adversarial_Autoencoder.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "comparison_011": [
+    {
+      "chunk_id": "b69d94be1b887bf1::page_1::chunk_1",
+      "file_name": "BCNet_Background_Conversion_Network_for_SAR_Data_Generation.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "e1080d32ffe042fc::page_1::chunk_0",
+      "file_name": "Synthesizing_Optical_and_SAR_Imagery_From_Land_Cover_Maps_and_Auxiliary_Raster_Data.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "e1080d32ffe042fc::page_1::chunk_1",
+      "file_name": "Synthesizing_Optical_and_SAR_Imagery_From_Land_Cover_Maps_and_Auxiliary_Raster_Data.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "comparison_012": [
+    {
+      "chunk_id": "e59f7083701ab7a5::page_1::chunk_1",
+      "file_name": "LDGAN_A_Synthetic_Aperture_Radar_Image_Generation_Method_for_Automatic_Target_Recognition.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "e59f7083701ab7a5::page_1::chunk_2",
+      "file_name": "LDGAN_A_Synthetic_Aperture_Radar_Image_Generation_Method_for_Automatic_Target_Recognition.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "3a87dfa17edb9a9c::page_1::chunk_2",
+      "file_name": "Attribute-Guided_Generative_Adversarial_Network_With_Improved_Episode_Training_Strategy_for_Few-Shot_SAR_Image_Generation.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "comparison_013": [
+    {
+      "chunk_id": "37adac4f62176ddb::page_1::chunk_0",
+      "file_name": "Noise-Tolerant_Novel-View_SAR_Synthesis_via_Denoising_Diffusion.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "37adac4f62176ddb::page_1::chunk_1",
+      "file_name": "Noise-Tolerant_Novel-View_SAR_Synthesis_via_Denoising_Diffusion.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "851b27fc272a4fe3::page_1::chunk_2",
+      "file_name": "Synthetic_Aperture_Radar_Deep_Statistical_Imaging_Through_Diffusion_Generative_Model_Conditional_Inference.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "851b27fc272a4fe3::page_1::chunk_3",
+      "file_name": "Synthetic_Aperture_Radar_Deep_Statistical_Imaging_Through_Diffusion_Generative_Model_Conditional_Inference.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "comparison_014": [
+    {
+      "chunk_id": "5b120767fbe94ef9::page_1::chunk_2",
+      "file_name": "Towards_Secure_SAR_Image_Generation_via_Federated_Angle-Aware_Generative_Diffusion_Framework.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "839765ec83c5d156::page_1::chunk_1",
+      "file_name": "Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "839765ec83c5d156::page_1::chunk_2",
+      "file_name": "Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "comparison_015": [
+    {
+      "chunk_id": "f88cb45fe593fe8e::page_1::chunk_3",
+      "file_name": "Ship_Go_SARShipImagesInpaintingviainstance_to_image Generative.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "f88cb45fe593fe8e::page_1::chunk_4",
+      "file_name": "Ship_Go_SARShipImagesInpaintingviainstance_to_image Generative.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "b69d94be1b887bf1::page_1::chunk_1",
+      "file_name": "BCNet_Background_Conversion_Network_for_SAR_Data_Generation.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "b69d94be1b887bf1::page_1::chunk_3",
+      "file_name": "BCNet_Background_Conversion_Network_for_SAR_Data_Generation.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "comparison_016": [
+    {
+      "chunk_id": "e1080d32ffe042fc::page_1::chunk_0",
+      "file_name": "Synthesizing_Optical_and_SAR_Imagery_From_Land_Cover_Maps_and_Auxiliary_Raster_Data.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "e1080d32ffe042fc::page_1::chunk_1",
+      "file_name": "Synthesizing_Optical_and_SAR_Imagery_From_Land_Cover_Maps_and_Auxiliary_Raster_Data.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "f88cb45fe593fe8e::page_1::chunk_3",
+      "file_name": "Ship_Go_SARShipImagesInpaintingviainstance_to_image Generative.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "comparison_017": [
+    {
+      "chunk_id": "23cb1d819b8f4260::page_1::chunk_2",
+      "file_name": "Learning_to_Generate_SAR_Images_With_Adversarial_Autoencoder.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "23cb1d819b8f4260::page_1::chunk_3",
+      "file_name": "Learning_to_Generate_SAR_Images_With_Adversarial_Autoencoder.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "9ea1895421b1ad48::page_1::chunk_1",
+      "file_name": "SAR_Target_Image_Generation_Method_Using_Azimuth-Controllable_Generative_Adversarial_Network.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "9ea1895421b1ad48::page_1::chunk_2",
+      "file_name": "SAR_Target_Image_Generation_Method_Using_Azimuth-Controllable_Generative_Adversarial_Network.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "comparison_018": [
+    {
+      "chunk_id": "94745577d08eeecb::page_1::chunk_1",
+      "file_name": "A_Directional_Generation_Algorithm_for_SAR_Image_Based_on_Azimuth-Guided_Statistical_Generative_Adversarial_Network.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "94745577d08eeecb::page_1::chunk_2",
+      "file_name": "A_Directional_Generation_Algorithm_for_SAR_Image_Based_on_Azimuth-Guided_Statistical_Generative_Adversarial_Network.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "5b120767fbe94ef9::page_1::chunk_2",
+      "file_name": "Towards_Secure_SAR_Image_Generation_via_Federated_Angle-Aware_Generative_Diffusion_Framework.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "5b120767fbe94ef9::page_1::chunk_3",
+      "file_name": "Towards_Secure_SAR_Image_Generation_via_Federated_Angle-Aware_Generative_Diffusion_Framework.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "comparison_019": [
+    {
+      "chunk_id": "cf46cdbeb0170998::page_1::chunk_1",
+      "file_name": "DiffuSAR_Frequency_Domain-Aware_Diffusion_Model_for_SAR_Image_Generation.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "cf46cdbeb0170998::page_1::chunk_2",
+      "file_name": "DiffuSAR_Frequency_Domain-Aware_Diffusion_Model_for_SAR_Image_Generation.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "37adac4f62176ddb::page_1::chunk_0",
+      "file_name": "Noise-Tolerant_Novel-View_SAR_Synthesis_via_Denoising_Diffusion.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "37adac4f62176ddb::page_1::chunk_1",
+      "file_name": "Noise-Tolerant_Novel-View_SAR_Synthesis_via_Denoising_Diffusion.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "comparison_020": [
+    {
+      "chunk_id": "3d3ee0ab76489bbe::page_1::chunk_1",
+      "file_name": "SAR_Image_Synthesis_with_Diffusion_Models.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "3d3ee0ab76489bbe::page_1::chunk_2",
+      "file_name": "SAR_Image_Synthesis_with_Diffusion_Models.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "851b27fc272a4fe3::page_1::chunk_2",
+      "file_name": "Synthetic_Aperture_Radar_Deep_Statistical_Imaging_Through_Diffusion_Generative_Model_Conditional_Inference.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "851b27fc272a4fe3::page_1::chunk_3",
+      "file_name": "Synthetic_Aperture_Radar_Deep_Statistical_Imaging_Through_Diffusion_Generative_Model_Conditional_Inference.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "cross_006": [
+    {
+      "chunk_id": "94745577d08eeecb::page_1::chunk_1",
+      "file_name": "A_Directional_Generation_Algorithm_for_SAR_Image_Based_on_Azimuth-Guided_Statistical_Generative_Adversarial_Network.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "94745577d08eeecb::page_1::chunk_2",
+      "file_name": "A_Directional_Generation_Algorithm_for_SAR_Image_Based_on_Azimuth-Guided_Statistical_Generative_Adversarial_Network.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "35a65a0ca386b260::page_1::chunk_1",
+      "file_name": "ATGAN_A_SAR_Target_Image_Generation_Method_for_Automatic_Target_Recognition.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "35a65a0ca386b260::page_1::chunk_2",
+      "file_name": "ATGAN_A_SAR_Target_Image_Generation_Method_for_Automatic_Target_Recognition.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "9ea1895421b1ad48::page_1::chunk_1",
+      "file_name": "SAR_Target_Image_Generation_Method_Using_Azimuth-Controllable_Generative_Adversarial_Network.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "9ea1895421b1ad48::page_1::chunk_2",
+      "file_name": "SAR_Target_Image_Generation_Method_Using_Azimuth-Controllable_Generative_Adversarial_Network.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "cross_007": [
+    {
+      "chunk_id": "839765ec83c5d156::page_1::chunk_1",
+      "file_name": "Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "839765ec83c5d156::page_1::chunk_2",
+      "file_name": "Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "f88cb45fe593fe8e::page_1::chunk_3",
+      "file_name": "Ship_Go_SARShipImagesInpaintingviainstance_to_image Generative.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "5b120767fbe94ef9::page_1::chunk_2",
+      "file_name": "Towards_Secure_SAR_Image_Generation_via_Federated_Angle-Aware_Generative_Diffusion_Framework.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "cross_008": [
+    {
+      "chunk_id": "3a87dfa17edb9a9c::page_1::chunk_2",
+      "file_name": "Attribute-Guided_Generative_Adversarial_Network_With_Improved_Episode_Training_Strategy_for_Few-Shot_SAR_Image_Generation.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "3a87dfa17edb9a9c::page_1::chunk_3",
+      "file_name": "Attribute-Guided_Generative_Adversarial_Network_With_Improved_Episode_Training_Strategy_for_Few-Shot_SAR_Image_Generation.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "23cb1d819b8f4260::page_1::chunk_2",
+      "file_name": "Learning_to_Generate_SAR_Images_With_Adversarial_Autoencoder.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "23cb1d819b8f4260::page_1::chunk_3",
+      "file_name": "Learning_to_Generate_SAR_Images_With_Adversarial_Autoencoder.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "839765ec83c5d156::page_1::chunk_2",
+      "file_name": "Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "cross_009": [
+    {
+      "chunk_id": "b69d94be1b887bf1::page_1::chunk_1",
+      "file_name": "BCNet_Background_Conversion_Network_for_SAR_Data_Generation.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "37adac4f62176ddb::page_1::chunk_1",
+      "file_name": "Noise-Tolerant_Novel-View_SAR_Synthesis_via_Denoising_Diffusion.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "35a65a0ca386b260::page_1::chunk_1",
+      "file_name": "ATGAN_A_SAR_Target_Image_Generation_Method_for_Automatic_Target_Recognition.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "35a65a0ca386b260::page_1::chunk_2",
+      "file_name": "ATGAN_A_SAR_Target_Image_Generation_Method_for_Automatic_Target_Recognition.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "cross_010": [
+    {
+      "chunk_id": "e59f7083701ab7a5::page_1::chunk_1",
+      "file_name": "LDGAN_A_Synthetic_Aperture_Radar_Image_Generation_Method_for_Automatic_Target_Recognition.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "e59f7083701ab7a5::page_1::chunk_2",
+      "file_name": "LDGAN_A_Synthetic_Aperture_Radar_Image_Generation_Method_for_Automatic_Target_Recognition.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "839765ec83c5d156::page_1::chunk_2",
+      "file_name": "Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "f88cb45fe593fe8e::page_1::chunk_3",
+      "file_name": "Ship_Go_SARShipImagesInpaintingviainstance_to_image Generative.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "cross_011": [
+    {
+      "chunk_id": "94745577d08eeecb::page_1::chunk_1",
+      "file_name": "A_Directional_Generation_Algorithm_for_SAR_Image_Based_on_Azimuth-Guided_Statistical_Generative_Adversarial_Network.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "94745577d08eeecb::page_1::chunk_2",
+      "file_name": "A_Directional_Generation_Algorithm_for_SAR_Image_Based_on_Azimuth-Guided_Statistical_Generative_Adversarial_Network.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "cf46cdbeb0170998::page_1::chunk_2",
+      "file_name": "DiffuSAR_Frequency_Domain-Aware_Diffusion_Model_for_SAR_Image_Generation.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "851b27fc272a4fe3::page_1::chunk_2",
+      "file_name": "Synthetic_Aperture_Radar_Deep_Statistical_Imaging_Through_Diffusion_Generative_Model_Conditional_Inference.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "851b27fc272a4fe3::page_1::chunk_3",
+      "file_name": "Synthetic_Aperture_Radar_Deep_Statistical_Imaging_Through_Diffusion_Generative_Model_Conditional_Inference.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "cross_012": [
+    {
+      "chunk_id": "3a87dfa17edb9a9c::page_1::chunk_2",
+      "file_name": "Attribute-Guided_Generative_Adversarial_Network_With_Improved_Episode_Training_Strategy_for_Few-Shot_SAR_Image_Generation.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "23cb1d819b8f4260::page_1::chunk_1",
+      "file_name": "Learning_to_Generate_SAR_Images_With_Adversarial_Autoencoder.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "23cb1d819b8f4260::page_1::chunk_2",
+      "file_name": "Learning_to_Generate_SAR_Images_With_Adversarial_Autoencoder.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "e59f7083701ab7a5::page_1::chunk_1",
+      "file_name": "LDGAN_A_Synthetic_Aperture_Radar_Image_Generation_Method_for_Automatic_Target_Recognition.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "e59f7083701ab7a5::page_1::chunk_2",
+      "file_name": "LDGAN_A_Synthetic_Aperture_Radar_Image_Generation_Method_for_Automatic_Target_Recognition.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "cross_013": [
+    {
+      "chunk_id": "b69d94be1b887bf1::page_1::chunk_1",
+      "file_name": "BCNet_Background_Conversion_Network_for_SAR_Data_Generation.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "f88cb45fe593fe8e::page_1::chunk_3",
+      "file_name": "Ship_Go_SARShipImagesInpaintingviainstance_to_image Generative.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "e1080d32ffe042fc::page_1::chunk_0",
+      "file_name": "Synthesizing_Optical_and_SAR_Imagery_From_Land_Cover_Maps_and_Auxiliary_Raster_Data.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "e1080d32ffe042fc::page_1::chunk_1",
+      "file_name": "Synthesizing_Optical_and_SAR_Imagery_From_Land_Cover_Maps_and_Auxiliary_Raster_Data.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "cross_014": [
+    {
+      "chunk_id": "3d3ee0ab76489bbe::page_1::chunk_1",
+      "file_name": "SAR_Image_Synthesis_with_Diffusion_Models.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "3d3ee0ab76489bbe::page_1::chunk_2",
+      "file_name": "SAR_Image_Synthesis_with_Diffusion_Models.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "cf46cdbeb0170998::page_1::chunk_2",
+      "file_name": "DiffuSAR_Frequency_Domain-Aware_Diffusion_Model_for_SAR_Image_Generation.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "37adac4f62176ddb::page_1::chunk_0",
+      "file_name": "Noise-Tolerant_Novel-View_SAR_Synthesis_via_Denoising_Diffusion.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "37adac4f62176ddb::page_1::chunk_1",
+      "file_name": "Noise-Tolerant_Novel-View_SAR_Synthesis_via_Denoising_Diffusion.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "cross_015": [
+    {
+      "chunk_id": "5b120767fbe94ef9::page_1::chunk_2",
+      "file_name": "Towards_Secure_SAR_Image_Generation_via_Federated_Angle-Aware_Generative_Diffusion_Framework.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "5b120767fbe94ef9::page_1::chunk_3",
+      "file_name": "Towards_Secure_SAR_Image_Generation_via_Federated_Angle-Aware_Generative_Diffusion_Framework.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "37adac4f62176ddb::page_1::chunk_0",
+      "file_name": "Noise-Tolerant_Novel-View_SAR_Synthesis_via_Denoising_Diffusion.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "37adac4f62176ddb::page_1::chunk_1",
+      "file_name": "Noise-Tolerant_Novel-View_SAR_Synthesis_via_Denoising_Diffusion.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "839765ec83c5d156::page_1::chunk_0",
+      "file_name": "Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "839765ec83c5d156::page_1::chunk_2",
+      "file_name": "Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "cross_016": [
+    {
+      "chunk_id": "35a65a0ca386b260::page_1::chunk_1",
+      "file_name": "ATGAN_A_SAR_Target_Image_Generation_Method_for_Automatic_Target_Recognition.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "35a65a0ca386b260::page_1::chunk_2",
+      "file_name": "ATGAN_A_SAR_Target_Image_Generation_Method_for_Automatic_Target_Recognition.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "9ea1895421b1ad48::page_1::chunk_2",
+      "file_name": "SAR_Target_Image_Generation_Method_Using_Azimuth-Controllable_Generative_Adversarial_Network.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "23cb1d819b8f4260::page_1::chunk_1",
+      "file_name": "Learning_to_Generate_SAR_Images_With_Adversarial_Autoencoder.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "23cb1d819b8f4260::page_1::chunk_2",
+      "file_name": "Learning_to_Generate_SAR_Images_With_Adversarial_Autoencoder.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "cross_017": [
+    {
+      "chunk_id": "35a65a0ca386b260::page_1::chunk_1",
+      "file_name": "ATGAN_A_SAR_Target_Image_Generation_Method_for_Automatic_Target_Recognition.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "35a65a0ca386b260::page_1::chunk_2",
+      "file_name": "ATGAN_A_SAR_Target_Image_Generation_Method_for_Automatic_Target_Recognition.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "e59f7083701ab7a5::page_1::chunk_1",
+      "file_name": "LDGAN_A_Synthetic_Aperture_Radar_Image_Generation_Method_for_Automatic_Target_Recognition.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "e59f7083701ab7a5::page_1::chunk_2",
+      "file_name": "LDGAN_A_Synthetic_Aperture_Radar_Image_Generation_Method_for_Automatic_Target_Recognition.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "b69d94be1b887bf1::page_1::chunk_1",
+      "file_name": "BCNet_Background_Conversion_Network_for_SAR_Data_Generation.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "cross_018": [
+    {
+      "chunk_id": "839765ec83c5d156::page_1::chunk_2",
+      "file_name": "Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "839765ec83c5d156::page_1::chunk_4",
+      "file_name": "Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "f88cb45fe593fe8e::page_1::chunk_3",
+      "file_name": "Ship_Go_SARShipImagesInpaintingviainstance_to_image Generative.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "f88cb45fe593fe8e::page_1::chunk_4",
+      "file_name": "Ship_Go_SARShipImagesInpaintingviainstance_to_image Generative.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "e1080d32ffe042fc::page_1::chunk_2",
+      "file_name": "Synthesizing_Optical_and_SAR_Imagery_From_Land_Cover_Maps_and_Auxiliary_Raster_Data.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "e1080d32ffe042fc::page_1::chunk_7",
+      "file_name": "Synthesizing_Optical_and_SAR_Imagery_From_Land_Cover_Maps_and_Auxiliary_Raster_Data.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "cross_019": [
+    {
+      "chunk_id": "851b27fc272a4fe3::page_1::chunk_2",
+      "file_name": "Synthetic_Aperture_Radar_Deep_Statistical_Imaging_Through_Diffusion_Generative_Model_Conditional_Inference.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "851b27fc272a4fe3::page_1::chunk_3",
+      "file_name": "Synthetic_Aperture_Radar_Deep_Statistical_Imaging_Through_Diffusion_Generative_Model_Conditional_Inference.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "839765ec83c5d156::page_1::chunk_1",
+      "file_name": "Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "839765ec83c5d156::page_1::chunk_2",
+      "file_name": "Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "5b120767fbe94ef9::page_1::chunk_2",
+      "file_name": "Towards_Secure_SAR_Image_Generation_via_Federated_Angle-Aware_Generative_Diffusion_Framework.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    }
+  ],
+  "cross_020": [
+    {
+      "chunk_id": "839765ec83c5d156::page_1::chunk_0",
+      "file_name": "Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "839765ec83c5d156::page_1::chunk_1",
+      "file_name": "Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "839765ec83c5d156::page_1::chunk_2",
+      "file_name": "Annotation-Free_High-Fidelity_SAR_Oil-Spill_Image_Synthesis_via_Classification-Guided_Diffusion_Model.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    },
+    {
+      "chunk_id": "851b27fc272a4fe3::page_1::chunk_1",
+      "file_name": "Synthetic_Aperture_Radar_Deep_Statistical_Imaging_Through_Diffusion_Generative_Model_Conditional_Inference.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "e1080d32ffe042fc::page_1::chunk_0",
+      "file_name": "Synthesizing_Optical_and_SAR_Imagery_From_Land_Cover_Maps_and_Auxiliary_Raster_Data.pdf",
+      "page_number": 1,
+      "relevance": 3,
+      "reason": "Directly supports the expected answer for this source."
+    },
+    {
+      "chunk_id": "e1080d32ffe042fc::page_1::chunk_1",
+      "file_name": "Synthesizing_Optical_and_SAR_Imagery_From_Land_Cover_Maps_and_Auxiliary_Raster_Data.pdf",
+      "page_number": 1,
+      "relevance": 2,
+      "reason": "Provides complementary evidence for the expected answer."
+    }
+  ],
+  "no_answer_006": [],
+  "no_answer_007": [],
+  "no_answer_008": [],
+  "no_answer_009": [],
+  "no_answer_010": [],
+  "no_answer_011": [],
+  "no_answer_012": [],
+  "no_answer_013": [],
+  "no_answer_014": [],
+  "no_answer_015": [],
+  "no_answer_016": [],
+  "no_answer_017": [],
+  "no_answer_018": [],
+  "no_answer_019": [],
+  "no_answer_020": []
+}

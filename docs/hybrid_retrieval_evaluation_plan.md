@@ -557,6 +557,9 @@ Claim citation coverage = 有至少一个支持性引用的可验证事实句 / 
 
 ### M2：扩题和 qrels 标注
 
+状态（2026-08-31）：已完成。评测集已冻结为 100 题，`qrels.json` 包含
+213 条经来源页复核的 Chunk 级分级标注，并已通过当前 Chroma 索引校验。
+
 工作：
 
 - 新增 75 题。
@@ -679,4 +682,3 @@ Claim citation coverage = 有至少一个支持性引用的可验证事实句 / 
 下一步建议只执行 **M0 + M1：冻结基线并实现评测 Schema、Recall@k、MRR@k、nDCG@k**。
 
 该任务不需要下载 Reranker，不需要运行付费 LLM，也不改变线上默认检索策略；它为后续所有消融实验提供可信基础。
-

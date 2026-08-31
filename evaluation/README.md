@@ -1,29 +1,30 @@
 # Evaluation Dataset
 
 `questions.json` is the reproducible evaluation set for the Academic Paper
-RAG Assistant. It contains 25 English questions grounded in the 15-paper SAR
-image-generation corpus.
+RAG Assistant. It contains 100 questions grounded in the 15-paper SAR
+image-generation corpus. The 25-question legacy set is retained unchanged,
+with 25 development questions and 50 held-out test questions added in M2.
 
 ## Question types
 
-- `fact`: 10 single-paper factual questions.
-- `comparison`: 5 questions comparing two papers.
-- `cross_document`: 5 questions requiring evidence from multiple papers.
-- `no_answer`: 5 questions whose answers are not present in the corpus.
+- `fact`: 40 single-paper factual questions.
+- `comparison`: 20 questions comparing two papers.
+- `cross_document`: 20 questions requiring evidence from multiple papers.
+- `no_answer`: 20 questions whose answers are not present in the corpus.
 
 `source_files` and `source_pages` identify the expected evidence. Page numbers
 are one-based PDF page numbers, matching the `page_number` metadata stored in
 Chroma. For `no_answer` questions both fields are empty, and the expected
 behavior is the standard knowledge-base refusal.
 
-The initial set deliberately stays in English because all source papers are in
-English. This keeps the baseline focused on retrieval and grounded generation
-instead of mixing in cross-language retrieval as an additional variable.
+The expanded set includes 16 Chinese queries over English evidence to measure
+cross-language retrieval. New questions also record language, difficulty,
+retrieval challenge tags, expected key points, and a fixed data split.
 
 ## Expanded schema compatibility
 
-The loader accepts the legacy fields above and adds these defaults until the
-M2 dataset expansion is complete:
+The loader accepts the legacy fields above and adds these defaults for the
+original 25 questions:
 
 - `split`: `legacy`
 - `language`: `en`
@@ -52,8 +53,8 @@ from 0 to 3, and a short annotation reason. Relevance grades mean:
 - `1`: topically relevant but insufficient by itself.
 - `0`: irrelevant or misleading hard negative.
 
-After M2 creates the complete qrels file, validate both schema and current
-Chroma metadata with:
+Validate the complete qrels file against both schema and current Chroma
+metadata with:
 
 ```bash
 python evaluation/validate_dataset.py \
@@ -80,3 +81,9 @@ Retrieval-system provenance is stored separately from candidate rows so an
 annotation interface can hide it while preserving auditability. Generated
 pools remain under the Git-ignored `evaluation/results/` directory because
 they contain paper excerpts.
+
+For later corpus revisions, `propose_qrels.py` can create an offline semantic
+draft plus a review report. The draft must be reviewed before changing the
+explicit mapping in `finalize_qrels.py`; running the latter materializes the
+tracked `qrels.json`. The finalized M2 set contains 213 relevance judgments:
+direct evidence is graded 3 and complementary evidence is graded 2.

@@ -20,7 +20,7 @@ Streamlit 提供交互界面。
 - `SourceLookupTool`：按 PDF 名称、页码或 Chunk ID 精确读取索引原文
 - LLM JSON Intent Router，失败时使用确定性规则回退
 - Tool 白名单、参数校验、结构化异常和最多 3 次调用限制
-- 25 题 RAG 评测集、检索参数实验和 40 题 Router 评测集
+- 100 题 RAG 评测集、Chunk 级 qrels、Dense/BM25 检索实验和 40 题 Router 评测集
 
 ## 架构
 
@@ -152,7 +152,8 @@ Router 评测集包含四类共 40 条中英文请求：
 只评测 Retriever，不调用 LLM：
 
 ```bash
-python evaluation/evaluate_retrieval.py
+python evaluation/evaluate_retrieval.py --method dense --qrels evaluation/qrels.json
+python evaluation/evaluate_retrieval.py --method bm25 --qrels evaluation/qrels.json
 ```
 
 运行完整 RAG 评测：
@@ -184,6 +185,7 @@ academic-paper-rag/
 ├── agent_response.py         # Tool JSON 到聊天响应的适配
 ├── rag_chain.py              # 查询改写、检索、Prompt 和生成
 ├── retriever.py              # focused / multi_document 检索
+├── sparse_retriever.py       # 确定性 BM25 分词、内存索引与 Top-N
 ├── tools/
 │   ├── paper_library.py      # 知识库信息查询
 │   └── source_lookup.py      # 页码/Chunk 精确定位
@@ -202,7 +204,8 @@ academic-paper-rag/
 
 ## 已知限制
 
-- 当前基准语料是英文 SAR 图像生成论文，尚未专门评测中英跨语言检索。
+- 评测集包含中文问题，但 M3 的纯 BM25 只抽取英文、数字和连字符词项；
+  完全不含这些词项的中文查询需要后续 Dense + BM25 Hybrid Retrieval。
 - PDF 解析以文本层为主，不处理扫描件 OCR、图表视觉理解和复杂公式结构。
 - SourceLookupTool 需要明确的 PDF 文件名；缺少来源信息时不会猜测文件。
 - Chroma 为本地单用户存储；重建索引期间不适合并发读写。

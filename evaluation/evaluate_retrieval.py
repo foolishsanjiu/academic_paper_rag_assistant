@@ -17,6 +17,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
+from config import CHROMA_DIRECTORY, DEFAULT_COLLECTION_NAME  # noqa: E402
 from evaluation.evaluate import (  # noqa: E402
     calculate_retrieval_metrics,
     load_questions,
@@ -33,6 +34,7 @@ from index_manifest import (  # noqa: E402
 )
 from rag_chain import build_sources  # noqa: E402
 from retriever import retrieve_with_scores  # noqa: E402
+from sparse_retriever import build_sparse_retriever  # noqa: E402
 from vector_store import (  # noqa: E402
     DEFAULT_EMBEDDING_MODEL,
     create_embedding_model,
@@ -47,6 +49,35 @@ DEFAULT_OUTPUT_PATH = (
     / "results"
     / "retrieval_top_k.json"
 )
+DEFAULT_BM25_OUTPUT_PATH = (
+    Path(__file__).parent
+    / "results"
+    / "retrieval_bm25.json"
+)
+RETRIEVAL_METHODS = {"dense", "bm25"}
+
+
+def build_sparse_sources(
+    results: list[tuple[Any, float]],
+) -> list[dict[str, Any]]:
+    """Serialize BM25 results without calling the score cosine similarity."""
+    sources: list[dict[str, Any]] = []
+    for rank, (document, score) in enumerate(results, start=1):
+        metadata = document.metadata
+        sources.append(
+            {
+                "rank": rank,
+                "file_name": str(metadata.get("file_name", "unknown.pdf")),
+                "document_id": str(metadata.get("document_id", "unknown")),
+                "document_type": str(metadata.get("document_type", "unknown")),
+                "page_number": metadata.get("page_number", "unknown"),
+                "chunk_id": str(metadata.get("chunk_id", "unknown")),
+                "similarity": None,
+                "bm25_score": score,
+                "text": document.page_content,
+            }
+        )
+    return sources
 
 
 def rate(results: list[dict[str, Any]], field: str) -> float | None:
@@ -98,12 +129,19 @@ def run_retrieval_experiment(
     candidate_multiplier: int = 4,
     max_chunks_per_file: int | None = None,
     qrels_path: Path | None = None,
+    method: str = "dense",
 ) -> dict[str, Any]:
-    """Evaluate several Top-k values with one loaded embedding model."""
+    """Evaluate Dense or BM25 retrieval without making LLM calls."""
     if not top_k_values or any(value <= 0 for value in top_k_values):
         raise ValueError("所有 Top-k 值都必须大于 0。")
     if candidate_multiplier <= 0:
         raise ValueError("candidate_multiplier 必须大于 0。")
+    if method not in RETRIEVAL_METHODS:
+        raise ValueError(
+            f"不支持的检索方法：{method}。可选值：{sorted(RETRIEVAL_METHODS)}"
+        )
+    if method == "bm25" and max_chunks_per_file is not None:
+        raise ValueError("M3 的 BM25-only 路径暂不应用来源多样化。")
 
     questions = load_questions(questions_path)
     qrels = load_qrels(qrels_path) if qrels_path is not None else None
@@ -113,9 +151,27 @@ def run_retrieval_experiment(
     if manifest is None:
         raise FileNotFoundError("缺少 chroma_db/index_manifest.json。")
 
-    embeddings = create_embedding_model(DEFAULT_EMBEDDING_MODEL)
-    vector_store = load_vector_store(embeddings)
-    vector_count = get_vector_count(vector_store)
+    vector_store = None
+    sparse_retriever = None
+    if method == "dense":
+        embeddings = create_embedding_model(DEFAULT_EMBEDDING_MODEL)
+        vector_store = load_vector_store(embeddings)
+        vector_count = get_vector_count(vector_store)
+        retrieval_identity: dict[str, Any] = {
+            "method": "dense",
+            "embedding_model": DEFAULT_EMBEDDING_MODEL,
+        }
+    else:
+        from langchain_chroma import Chroma
+
+        metadata_store = Chroma(
+            collection_name=DEFAULT_COLLECTION_NAME,
+            persist_directory=str(CHROMA_DIRECTORY),
+            embedding_function=None,
+        )
+        sparse_retriever = build_sparse_retriever(metadata_store)
+        vector_count = sparse_retriever.document_count
+        retrieval_identity = sparse_retriever.identity()
     validate_index_manifest(
         vector_count=vector_count,
         manifest=manifest,
@@ -133,6 +189,7 @@ def run_retrieval_experiment(
             else None
         ),
         "index_manifest": manifest,
+        "retrieval": retrieval_identity,
         "runs": runs,
     }
 
@@ -142,21 +199,32 @@ def run_retrieval_experiment(
 
         for index, item in enumerate(questions, start=1):
             start = time.perf_counter()
-            retrieved = retrieve_with_scores(
-                vector_store=vector_store,
-                query=item["question"],
-                top_k=top_k,
-                candidate_k=(
-                    top_k * candidate_multiplier
-                    if max_chunks_per_file is not None
-                    else None
-                ),
-                max_chunks_per_file=max_chunks_per_file,
-            )
-            sources = [
-                asdict(source)
-                for source in build_sources(retrieved)
-            ]
+            if method == "dense":
+                if vector_store is None:
+                    raise RuntimeError("Dense vector store 未初始化。")
+                retrieved = retrieve_with_scores(
+                    vector_store=vector_store,
+                    query=item["question"],
+                    top_k=top_k,
+                    candidate_k=(
+                        top_k * candidate_multiplier
+                        if max_chunks_per_file is not None
+                        else None
+                    ),
+                    max_chunks_per_file=max_chunks_per_file,
+                )
+                sources = [
+                    asdict(source)
+                    for source in build_sources(retrieved)
+                ]
+            else:
+                if sparse_retriever is None:
+                    raise RuntimeError("BM25 retriever 未初始化。")
+                retrieved = sparse_retriever.search(
+                    item["question"],
+                    top_k=top_k,
+                )
+                sources = build_sparse_sources(retrieved)
             file_counts = Counter(
                 source["file_name"]
                 for source in sources
@@ -200,6 +268,7 @@ def run_retrieval_experiment(
             print(f"  [{index}/{len(questions)}] {item['id']}")
 
         run = {
+            "method": method,
             "top_k": top_k,
             "candidate_k": (
                 top_k * candidate_multiplier
@@ -225,10 +294,11 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=DEFAULT_QUESTIONS_PATH,
     )
+    parser.add_argument("--output", type=Path)
     parser.add_argument(
-        "--output",
-        type=Path,
-        default=DEFAULT_OUTPUT_PATH,
+        "--method",
+        choices=sorted(RETRIEVAL_METHODS),
+        default="dense",
     )
     parser.add_argument(
         "--top-k",
@@ -248,13 +318,19 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
+    output_path = args.output or (
+        DEFAULT_BM25_OUTPUT_PATH
+        if args.method == "bm25"
+        else DEFAULT_OUTPUT_PATH
+    )
     payload = run_retrieval_experiment(
         questions_path=args.questions,
-        output_path=args.output,
+        output_path=output_path,
         top_k_values=args.top_k,
         candidate_multiplier=args.candidate_multiplier,
         max_chunks_per_file=args.max_chunks_per_file,
         qrels_path=args.qrels,
+        method=args.method,
     )
     for run in payload["runs"]:
         print(
@@ -267,7 +343,7 @@ def main() -> None:
                 indent=2,
             )
         )
-    print(f"检索实验结果已保存：{args.output.resolve()}")
+    print(f"检索实验结果已保存：{output_path.resolve()}")
 
 
 if __name__ == "__main__":

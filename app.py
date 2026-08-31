@@ -10,8 +10,10 @@ import streamlit as st
 from agent_response import format_tool_response, source_lookup_sources
 from agent_router import Intent, dispatch_route, route_query
 from config import (
+    CHROMA_DIRECTORY,
     DEFAULT_CHUNK_OVERLAP,
     DEFAULT_CHUNK_SIZE,
+    DEFAULT_COLLECTION_NAME,
     MAX_UPLOAD_SIZE_MB,
     get_settings,
 )
@@ -26,6 +28,7 @@ from llm_client import LLMClient
 from logging_config import setup_logging
 from rag_chain import RAGChain
 from retriever import RetrievalStrategy
+from sparse_retriever import build_sparse_retriever
 from text_splitter import split_documents
 from vector_store import (
     DEFAULT_EMBEDDING_MODEL,
@@ -218,8 +221,9 @@ def rebuild_knowledge_base(
     )
 
     # Force Streamlit to reopen the newly rebuilt
-    # Chroma store on rerun.
+    # Chroma store and rebuild the runtime BM25 index on rerun.
     load_rag_resources.clear()
+    load_sparse_resources.clear()
 
     logger.info(
         "Knowledge-base rebuild completed | papers=%s | pages=%s | "
@@ -283,6 +287,19 @@ def load_rag_resources():
         vector_store,
         vector_count,
     )
+
+
+@st.cache_resource(show_spinner=False)
+def load_sparse_resources():
+    """Build and cache the runtime BM25 index from current Chroma text."""
+    from langchain_chroma import Chroma
+
+    metadata_store = Chroma(
+        collection_name=DEFAULT_COLLECTION_NAME,
+        persist_directory=str(CHROMA_DIRECTORY),
+        embedding_function=None,
+    )
+    return build_sparse_retriever(metadata_store)
 
 
 # ============================================================
@@ -935,10 +952,11 @@ with st.sidebar:
         use_container_width=True,
         help=(
             "清除 Streamlit 资源缓存，重新加载 LLM、"
-            "Embedding 和 Chroma。"
+            "Embedding、Chroma 和 BM25。"
         ),
     ):
         load_rag_resources.clear()
+        load_sparse_resources.clear()
         st.rerun()
 
     st.divider()

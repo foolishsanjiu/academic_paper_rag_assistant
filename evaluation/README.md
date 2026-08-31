@@ -67,6 +67,20 @@ Passing `--qrels evaluation/qrels.json` to `evaluate.py` or
 `evaluate_retrieval.py` adds Recall@k, MRR@k, and nDCG@k to question-level and
 summary results. Runs without qrels keep the historical output compatible.
 
+Run the M3 BM25-only retrieval baseline without loading the embedding model or
+calling an LLM:
+
+```bash
+python evaluation/evaluate_retrieval.py \
+  --method bm25 \
+  --top-k 5 8 10 \
+  --qrels evaluation/qrels.json
+```
+
+The runtime index uses `rank-bm25==0.2.2`, sorts the corpus by persistent
+`chunk_id`, and records its tokenizer and BM25 parameters in the result file.
+BM25 scores are stored as `bm25_score`, never mislabeled as cosine similarity.
+
 Build a deduplicated, deterministic annotation pool from one or more retrieval
 result files and every Chunk on the expected source pages:
 

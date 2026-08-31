@@ -573,6 +573,9 @@ Claim citation coverage = 有至少一个支持性引用的可验证事实句 / 
 
 ### M3：BM25
 
+状态（2026-08-31）：已完成。已实现确定性内存 BM25、Streamlit 资源缓存与
+重建失效、BM25-only 评测路径，并完成配置 B 的 100 题离线实验。
+
 工作：
 
 - 实现 tokenizer、内存索引和 Sparse Top-N。

@@ -42,6 +42,7 @@ import re
 
 from index_manifest import (
     load_index_manifest,
+    validate_index_manifest,
     write_index_manifest,
 )
 
@@ -275,6 +276,17 @@ def load_rag_resources():
 
     vector_count = get_vector_count(
         vector_store
+    )
+
+    manifest = load_index_manifest()
+    if manifest is None:
+        raise FileNotFoundError(
+            "缺少 chroma_db/index_manifest.json。"
+        )
+    validate_index_manifest(
+        vector_count=vector_count,
+        manifest=manifest,
+        embedding_model=DEFAULT_EMBEDDING_MODEL,
     )
 
     logger.info(
@@ -866,22 +878,17 @@ with st.sidebar:
         accept_multiple_files=True,
         help=(
             f"支持一次上传多篇 PDF；"
-            f"单个文件建议不超过 {MAX_UPLOAD_SIZE_MB} MB。"
+            f"单个文件不能超过 {MAX_UPLOAD_SIZE_MB} MB。"
         ),
     )
 
     rebuild_requested = st.button(
-        "保存 PDF 并重建向量库",
+        "保存所选 PDF / 重建向量库",
         use_container_width=True,
         type="primary",
     )
 
-    if rebuild_requested and not uploaded_files:
-        st.warning(
-            "请先选择至少一个 PDF 文件。"
-        )
-
-    if rebuild_requested and uploaded_files:
+    if rebuild_requested:
         successful_uploads = []
         failed_uploads = []
 
@@ -889,7 +896,7 @@ with st.sidebar:
         # Save and validate each PDF independently
         # ----------------------------------------------------
 
-        for uploaded_file in uploaded_files:
+        for uploaded_file in uploaded_files or []:
             try:
                 file_path, validation = save_uploaded_pdf(
                     file_name=uploaded_file.name,
@@ -908,6 +915,7 @@ with st.sidebar:
             except (
                 ValueError,
                 FileExistsError,
+                OSError,
             ) as error:
                 failed_uploads.append(
                     {
@@ -933,42 +941,45 @@ with st.sidebar:
                 f"{item['error']}"
             )
 
-        # ----------------------------------------------------
-        # Rebuild vector store only if at least one PDF
-        # was successfully uploaded
-        # ----------------------------------------------------
+        if not uploaded_files:
+            st.info("未选择新 PDF，将使用当前论文目录重建向量库。")
 
-        if not successful_uploads:
-            st.error(
-                "没有成功保存任何 PDF，因此未重建向量库。"
-            )
+        try:
+            with st.spinner(
+                "正在解析 PDF、切分文本并重建 Chroma……"
+            ):
+                new_vector_count = rebuild_knowledge_base(
+                    chunk_size=chunk_size,
+                    chunk_overlap=chunk_overlap,
+                )
 
-        else:
-            try:
-                with st.spinner(
-                    "正在解析 PDF、切分文本并重建 Chroma……"
-                ):
-                    new_vector_count = rebuild_knowledge_base(
-                        chunk_size=chunk_size,
-                        chunk_overlap=chunk_overlap,
-                    )
-
+            if successful_uploads:
                 st.success(
                     f"已成功保存 {len(successful_uploads)} 篇 PDF，"
                     f"并重建向量库，共 {new_vector_count} 个 Chunk。"
                 )
-
-                st.rerun()
-
-            except Exception as error:
-                logger.exception(
-                    "重建知识库失败"
+            else:
+                st.success(
+                    "已使用当前论文目录重建向量库，"
+                    f"共 {new_vector_count} 个 Chunk。"
                 )
 
-                st.error(
-                    "PDF 已保存，但向量库重建失败："
-                    f"{error}"
-                )
+            st.rerun()
+
+        except Exception as error:
+            logger.exception(
+                "重建知识库失败"
+            )
+
+            failure_prefix = (
+                "PDF 已保存，但向量库重建失败："
+                if successful_uploads
+                else "向量库重建失败："
+            )
+            st.error(
+                f"{failure_prefix}{error}。"
+                "可不选择新文件，直接再次点击重建按钮。"
+            )
 
     st.divider()
 

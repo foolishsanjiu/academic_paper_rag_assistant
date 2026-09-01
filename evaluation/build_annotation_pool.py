@@ -23,6 +23,36 @@ DEFAULT_QUESTIONS_PATH = Path(__file__).with_name("questions.json")
 DEFAULT_OUTPUT_PATH = Path(__file__).parent / "results" / "annotation_pool.json"
 
 
+def normalize_index_rows(raw: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    """Validate and normalize Chroma's parallel index columns."""
+    ids = raw.get("ids") or []
+    documents = raw.get("documents") or []
+    metadatas = raw.get("metadatas") or []
+    if not all(isinstance(value, list) for value in (ids, documents, metadatas)):
+        raise ValueError("Chroma 返回的列必须是列表。")
+    if not (len(ids) == len(documents) == len(metadatas)):
+        raise ValueError("Chroma 返回的 ID、文本和 metadata 数量不一致。")
+
+    rows: dict[str, dict[str, Any]] = {}
+    for chunk_id, document, metadata in zip(ids, documents, metadatas):
+        normalized_id = str(chunk_id).strip()
+        if not normalized_id:
+            raise ValueError("Chroma 返回了空 chunk_id。")
+        if normalized_id in rows:
+            raise ValueError(f"Chroma 返回了重复 chunk_id：{normalized_id}")
+        if metadata is not None and not isinstance(metadata, dict):
+            raise ValueError("Chroma metadata 必须是 JSON 对象。")
+        normalized_metadata = metadata or {}
+        rows[normalized_id] = {
+            "chunk_id": normalized_id,
+            "file_name": str(normalized_metadata.get("file_name", "")),
+            "page_number": normalized_metadata.get("page_number"),
+            "chunk_index": normalized_metadata.get("chunk_index"),
+            "text": str(document or ""),
+        }
+    return rows
+
+
 def load_index_rows() -> dict[str, dict[str, Any]]:
     """Read indexed text and metadata without loading the embedding model."""
     from langchain_chroma import Chroma
@@ -36,19 +66,7 @@ def load_index_rows() -> dict[str, dict[str, Any]]:
         embedding_function=None,
     )
     raw = store.get(include=["documents", "metadatas"])
-    ids = raw.get("ids") or []
-    documents = raw.get("documents") or []
-    metadatas = raw.get("metadatas") or []
-    return {
-        str(chunk_id): {
-            "chunk_id": str(chunk_id),
-            "file_name": str((metadata or {}).get("file_name", "")),
-            "page_number": (metadata or {}).get("page_number"),
-            "chunk_index": (metadata or {}).get("chunk_index"),
-            "text": str(document or ""),
-        }
-        for chunk_id, document, metadata in zip(ids, documents, metadatas)
-    }
+    return normalize_index_rows(raw)
 
 
 def iter_result_sets(

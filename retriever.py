@@ -105,9 +105,9 @@ def validate_top_k(top_k: int) -> None:
     """
     Validate the Top-k retrieval parameter.
     """
-    if top_k <= 0:
+    if isinstance(top_k, bool) or not isinstance(top_k, int) or top_k <= 0:
         raise ValueError(
-            "top_k 必须大于 0。"
+            "top_k 必须是大于 0 的整数。"
         )
 
 

@@ -3,6 +3,7 @@ import unittest
 from evaluation.build_annotation_pool import (
     build_annotation_pool,
     iter_result_sets,
+    normalize_index_rows,
 )
 
 
@@ -117,6 +118,16 @@ class AnnotationPoolTests(unittest.TestCase):
         )
         candidates = pool["questions"]["fact_001"]["candidates"]
         self.assertEqual([item["chunk_id"] for item in candidates], ["first"])
+
+    def test_rejects_misaligned_index_columns(self) -> None:
+        with self.assertRaisesRegex(ValueError, "数量不一致"):
+            normalize_index_rows(
+                {
+                    "ids": ["chunk-1"],
+                    "documents": [],
+                    "metadatas": [{}],
+                }
+            )
 
 
 if __name__ == "__main__":

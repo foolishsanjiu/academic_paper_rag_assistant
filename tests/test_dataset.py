@@ -4,6 +4,7 @@ import tempfile
 import unittest
 
 from evaluation.dataset import load_qrels, load_questions, validate_qrels
+from evaluation.validate_dataset import normalize_index_metadata
 
 
 def question(
@@ -135,6 +136,12 @@ class QrelsDatasetTests(unittest.TestCase):
             )
             with self.assertRaisesRegex(ValueError, "重复 qrel chunk_id"):
                 load_qrels(path)
+
+    def test_rejects_misaligned_index_metadata_columns(self) -> None:
+        with self.assertRaisesRegex(ValueError, "数量不一致"):
+            normalize_index_metadata(
+                {"ids": ["chunk-1"], "metadatas": []}
+            )
 
 
 if __name__ == "__main__":

@@ -117,6 +117,14 @@ class RetrievalStrategyTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "focused"):
             get_retrieval_options("unsupported")
 
+    def test_top_k_rejects_boolean_and_non_integer_values(self) -> None:
+        for value in (True, 1.5):
+            with self.subTest(value=value), self.assertRaisesRegex(
+                ValueError,
+                "整数",
+            ):
+                get_retrieval_options(top_k=value)
+
 
 if __name__ == "__main__":
     unittest.main()

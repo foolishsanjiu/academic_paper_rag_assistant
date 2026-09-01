@@ -234,7 +234,9 @@ def load_pdf_directory(
         )
 
     pdf_paths = sorted(
-        paper_dir.glob("*.pdf")
+        path
+        for path in paper_dir.iterdir()
+        if path.is_file() and path.suffix.lower() == ".pdf"
     )
 
     if not pdf_paths:

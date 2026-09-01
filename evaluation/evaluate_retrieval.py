@@ -331,6 +331,7 @@ def run_retrieval_experiment(
     validate_index_manifest(
         vector_count=vector_count,
         manifest=manifest,
+        embedding_model=DEFAULT_EMBEDDING_MODEL,
     )
     if method in {"dense_rerank", "hybrid_rerank"}:
         cross_encoder = TransformersCrossEncoderReranker(

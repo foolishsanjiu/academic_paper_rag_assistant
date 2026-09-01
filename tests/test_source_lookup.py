@@ -172,6 +172,25 @@ class SourceLookupToolTests(unittest.TestCase):
         self.assertFalse(result["ok"])
         self.assertEqual(result["error"]["code"], "index_unavailable")
 
+    def test_malformed_index_rows_are_a_structured_error(self) -> None:
+        class MalformedStore:
+            def get(self, **kwargs):
+                return {
+                    "ids": ["chunk-1"],
+                    "documents": [],
+                    "metadatas": [{}],
+                }
+
+        result = lookup_source(
+            paper_name="Example.pdf",
+            page_number=1,
+            paper_directory=self.paper_directory,
+            vector_store=MalformedStore(),
+        )
+
+        self.assertFalse(result["ok"])
+        self.assertEqual(result["error"]["code"], "index_unavailable")
+
 
 if __name__ == "__main__":
     unittest.main()

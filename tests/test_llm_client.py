@@ -41,6 +41,22 @@ class LLMClientTests(unittest.TestCase):
             {"thinking": {"type": "disabled"}},
         )
 
+    def test_stream_chat_passes_temperature_to_request(self) -> None:
+        stream = [
+            SimpleNamespace(
+                choices=[
+                    SimpleNamespace(delta=SimpleNamespace(content="answer"))
+                ]
+            )
+        ]
+        create = Mock(return_value=stream)
+        self.client.client.chat.completions.create = create
+
+        fragments = list(self.client.stream_chat("question", temperature=0.3))
+
+        self.assertEqual(fragments, ["answer"])
+        self.assertEqual(create.call_args.kwargs["temperature"], 0.3)
+
 
 if __name__ == "__main__":
     unittest.main()

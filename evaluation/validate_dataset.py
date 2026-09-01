@@ -25,6 +25,28 @@ DEFAULT_QUESTIONS_PATH = Path(__file__).with_name("questions.json")
 DEFAULT_QRELS_PATH = Path(__file__).with_name("qrels.json")
 
 
+def normalize_index_metadata(raw: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    """Validate and normalize Chroma IDs and metadata columns."""
+    ids = raw.get("ids") or []
+    metadatas = raw.get("metadatas") or []
+    if not isinstance(ids, list) or not isinstance(metadatas, list):
+        raise ValueError("Chroma 返回的 ID 和 metadata 必须是列表。")
+    if len(ids) != len(metadatas):
+        raise ValueError("Chroma 返回的 ID 与 metadata 数量不一致。")
+
+    rows: dict[str, dict[str, Any]] = {}
+    for chunk_id, metadata in zip(ids, metadatas):
+        normalized_id = str(chunk_id).strip()
+        if not normalized_id:
+            raise ValueError("Chroma 返回了空 chunk_id。")
+        if normalized_id in rows:
+            raise ValueError(f"Chroma 返回了重复 chunk_id：{normalized_id}")
+        if metadata is not None and not isinstance(metadata, dict):
+            raise ValueError("Chroma metadata 必须是 JSON 对象。")
+        rows[normalized_id] = dict(metadata or {})
+    return rows
+
+
 def load_index_metadata() -> dict[str, dict[str, Any]]:
     """Read Chroma metadata without loading an embedding model."""
     from langchain_chroma import Chroma
@@ -38,12 +60,7 @@ def load_index_metadata() -> dict[str, dict[str, Any]]:
         embedding_function=None,
     )
     raw = store.get(include=["metadatas"])
-    ids = raw.get("ids") or []
-    metadatas = raw.get("metadatas") or []
-    return {
-        str(chunk_id): dict(metadata or {})
-        for chunk_id, metadata in zip(ids, metadatas)
-    }
+    return normalize_index_metadata(raw)
 
 
 def parse_args() -> argparse.Namespace:

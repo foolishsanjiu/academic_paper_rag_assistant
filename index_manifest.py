@@ -118,14 +118,26 @@ def validate_index_manifest(
     *,
     vector_count: int,
     manifest: dict[str, Any],
+    embedding_model: str | None = None,
 ) -> None:
     """
     Verify that Chroma record count matches
     the recorded Chunk count.
     """
-    expected = int(
-        manifest["chunk_count"]
-    )
+    if (
+        isinstance(vector_count, bool)
+        or not isinstance(vector_count, int)
+        or vector_count < 0
+    ):
+        raise ValueError("vector_count 必须是非负整数。")
+
+    expected = manifest.get("chunk_count")
+    if (
+        isinstance(expected, bool)
+        or not isinstance(expected, int)
+        or expected < 0
+    ):
+        raise ValueError("索引清单中的 chunk_count 必须是非负整数。")
 
     if vector_count != expected:
 
@@ -134,6 +146,15 @@ def validate_index_manifest(
             f"Chroma={vector_count}, "
             f"Manifest={expected}"
         )
+
+    if embedding_model is not None:
+        recorded_model = str(manifest.get("embedding_model", "")).strip()
+        if recorded_model != embedding_model:
+            raise ValueError(
+                "索引清单中的 Embedding 模型与当前运行配置不一致："
+                f"Manifest={recorded_model or '<missing>'}, "
+                f"Runtime={embedding_model}"
+            )
 
     logger.info(
         "Index manifest validated | vector_count=%s",

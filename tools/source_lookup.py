@@ -64,12 +64,28 @@ def load_metadata_store(
 def normalize_chroma_rows(raw: dict[str, Any]) -> list[dict[str, Any]]:
     """Normalize Chroma's column-oriented get result into rows."""
     ids = raw.get("ids") or []
-    documents = raw.get("documents") or [None] * len(ids)
-    metadatas = raw.get("metadatas") or [None] * len(ids)
+    raw_documents = raw.get("documents")
+    raw_metadatas = raw.get("metadatas")
+    documents = (
+        [None] * len(ids) if raw_documents is None else raw_documents
+    )
+    metadatas = (
+        [None] * len(ids) if raw_metadatas is None else raw_metadatas
+    )
+    if not all(isinstance(value, list) for value in (ids, documents, metadatas)):
+        raise ValueError("Chroma 返回的列必须是列表。")
+    if not (len(ids) == len(documents) == len(metadatas)):
+        raise ValueError("Chroma 返回的 ID、文本和 metadata 数量不一致。")
     rows: list[dict[str, Any]] = []
 
     for item_id, text, metadata in zip(ids, documents, metadatas):
-        normalized_metadata = metadata or {}
+        if metadata is not None and not isinstance(metadata, dict):
+            raise ValueError("Chroma metadata 必须是 JSON 对象。")
+        normalized_metadata = dict(metadata or {})
+        try:
+            int(normalized_metadata.get("chunk_index", 0))
+        except (TypeError, ValueError):
+            raise ValueError("Chroma chunk_index 必须是整数。") from None
         rows.append(
             {
                 "id": str(item_id),
@@ -159,9 +175,10 @@ def lookup_source(
     )
 
     try:
-        store = vector_store or load_metadata_store(
-            persist_directory,
-            collection_name,
+        store = (
+            vector_store
+            if vector_store is not None
+            else load_metadata_store(persist_directory, collection_name)
         )
         if cleaned_chunk_id is not None:
             raw = store.get(
@@ -183,7 +200,17 @@ def lookup_source(
             "向量索引不可用或无法读取。",
         )
 
-    rows = normalize_chroma_rows(raw)
+    try:
+        rows = normalize_chroma_rows(raw)
+    except (TypeError, ValueError):
+        logger.exception(
+            "SourceLookupTool received malformed index rows | file=%s",
+            paper_path.name,
+        )
+        return failure(
+            "index_unavailable",
+            "向量索引返回了不完整或无效的数据。",
+        )
     matched_rows: list[dict[str, Any]] = []
 
     for row in rows:

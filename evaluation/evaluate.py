@@ -213,6 +213,7 @@ def run_evaluation(
     validate_index_manifest(
         vector_count=vector_count,
         manifest=manifest,
+        embedding_model=DEFAULT_EMBEDDING_MODEL,
     )
 
     llm = LLMClient(get_settings())

@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pymupdf
 
-from config import PAPER_DIRECTORY
+from config import MAX_UPLOAD_SIZE_MB, PAPER_DIRECTORY
 from document_loader import compute_document_id
 
 
@@ -31,7 +31,9 @@ def list_pdf_files(
         return []
 
     return sorted(
-        paper_directory.glob("*.pdf")
+        path
+        for path in paper_directory.iterdir()
+        if path.is_file() and path.suffix.lower() == ".pdf"
     )
 
 
@@ -119,6 +121,12 @@ def validate_pdf_bytes(
     if not data:
         raise ValueError(
             "上传文件为空。"
+        )
+
+    maximum_size = MAX_UPLOAD_SIZE_MB * 1024 * 1024
+    if len(data) > maximum_size:
+        raise ValueError(
+            f"PDF 文件不能超过 {MAX_UPLOAD_SIZE_MB} MB。"
         )
 
     if not data.startswith(

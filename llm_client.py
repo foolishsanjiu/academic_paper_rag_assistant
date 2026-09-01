@@ -227,7 +227,11 @@ class LLMClient:
             )
             raise self._convert_api_error(error) from error
 
-    def stream_chat(self, user_message: str,temperature: float = 0.1) -> Iterator[str]:
+    def stream_chat(
+        self,
+        user_message: str,
+        temperature: float = 0.1,
+    ) -> Iterator[str]:
         """
         Send a streaming request and yield answer fragments.
 
@@ -253,6 +257,7 @@ class LLMClient:
                 model=self.settings.model,
                 messages=self._build_messages(cleaned_message),
                 stream=True,
+                temperature=temperature,
             )
 
             for chunk in stream:

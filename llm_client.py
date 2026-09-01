@@ -106,7 +106,12 @@ class LLMClient:
             f"调用模型时发生未知错误：{type(error).__name__}。"
         )
 
-    def chat(self, user_message: str, temperature: float = 0.1) -> str:
+    def chat(
+        self,
+        user_message: str,
+        temperature: float = 0.1,
+        max_tokens: int | None = None,
+    ) -> str:
         """
         Send a non-streaming request and return the complete answer.
 
@@ -117,6 +122,8 @@ class LLMClient:
             Complete model answer.
         """
         cleaned_message = self._validate_message(user_message)
+        if max_tokens is not None and max_tokens <= 0:
+            raise ValueError("max_tokens 必须大于 0。")
         start_time = perf_counter()
 
         logger.info(
@@ -126,12 +133,16 @@ class LLMClient:
         )
 
         try:
-            response = self.client.chat.completions.create(
-                model=self.settings.model,
-                messages=self._build_messages(cleaned_message),
-                stream=False,
-                temperature=temperature,
-            )
+            request: dict = {
+                "model": self.settings.model,
+                "messages": self._build_messages(cleaned_message),
+                "stream": False,
+                "temperature": temperature,
+            }
+            if max_tokens is not None:
+                request["max_tokens"] = max_tokens
+
+            response = self.client.chat.completions.create(**request)
 
             answer = response.choices[0].message.content
 

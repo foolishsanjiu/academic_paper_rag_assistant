@@ -127,6 +127,33 @@ runtime dependency. The Reranker increased Recall but reduced MRR; configuration
 C remains the dev winner. See `m5_reranker_dev_report.md` for the resource gate,
 A-E comparison, and stopping decision.
 
+## M7 frozen test evaluation
+
+The frozen A-E retrieval protocol and results are documented in
+`m7_test_protocol.md` and `m7_retrieval_test_report.md`. Raw JSON remains under
+the Git-ignored `evaluation/results/` directory because it contains paper
+excerpts. Run every embedding-backed command with Hugging Face offline mode so
+the experiment cannot fetch changed model metadata.
+
+End-to-end generation uses the already frozen A/C/E retrieval JSON rather than
+retrieving again. It has an explicit paid-API gate, a per-answer output cap, and
+an atomic checkpoint after every question. Do not add `--allow-paid-api` until
+the estimated call count and cost have been approved:
+
+```bash
+python evaluation/evaluate_generation.py \
+  --retrieval-results evaluation/results/m7_a_dense_test.json \
+  --output evaluation/results/m7_a_generation_test.json \
+  --temperature 0.2 --max-tokens 800 \
+  --allow-paid-api
+```
+
+Replace the A input/output names with C and E for the other two frozen runs.
+The evaluator rejects BM25/D inputs, changed question order, changed retrieval
+hashes during resume, and invocations without the paid-API flag. Automatic
+metrics cover citation format, source-index validity, qrel precision/recall,
+answer citation coverage, refusal correctness, and spurious refusal citations.
+
 Build a deduplicated, deterministic annotation pool from one or more retrieval
 result files and every Chunk on the expected source pages:
 

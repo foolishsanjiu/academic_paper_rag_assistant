@@ -170,6 +170,20 @@ python evaluation/build_citation_review.py \
 Follow `m7_citation_review_guide.md`; never overwrite the generated package or
 substitute an LLM judge for the required human entailment labels.
 
+After all 90 answer scores and 475 citation-pair labels are complete, validate
+and aggregate them with:
+
+```bash
+python evaluation/evaluate_human_citations.py \
+  --labels evaluation/results/m7_citation_labels_30.json \
+  --output evaluation/results/m7_human_citation_metrics.json
+```
+
+The output includes uncertainty bounds, exact duplicate-pair consistency,
+label distributions, and paired answer-score comparisons. These checks cannot
+measure single-annotator mislabeling; see `m7_final_ablation_report.md` for the
+result limitations and the optional second-reviewer protocol.
+
 Build a deduplicated, deterministic annotation pool from one or more retrieval
 result files and every Chunk on the expected source pages:
 

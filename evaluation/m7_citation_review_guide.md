@@ -63,4 +63,6 @@ python evaluation/evaluate_human_citations.py \
 ```
 
 脚本会拒绝任何缺失的回答评分或引用判断，并分别汇总 A/C/E 的平均回答评分、
-Citation correctness、Claim citation coverage 和 uncertain 数量。
+Citation correctness、Claim citation coverage 和 uncertain 数量，同时输出不确定性
+上下界、重复引用对一致性和配对回答分数比较。质量审计只能发现内部冲突，不能把
+单人标注视为绝对真值；正式论文级结论仍应增加独立盲评与分歧裁决。

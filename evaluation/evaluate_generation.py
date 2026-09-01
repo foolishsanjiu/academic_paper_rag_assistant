@@ -174,6 +174,7 @@ def run_generation_evaluation(
     split: str = "test",
     temperature: float = 0.2,
     max_tokens: int = 800,
+    thinking_mode: str = "disabled",
     allow_paid_api: bool = False,
     llm: Any | None = None,
 ) -> dict[str, Any]:
@@ -184,6 +185,8 @@ def run_generation_evaluation(
         )
     if max_tokens <= 0:
         raise ValueError("max_tokens 必须大于 0。")
+    if thinking_mode not in {"disabled", "enabled"}:
+        raise ValueError("thinking_mode 只能是 disabled 或 enabled。")
 
     all_questions = load_questions(questions_path)
     qrels = load_qrels(qrels_path)
@@ -228,6 +231,7 @@ def run_generation_evaluation(
             "base_url": settings.base_url,
             "temperature": temperature,
             "max_tokens": max_tokens,
+            "thinking_mode": thinking_mode,
             "attempted_api_calls": 0,
         },
         "summary": {},
@@ -242,6 +246,7 @@ def run_generation_evaluation(
             or existing_run.get("model") != settings.model
             or existing_run.get("temperature") != temperature
             or existing_run.get("max_tokens") != max_tokens
+            or existing_run.get("thinking_mode") != thinking_mode
         ):
             raise ValueError("已有生成结果与本次冻结输入或模型参数不一致。")
         if existing_run.get("completed_at"):
@@ -283,6 +288,7 @@ def run_generation_evaluation(
                 prompt,
                 temperature=temperature,
                 max_tokens=max_tokens,
+                thinking=thinking_mode == "enabled",
             )
             item["answer"] = answer
             item["metrics"] = {
@@ -325,6 +331,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--split", default="test", choices=["legacy", "dev", "test"])
     parser.add_argument("--temperature", type=float, default=0.2)
     parser.add_argument("--max-tokens", type=int, default=800)
+    parser.add_argument(
+        "--thinking-mode",
+        choices=["disabled", "enabled"],
+        default="disabled",
+    )
     parser.add_argument("--allow-paid-api", action="store_true")
     return parser.parse_args()
 
@@ -339,6 +350,7 @@ def main() -> None:
         split=args.split,
         temperature=args.temperature,
         max_tokens=args.max_tokens,
+        thinking_mode=args.thinking_mode,
         allow_paid_api=args.allow_paid_api,
     )
     print(json.dumps(payload["summary"], ensure_ascii=False, indent=2))

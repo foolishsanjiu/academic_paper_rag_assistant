@@ -42,3 +42,14 @@ SHA-256 为
 - test 结果只用于最终报告和默认方法门禁，不再用于调整候选数、RRF、Top-k、
   Reranker 或 Prompt。
 - 结果汇总必须同时报告绝对指标、相对变化、延迟和失败案例，不能只选取有利指标。
+
+## 5. 端到端生成协议修正记录
+
+2026-09-01 首次配置 A 生成运行发出 50 次调用后，发现 DeepSeek V4 默认开启
+high thinking：temperature 被忽略，且 15 题的 800-token 额度被推理耗尽，没有
+最终 `content`。该运行保存在 `m7_a_generation_test.json`，标记为无效试运行，
+不得并入 A/C/E 比较。
+
+根据 DeepSeek 官方 thinking-mode 协议，正式 A/C/E 统一显式使用
+`thinking=disabled`，继续固定 temperature 0.2、max tokens 800。正式输出使用
+`m7_{a,c,e}_generation_nonthinking_test.json`，不得与无效试运行混合或覆盖。

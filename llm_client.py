@@ -111,6 +111,7 @@ class LLMClient:
         user_message: str,
         temperature: float = 0.1,
         max_tokens: int | None = None,
+        thinking: bool | None = None,
     ) -> str:
         """
         Send a non-streaming request and return the complete answer.
@@ -141,6 +142,12 @@ class LLMClient:
             }
             if max_tokens is not None:
                 request["max_tokens"] = max_tokens
+            if thinking is not None:
+                request["extra_body"] = {
+                    "thinking": {
+                        "type": "enabled" if thinking else "disabled"
+                    }
+                }
 
             response = self.client.chat.completions.create(**request)
 

@@ -144,7 +144,7 @@ the estimated call count and cost have been approved:
 python evaluation/evaluate_generation.py \
   --retrieval-results evaluation/results/m7_a_dense_test.json \
   --output evaluation/results/m7_a_generation_test.json \
-  --temperature 0.2 --max-tokens 800 \
+  --temperature 0.2 --max-tokens 800 --thinking-mode disabled \
   --allow-paid-api
 ```
 
@@ -153,6 +153,8 @@ The evaluator rejects BM25/D inputs, changed question order, changed retrieval
 hashes during resume, and invocations without the paid-API flag. Automatic
 metrics cover citation format, source-index validity, qrel precision/recall,
 answer citation coverage, refusal correctness, and spurious refusal citations.
+DeepSeek V4 thinking is disabled explicitly because it is enabled by default,
+ignores temperature, and counts reasoning against the output-token limit.
 
 Build a deduplicated, deterministic annotation pool from one or more retrieval
 result files and every Chunk on the expected source pages:

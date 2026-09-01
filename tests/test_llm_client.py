@@ -31,10 +31,15 @@ class LLMClientTests(unittest.TestCase):
             "question",
             temperature=0.2,
             max_tokens=800,
+            thinking=False,
         )
 
         self.assertEqual(answer, "answer")
         self.assertEqual(create.call_args.kwargs["max_tokens"], 800)
+        self.assertEqual(
+            create.call_args.kwargs["extra_body"],
+            {"thinking": {"type": "disabled"}},
+        )
 
 
 if __name__ == "__main__":

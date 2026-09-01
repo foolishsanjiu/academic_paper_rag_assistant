@@ -7,12 +7,17 @@ from langchain_chroma import Chroma
 from langchain_core.documents import Document
 
 from llm_client import LLMClient
+from retrieval_pipeline import (
+    RetrievalMethod,
+    RetrievalPipeline,
+    RetrievalResult,
+)
 from retriever import (
     RetrievalStrategy,
     cosine_distance_to_similarity,
     get_retrieval_options,
-    retrieve_with_scores,
 )
+from sparse_retriever import SparseRetriever
 
 
 logger = logging.getLogger(__name__)
@@ -33,8 +38,12 @@ class RAGSource:
     file_name: str
     page_number: int | str
     chunk_id: str
-    similarity: float
+    similarity: float | None
     text: str
+    bm25_score: float | None = None
+    rrf_score: float | None = None
+    dense_rank: int | None = None
+    sparse_rank: int | None = None
 
 
 @dataclass(frozen=True)
@@ -45,6 +54,9 @@ class RAGResponse:
     retrieval_query: str
     answer: str
     sources: list[RAGSource]
+    retrieval_method: str = RetrievalMethod.DENSE.value
+    retrieval_strategy: str = RetrievalStrategy.FOCUSED.value
+    retrieval_diagnostics: dict[str, float | int | None] | None = None
 
 
 def format_chat_history(
@@ -225,6 +237,48 @@ def build_sources(
     return sources
 
 
+def build_retrieval_sources(
+    result: RetrievalResult,
+) -> list[RAGSource]:
+    """Convert unified retrieval results into structured RAG sources."""
+    sources: list[RAGSource] = []
+    for rank, chunk in enumerate(result.chunks, start=1):
+        metadata = chunk.document.metadata
+        sources.append(
+            RAGSource(
+                rank=rank,
+                file_name=str(metadata.get("file_name", "unknown.pdf")),
+                document_id=str(metadata.get("document_id", "unknown")),
+                document_type=str(metadata.get("document_type", "unknown")),
+                page_number=metadata.get("page_number", "unknown"),
+                chunk_id=chunk.chunk_id,
+                similarity=chunk.similarity,
+                text=chunk.document.page_content,
+                bm25_score=chunk.bm25_score,
+                rrf_score=chunk.rrf_score,
+                dense_rank=chunk.dense_rank,
+                sparse_rank=chunk.sparse_rank,
+            )
+        )
+    return sources
+
+
+def build_retrieval_diagnostics(
+    result: RetrievalResult,
+) -> dict[str, float | int | None]:
+    """Expose reproducible retrieval parameters and stage latency."""
+    return {
+        "top_k": result.top_k,
+        "candidate_k": result.candidate_k,
+        "fusion_k": result.fusion_k,
+        "rrf_k": result.rrf_k,
+        "dense_latency_seconds": result.dense_latency_seconds,
+        "sparse_latency_seconds": result.sparse_latency_seconds,
+        "fusion_latency_seconds": result.fusion_latency_seconds,
+        "total_latency_seconds": result.total_latency_seconds,
+    }
+
+
 def build_context(
     sources: list[RAGSource],
 ) -> str:
@@ -303,6 +357,8 @@ class RAGChain:
         ),
         candidate_k: int | None = None,
         max_chunks_per_file: int | None = None,
+        retrieval_method: RetrievalMethod | str = RetrievalMethod.DENSE,
+        sparse_retriever: SparseRetriever | None = None,
     ) -> None:
 
         options = get_retrieval_options(
@@ -312,17 +368,14 @@ class RAGChain:
 
         self.llm = llm
         self.vector_store = vector_store
+        self.retrieval_method = RetrievalMethod(retrieval_method)
         self.retrieval_strategy = options.strategy
         self.top_k = options.top_k
-        self.candidate_k = (
-            candidate_k
-            if candidate_k is not None
-            else options.candidate_k
-        )
-        self.max_chunks_per_file = (
-            max_chunks_per_file
-            if max_chunks_per_file is not None
-            else options.max_chunks_per_file
+        self.candidate_k = candidate_k
+        self.max_chunks_per_file = max_chunks_per_file
+        self.retrieval_pipeline = RetrievalPipeline(
+            vector_store=vector_store,
+            sparse_retriever=sparse_retriever,
         )
 
     def ask(
@@ -349,8 +402,9 @@ class RAGChain:
             )
 
         logger.info(
-            "RAG request started | strategy=%s | top_k=%s | "
+            "RAG request started | method=%s | strategy=%s | top_k=%s | "
             "question_length=%s | history_messages=%s",
+            self.retrieval_method.value,
             self.retrieval_strategy.value,
             self.top_k,
             len(cleaned_question),
@@ -371,15 +425,18 @@ class RAGChain:
         # Step 2: Retrieval
         # ------------------------------------------
 
-        results = retrieve_with_scores(
-            vector_store=self.vector_store,
-            query=retrieval_query,
+        retrieval_result = self.retrieval_pipeline.search(
+            retrieval_query,
+            method=self.retrieval_method,
+            strategy=self.retrieval_strategy,
             top_k=self.top_k,
             candidate_k=self.candidate_k,
             max_chunks_per_file=self.max_chunks_per_file,
         )
 
-        if not results:
+        diagnostics = build_retrieval_diagnostics(retrieval_result)
+
+        if not retrieval_result.chunks:
             logger.info(
                 "RAG request refused without retrieval results | "
                 "strategy=%s",
@@ -390,15 +447,16 @@ class RAGChain:
                 retrieval_query=retrieval_query,
                 answer=NO_ANSWER_MESSAGE,
                 sources=[],
+                retrieval_method=self.retrieval_method.value,
+                retrieval_strategy=self.retrieval_strategy.value,
+                retrieval_diagnostics=diagnostics,
             )
 
         # ------------------------------------------
         # Step 3: Context
         # ------------------------------------------
 
-        sources = build_sources(
-            results
-        )
+        sources = build_retrieval_sources(retrieval_result)
 
         context = build_context(
             sources
@@ -423,8 +481,9 @@ class RAGChain:
         )
 
         logger.info(
-            "RAG request completed | strategy=%s | sources=%s | "
+            "RAG request completed | method=%s | strategy=%s | sources=%s | "
             "answer_length=%s",
+            self.retrieval_method.value,
             self.retrieval_strategy.value,
             len(sources),
             len(answer),
@@ -435,4 +494,7 @@ class RAGChain:
             retrieval_query=retrieval_query,
             answer=answer,
             sources=sources,
+            retrieval_method=self.retrieval_method.value,
+            retrieval_strategy=self.retrieval_strategy.value,
+            retrieval_diagnostics=diagnostics,
         )

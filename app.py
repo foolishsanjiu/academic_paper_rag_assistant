@@ -27,6 +27,7 @@ from knowledge_base import (
 from llm_client import LLMClient
 from logging_config import setup_logging
 from rag_chain import RAGChain
+from retrieval_pipeline import RetrievalMethod
 from retriever import RetrievalStrategy
 from sparse_retriever import build_sparse_retriever
 from text_splitter import split_documents
@@ -326,6 +327,10 @@ def serialize_sources(
                 "page_number": source.page_number,
                 "chunk_id": source.chunk_id,
                 "similarity": source.similarity,
+                "bm25_score": source.bm25_score,
+                "rrf_score": source.rrf_score,
+                "dense_rank": source.dense_rank,
+                "sparse_rank": source.sparse_rank,
                 "text": source.text,
             }
         )
@@ -367,6 +372,10 @@ def render_sources(
             similarity = source.get(
                 "similarity",
             )
+            bm25_score = source.get("bm25_score")
+            rrf_score = source.get("rrf_score")
+            dense_rank = source.get("dense_rank")
+            sparse_rank = source.get("sparse_rank")
 
             text = source.get(
                 "text",
@@ -381,15 +390,18 @@ def render_sources(
                 f"**PDF Page:** {page_number}"
             )
 
+            score_parts = [f"Chunk ID: {chunk_id}"]
+            if rrf_score is not None:
+                score_parts.append(f"RRF: {rrf_score:.6f}")
             if similarity is not None:
-                st.caption(
-                    f"Chunk ID: {chunk_id}  |  "
-                    f"Cosine similarity: {similarity:.4f}"
-                )
-            else:
-                st.caption(
-                    f"Chunk ID: {chunk_id}"
-                )
+                score_parts.append(f"Cosine: {similarity:.4f}")
+            if bm25_score is not None:
+                score_parts.append(f"BM25: {bm25_score:.4f}")
+            if dense_rank is not None:
+                score_parts.append(f"Dense rank: {dense_rank}")
+            if sparse_rank is not None:
+                score_parts.append(f"BM25 rank: {sparse_rank}")
+            st.caption("  |  ".join(score_parts))
 
             st.text(
                 text
@@ -522,6 +534,15 @@ def render_rag_parameters(
             ),
         )
 
+        if parameters.get("retrieval_method"):
+            st.write("Retrieval Method：", parameters["retrieval_method"])
+
+        if parameters.get("retrieval_diagnostics"):
+            st.write(
+                "Retrieval Diagnostics：",
+                parameters["retrieval_diagnostics"],
+            )
+
 
 def render_agent_route(message: dict) -> None:
     """Show the validated route used for an assistant response."""
@@ -531,6 +552,8 @@ def render_agent_route(message: dict) -> None:
     details = [f"Intent: {intent}"]
     if message.get("retrieval_strategy"):
         details.append(f"Strategy: {message['retrieval_strategy']}")
+    if message.get("retrieval_method"):
+        details.append(f"Method: {message['retrieval_method']}")
     if message.get("tool_name"):
         details.append(f"Tool: {message['tool_name']}")
     st.caption(" · ".join(details))
@@ -668,6 +691,18 @@ with st.sidebar:
         help=(
             "控制每次从 Chroma 中检索的相关论文 Chunk 数量。"
         ),
+    )
+
+    retrieval_method = RetrievalMethod(
+        st.selectbox(
+            "检索方法",
+            options=[item.value for item in RetrievalMethod],
+            index=0,
+            help=(
+                "Dense 为默认基线；BM25 使用关键词匹配；"
+                "Hybrid 使用 Dense + BM25 的 RRF 融合。"
+            ),
+        )
     )
 
     temperature = st.slider(
@@ -840,6 +875,7 @@ with st.sidebar:
         use_container_width=True,
         type="primary",
     )
+
     if rebuild_requested and not uploaded_files:
         st.warning(
             "请先选择至少一个 PDF 文件。"
@@ -972,17 +1008,27 @@ with st.sidebar:
 # ============================================================
 
 
+sparse_retriever = None
+if retrieval_method is not RetrievalMethod.DENSE:
+    with st.spinner("正在加载 BM25 索引……"):
+        sparse_retriever = load_sparse_resources()
+
+
 focused_rag = RAGChain(
     llm=llm,
     vector_store=vector_store,
     top_k=top_k,
     retrieval_strategy=RetrievalStrategy.FOCUSED,
+    retrieval_method=retrieval_method,
+    sparse_retriever=sparse_retriever,
 )
 
 multi_document_rag = RAGChain(
     llm=llm,
     vector_store=vector_store,
     retrieval_strategy=RetrievalStrategy.MULTI_DOCUMENT,
+    retrieval_method=retrieval_method,
+    sparse_retriever=sparse_retriever,
 )
 
 
@@ -1112,6 +1158,11 @@ if prompt:
                         else None
                     ),
                     "tool_name": decision.tool_name,
+                    "retrieval_method": (
+                        retrieval_method.value
+                        if decision.intent is Intent.PAPER_QA
+                        else None
+                    ),
                 }
                 result = dispatch_route(
                     decision,
@@ -1151,6 +1202,27 @@ if prompt:
 
             render_agent_route(route_message)
 
+            rag_parameters = ({
+                "top_k": result.retrieval_diagnostics["top_k"],
+                "temperature": temperature,
+                "retrieval_method": result.retrieval_method,
+                "retrieval_diagnostics": result.retrieval_diagnostics,
+                "chunk_size": (
+                    index_manifest.get("chunk_size")
+                    if index_manifest else None
+                ),
+                "chunk_overlap": (
+                    index_manifest.get("chunk_overlap")
+                    if index_manifest else None
+                ),
+                "embedding_model": (
+                    index_manifest.get("embedding_model")
+                    if index_manifest else None
+                ),
+            } if decision.intent is Intent.PAPER_QA else None)
+
+            render_rag_parameters(rag_parameters)
+
             # -----------------------------------------------
             # Retrieval query
             # -----------------------------------------------
@@ -1186,38 +1258,7 @@ if prompt:
             "is_error": is_error,
             **route_message,
 
-            "rag_parameters": ({
-                "top_k": (
-                    focused_rag.top_k
-                    if decision.retrieval_strategy is RetrievalStrategy.FOCUSED
-                    else multi_document_rag.top_k
-                ),
-                "temperature": temperature,
-
-                "chunk_size": (
-                    index_manifest.get(
-                        "chunk_size"
-                    )
-                    if index_manifest
-                    else None
-                ),
-
-                "chunk_overlap": (
-                    index_manifest.get(
-                        "chunk_overlap"
-                    )
-                    if index_manifest
-                    else None
-                ),
-
-                "embedding_model": (
-                    index_manifest.get(
-                        "embedding_model"
-                    )
-                    if index_manifest
-                    else None
-                ),
-            } if decision.intent is Intent.PAPER_QA else None),
+            "rag_parameters": rag_parameters,
         }
 
         st.session_state.messages.append(

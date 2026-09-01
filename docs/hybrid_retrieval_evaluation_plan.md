@@ -631,15 +631,22 @@ multi-document 的 nDCG@8 下降 5.38%，因此暂不切换线上默认值。
 
 ### M6：RAG 和 UI 集成
 
+状态（2026-09-01）：已完成。新增统一 `RetrievalPipeline`，RAG 与 UI 现可在
+Dense、BM25、Hybrid 之间切换；Dense 保持默认，BM25 仅在需要时加载并缓存。
+Reranker 因 M5 未通过默认配置选择门禁，没有接入应用。
+
 工作：
 
 - RAGChain 改为调用 retrieval pipeline。
 - UI 展示 method、strategy、各阶段耗时和最终分数。
 - 保持旧消息渲染兼容。
 
-验证：focused、multi-document、Tool、out-of-scope 各做一次冒烟测试。
+验证：新增统一管线与 RAGChain 集成测试，覆盖三种检索方法、focused、
+multi-document、空结果拒答和旧构造方式；既有 Router 数据集继续覆盖 Tool、
+out-of-scope 与策略分发。完整测试集共 104 项，全部通过。
 
-停止点：不立即修改默认 method，等待 test 结果。
+停止点：未读取 test、未调用 LLM 或付费 API；默认 method 仍为 Dense，等待 M7
+冻结 test 评测结果后再决定是否切换。
 
 ### M7：消融和引用评测
 

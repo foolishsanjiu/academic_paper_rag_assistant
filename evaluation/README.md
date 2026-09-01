@@ -156,6 +156,20 @@ answer citation coverage, refusal correctness, and spurious refusal citations.
 DeepSeek V4 thinking is disabled explicitly because it is enabled by default,
 ignores temperature, and counts reasoning against the output-token limit.
 
+After all three formal generation files exist, build the deterministic
+30-question human review package:
+
+```bash
+python evaluation/build_citation_review.py \
+  --result A=evaluation/results/m7_a_generation_nonthinking_test.json \
+  --result C=evaluation/results/m7_c_generation_nonthinking_test.json \
+  --result E=evaluation/results/m7_e_generation_nonthinking_test.json \
+  --output evaluation/results/m7_citation_review_30.json
+```
+
+Follow `m7_citation_review_guide.md`; never overwrite the generated package or
+substitute an LLM judge for the required human entailment labels.
+
 Build a deduplicated, deterministic annotation pool from one or more retrieval
 result files and every Chunk on the expected source pages:
 

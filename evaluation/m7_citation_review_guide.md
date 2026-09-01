@@ -14,6 +14,17 @@
 列出的人工字段，并另存为 `evaluation/results/m7_citation_labels_30.json`，保留原始
 复核包不变。
 
+推荐使用本地标注页：
+
+```bash
+python -m streamlit run evaluation/review_app.py
+```
+
+页面首次启动时会从原始复核包创建独立标签文件
+`evaluation/results/m7_citation_labels_30.json`。之后每次点击“保存当前页”或
+“保存并前往下一未完成项”都会原子写入该标签文件，可关闭页面后继续；程序会在
+保存前校验问题、答案和引用来源等只读内容没有变化，并禁止把标签写回原始包。
+
 ## 回答评分
 
 对每个问题下 A、C、E 的 `answer_score` 填写：

@@ -15,6 +15,18 @@ python -m pip install -r requirements.txt
 将 `.env.example` 复制为 `.env`，填写兼容 OpenAI Chat Completions API 的
 模型配置：
 
+Windows PowerShell：
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Windows CMD：
+
+```bat
+copy .env.example .env
+```
+
 ```env
 LLM_API_KEY=your_api_key
 LLM_BASE_URL=https://your-endpoint/v1
@@ -42,6 +54,9 @@ python -m streamlit run app.py
 BGE-M3 首次运行时会从 Hugging Face 下载。进入页面后上传 PDF，并点击
 “保存所选 PDF / 重建向量库”。本地 PDF、Chroma 数据库、日志和 `.env` 不会提交
 到 Git。
+
+仓库当前不提供 Dockerfile；README 中的 Quick Start 以本地 Conda 环境为唯一经过
+验证的启动路径。
 
 ## 4. 验证安装
 

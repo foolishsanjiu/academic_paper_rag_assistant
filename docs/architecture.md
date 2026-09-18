@@ -50,11 +50,12 @@ The split is based on measured retrieval and answer-quality tradeoffs. The
 multi-document strategy improves all-expected-file recall but adds latency and
 can remove useful local evidence from a focused factual question.
 
-These two strategies describe the default interactive application. The
-Hybrid/RRF and Cross-Encoder configurations below are implemented in the
-unified retrieval pipeline and used by the reproducible offline evaluation,
-but are deliberately not enabled in the Streamlit path because they did not
-pass the frozen quality-and-latency release gates.
+These two strategies control source diversification independently of the
+retrieval method. Dense, BM25, and Hybrid/RRF are selectable in Streamlit,
+with Dense kept as the default after the frozen quality-and-latency review.
+The Cross-Encoder is implemented in `reranker.py` and composed by the offline
+evaluation runner; it is not enabled in the interactive application because
+it did not pass the CPU latency gate.
 
 ## Offline retrieval and evaluation flow
 
@@ -125,7 +126,8 @@ run semantic retrieval or load an embedding model.
 | `sparse_retriever.py` | Deterministic BM25 tokenization, indexing and ranking |
 | `hybrid_retriever.py` | Dense/BM25 normalization, deduplication and RRF |
 | `reranker.py` | Local Cross-Encoder scoring and deterministic reranking |
-| `retrieval_pipeline.py` | Unified Dense, BM25, Hybrid and reranked execution |
+| `retrieval_pipeline.py` | Unified online Dense, BM25 and Hybrid execution |
+| `evaluation/evaluate_retrieval.py` | Offline A-E retrieval and Reranker composition |
 | `tools/paper_library.py` | Deterministic knowledge-base metadata queries |
 | `tools/source_lookup.py` | Exact PDF page/Chunk lookup |
 | `knowledge_base.py` | PDF discovery, validation and upload storage |
